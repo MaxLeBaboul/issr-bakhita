@@ -11,86 +11,168 @@ import {
   EyeOff, 
   ArrowLeft, 
   ShieldCheck, 
-  UserCheck, 
   CheckCircle2, 
-  Sparkles,
   HelpCircle,
-  ExternalLink
+  Shield,
+  GraduationCap,
+  BookOpen,
+  DollarSign,
+  Award,
+  Users,
+  User,
+  FileCheck,
+  AlertCircle
 } from 'lucide-react';
 import { INSTITUTION_INFO } from '../../data/mockData';
+import { UserRole } from '../../types/rbac';
 
-const PRESET_PROFILES = [
+interface InstitutionalRoleOption {
+  id: UserRole;
+  title: string;
+  department: string;
+  badge: string;
+  icon: React.ComponentType<{ className?: string }>;
+  category: 'GOUVERNANCE' | 'PEDAGOGIE' | 'ETUDIANT';
+}
+
+const INSTITUTIONAL_ROLES: InstitutionalRoleOption[] = [
   {
-    role: "Directeur",
-    name: "P. Dr Patrice MEKANA",
-    email: "directeur@issr-bakhita.org",
-    badge: "Gouvernance & Validation"
+    id: 'directeur',
+    title: "Direction de l'Institut",
+    department: "Gouvernance Institutionnelle & Décisions",
+    badge: "Direction",
+    icon: Shield,
+    category: 'GOUVERNANCE'
   },
   {
-    role: "Préfet des Études",
-    name: "Sr. Patience ENGANEMBEN",
-    email: "etudes@issr-bakhita.org",
-    badge: "Pédagogie & Cursus"
+    id: 'secretaire_admin',
+    title: "Secrétariat Administratif",
+    department: "Accueil, Candidatures & Convocations",
+    badge: "Administration",
+    icon: FileCheck,
+    category: 'GOUVERNANCE'
   },
   {
-    role: "Secrétariat de Direction",
-    name: "Mlle Manuella NYAMBONE",
-    email: "secretariat@issr-bakhita.org",
-    badge: "Administration & Dossiers"
+    id: 'secretaire_acad',
+    title: "Secrétariat Académique",
+    department: "Scolarité, Équivalences & Examens",
+    badge: "Scolarité",
+    icon: GraduationCap,
+    category: 'GOUVERNANCE'
   },
   {
-    role: "Corps Enseignant",
-    name: "M. Jean Claude MEKOULOU",
-    email: "faculte@issr-bakhita.org",
-    badge: "Publication & Cours"
+    id: 'prefet_etudes',
+    title: "Préfecture des Études",
+    department: "Pédagogie, Maquettes LMD & Jurys",
+    badge: "Académique",
+    icon: BookOpen,
+    category: 'PEDAGOGIE'
+  },
+  {
+    id: 'econome',
+    title: "Économat & Intendance",
+    department: "Gestion Financière, Écolages & Quitus",
+    badge: "Économat",
+    icon: DollarSign,
+    category: 'GOUVERNANCE'
+  },
+  {
+    id: 'rep_enseignants',
+    title: "Délégation des Enseignants",
+    department: "Conseil Pédagogique & Coordination",
+    badge: "Coordination",
+    icon: Users,
+    category: 'PEDAGOGIE'
+  },
+  {
+    id: 'enseignants',
+    title: "Corps Professoral",
+    department: "Saisie des Notes & Polycopiés de Cours",
+    badge: "Enseignement",
+    icon: Award,
+    category: 'PEDAGOGIE'
+  },
+  {
+    id: 'etudiants',
+    title: "Espace Étudiant",
+    department: "Relevé de Notes & Ressources Numériques",
+    badge: "Étudiant LMD",
+    icon: User,
+    category: 'ETUDIANT'
+  },
+  {
+    id: 'admin',
+    title: "Administration Système (DSI)",
+    department: "Sécurité Réseau, Audit & Infrastructure",
+    badge: "Super-Admin",
+    icon: KeyRound,
+    category: 'GOUVERNANCE'
   }
 ];
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('directeur@issr-bakhita.org');
-  const [password, setPassword] = useState('••••••••••••');
+  
+  // Role selection state (Strictly without any personal name or prefilled credentials)
+  const [selectedRole, setSelectedRole] = useState<UserRole>('directeur');
+  
+  // Credentials states strictly empty by default for security
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
   const [loginError, setLoginError] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'ALL' | 'GOUVERNANCE' | 'PEDAGOGIE' | 'ETUDIANT'>('ALL');
 
-  const handleSelectPreset = (index: number) => {
-    setSelectedProfileIndex(index);
-    const profile = PRESET_PROFILES[index];
-    setEmail(profile.email);
-    setPassword('Bakhita2026!');
+  const filteredRoles = INSTITUTIONAL_ROLES.filter(r => {
+    if (roleFilter === 'ALL') return true;
+    return r.category === roleFilter;
+  });
+
+  const handleSelectRole = (roleId: UserRole) => {
+    setSelectedRole(roleId);
     setLoginError('');
+    // SECURITY: strictly do NOT fill in email or password
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setLoginError('');
 
-    // Simulate authenticating session
+    if (!email.trim() || !password.trim()) {
+      setLoginError('Veuillez renseigner votre identifiant universitaire et votre mot de passe.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Secure authentication simulation
     setTimeout(() => {
       setIsLoading(false);
-      // Store user session info in localStorage
-      const activeProfile = PRESET_PROFILES[selectedProfileIndex];
       try {
+        const activeRoleObj = INSTITUTIONAL_ROLES.find(r => r.id === selectedRole);
+        localStorage.setItem('issr_logged_role', selectedRole);
         localStorage.setItem('issr_logged_user', JSON.stringify({
-          name: activeProfile ? activeProfile.name : email.split('@')[0],
-          role: activeProfile ? activeProfile.role : 'Utilisateur',
-          email: email,
+          role: selectedRole,
+          roleTitle: activeRoleObj ? activeRoleObj.title : 'Utilisateur',
+          department: activeRoleObj ? activeRoleObj.department : '',
+          email: email.trim(),
           timestamp: new Date().toISOString()
         }));
       } catch (err) {
-        console.error("Session storage error", err);
+        console.error("Erreur de sauvegarde de session", err);
       }
       router.push('/admin');
     }, 600);
   };
 
+  const selectedRoleObj = INSTITUTIONAL_ROLES.find(r => r.id === selectedRole) || INSTITUTIONAL_ROLES[0];
+
   return (
     <div className="min-h-screen bg-[#06121E] text-slate-100 flex flex-col justify-between relative overflow-hidden selection:bg-amber-400 selection:text-slate-950">
-      {/* Background photography overlay */}
+      
+      {/* Subtle Background Photography */}
       <div 
         className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none scale-105"
         style={{ backgroundImage: `url('/images/hero-1608.jpg')` }}
@@ -101,7 +183,7 @@ export default function LoginPage() {
       <div className="absolute top-1/2 -right-40 w-96 h-96 rounded-full bg-amber-500/15 blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full bg-indigo-600/15 blur-[120px] pointer-events-none" />
 
-      {/* Top Bar: Return Link */}
+      {/* Top Bar: Return Link & Security Badge */}
       <header className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex items-center justify-between">
         <Link 
           href="/"
@@ -113,24 +195,26 @@ export default function LoginPage() {
 
         <div className="hidden sm:flex items-center gap-2 text-[11px] text-amber-200/80 uppercase font-bold tracking-widest bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/20">
           <ShieldCheck className="w-4 h-4 text-amber-400" />
-          <span>Accès Sécurisé SSL 256 bits</span>
+          <span>Portail Sécurisé SSL 256 bits</span>
         </div>
       </header>
 
       {/* Main Container */}
       <main className="relative z-10 flex-grow flex items-center justify-center px-4 sm:px-6 py-8">
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-2xl">
+          
           {/* Card Container */}
-          <div className="bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-10 border border-amber-500/30 shadow-2xl shadow-slate-950/80 relative">
+          <div className="bg-slate-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-10 border border-amber-500/30 shadow-2xl shadow-slate-950/80 relative">
+            
             {/* Top Accent Line */}
             <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-rose-600 rounded-t-3xl" />
 
-            {/* Header / Logo */}
+            {/* Header / Seal */}
             <div className="text-center space-y-3 mb-8">
               <div className="inline-flex items-center justify-center p-2 rounded-2xl bg-white/10 border border-white/15 shadow-md">
                 <img 
-                  src="/logo.jpg" 
-                  alt="ISSR Sainte Joséphine Bakhita" 
+                  src="/logo-seal.png" 
+                  alt="Sceau Officiel ISSR Sainte Joséphine Bakhita" 
                   className="h-16 w-auto object-contain rounded-lg"
                 />
               </div>
@@ -140,62 +224,138 @@ export default function LoginPage() {
                   UCAC - ICY &bull; Érection Canonique Rome 2022
                 </span>
                 <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  Portail Institutionnel
+                  Espace d&apos;Authentification Collaboratif
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-md mx-auto leading-relaxed">
-                  Connexion réservée à la Direction, au Corps Professoral et au Secrétariat de l&apos;ISSR Sainte Bakhita.
+                  Connexion sécurisée aux services de gouvernance, gestion académique et espaces de travail de l&apos;ISSR Sainte Bakhita.
                 </p>
               </div>
             </div>
 
-            {/* Preset Profile Switcher for Instant Testing */}
-            <div className="mb-6 bg-slate-950/60 rounded-2xl p-3.5 border border-white/10">
-              <div className="flex items-center justify-between mb-2.5 px-1">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <UserCheck className="w-3.5 h-3.5 text-amber-400" />
-                  Profils Institutionnels Rapides
+            {/* Security Notice: No pre-filling */}
+            <div className="mb-6 p-3.5 rounded-2xl bg-slate-950/80 border border-amber-500/20 flex items-start gap-3 text-xs text-slate-300">
+              <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold text-amber-300 block uppercase tracking-wider text-[10px]">
+                  Protocole de Confidentialité &amp; Sécurité :
                 </span>
-                <span className="text-[10px] text-amber-300/80 bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
-                  Cliquez pour pré-remplir
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {PRESET_PROFILES.map((prof, idx) => (
-                  <button
-                    key={prof.email}
-                    type="button"
-                    onClick={() => handleSelectPreset(idx)}
-                    className={`text-left p-2.5 rounded-xl text-xs transition border ${
-                      selectedProfileIndex === idx
-                        ? 'bg-amber-500/15 border-amber-400/70 text-white shadow-sm'
-                        : 'bg-white/5 border-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    <div className="font-bold flex items-center justify-between">
-                      <span className="truncate">{prof.role}</span>
-                      {selectedProfileIndex === idx && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 ml-1" />
-                      )}
-                    </div>
-                    <div className="text-[11px] text-slate-400 truncate mt-0.5">{prof.name}</div>
-                  </button>
-                ))}
+                <p className="text-[11px] text-slate-300 leading-relaxed mt-0.5">
+                  Aucun identifiant ni mot de passe n&apos;est pré-rempli sur ce terminal. Veuillez sélectionner votre fonction institutionnelle et renseigner vos identifiants nominatifs.
+                </p>
               </div>
             </div>
 
-            {/* Login Form */}
+            {/* 1. SELECTION DU RÔLE INSTITUTIONNEL (SANS NOMS DE PERSONNES) */}
+            <div className="mb-6 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+                <label className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-amber-400" />
+                  <span>1. Sélectionner votre fonction institutionnelle</span>
+                </label>
+                
+                {/* Category Filter Pills */}
+                <div className="flex items-center gap-1 text-[10px] bg-slate-950/70 p-1 rounded-xl border border-white/10 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('ALL')}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition ${
+                      roleFilter === 'ALL' ? 'bg-amber-400 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Tous ({INSTITUTIONAL_ROLES.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('GOUVERNANCE')}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition ${
+                      roleFilter === 'GOUVERNANCE' ? 'bg-amber-400 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Gouvernance
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('PEDAGOGIE')}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition ${
+                      roleFilter === 'PEDAGOGIE' ? 'bg-amber-400 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Pédagogie
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('ETUDIANT')}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition ${
+                      roleFilter === 'ETUDIANT' ? 'bg-amber-400 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Étudiant
+                  </button>
+                </div>
+              </div>
+
+              {/* Roles Grid (9 Roles, No Personal Names) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 max-h-64 sm:max-h-none overflow-y-auto pr-1">
+                {filteredRoles.map((role) => {
+                  const isSelected = selectedRole === role.id;
+                  const IconComp = role.icon;
+                  return (
+                    <button
+                      key={role.id}
+                      type="button"
+                      onClick={() => handleSelectRole(role.id)}
+                      className={`text-left p-3 rounded-2xl text-xs transition border flex flex-col justify-between gap-1.5 cursor-pointer ${
+                        isSelected
+                          ? 'bg-gradient-to-br from-amber-500/20 via-amber-500/10 to-slate-900 border-amber-400 text-white shadow-md shadow-amber-500/10 ring-1 ring-amber-400'
+                          : 'bg-slate-950/60 border-white/10 text-slate-300 hover:bg-slate-800/80 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className={`p-1.5 rounded-lg shrink-0 ${
+                            isSelected ? 'bg-amber-400 text-slate-950' : 'bg-white/5 text-amber-400'
+                          }`}>
+                            <IconComp className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-bold text-xs truncate leading-tight">{role.title}</span>
+                        </div>
+                        {isSelected && (
+                          <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 ml-1" />
+                        )}
+                      </div>
+                      <div className="text-[11px] text-slate-400 line-clamp-1">
+                        {role.department}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active Role Confirmation Banner */}
+              <div className="bg-slate-950/50 p-2.5 rounded-xl border border-white/10 flex items-center justify-between text-xs">
+                <span className="text-slate-400">
+                  Connexion demandée pour : <strong className="text-amber-300">{selectedRoleObj.title}</strong>
+                </span>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  {selectedRoleObj.badge}
+                </span>
+              </div>
+            </div>
+
+            {/* 2. FORMULAIRE DE CONNEXION (VIDE PAR DEFAUT) */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              
               {loginError && (
-                <div className="p-3 rounded-xl bg-red-900/40 border border-red-500/40 text-red-200 text-xs">
-                  {loginError}
+                <div className="p-3.5 rounded-xl bg-red-900/50 border border-red-500/50 text-red-200 text-xs flex items-center gap-2 animate-shake">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{loginError}</span>
                 </div>
               )}
 
-              {/* Email / Identifier Field */}
+              {/* Email / Identifier Field (EMPTY by default) */}
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                  Identifiant institutionnel ou Email universitaire
+                  2. Identifiant institutionnel ou Email universitaire <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -204,22 +364,23 @@ export default function LoginPage() {
                   <input
                     type="text"
                     required
+                    autoComplete="off"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ex: direction@issr-bakhita.org"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950/70 border border-white/15 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder:text-slate-500 text-sm outline-none transition"
+                    placeholder="ex: identifiant@issr-bakhita.cm ou matricule"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950/80 border border-white/15 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder:text-slate-500 text-sm outline-none transition"
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
+              {/* Password Field (EMPTY by default) */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    Mot de passe
+                    3. Mot de passe <span className="text-amber-400">*</span>
                   </label>
                   <a 
-                    href={`https://wa.me/237655165757?text=${encodeURIComponent("Bonjour Secrétariat ISSR, j'ai oublié mes accès au portail de gestion.")}`}
+                    href={`https://wa.me/237655165757?text=${encodeURIComponent("Bonjour Secrétariat ISSR, j'ai besoin d'une réinitialisation de mes accès institutionnels.")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[11px] text-amber-300 hover:text-amber-200 hover:underline"
@@ -234,22 +395,24 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
+                    autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-950/70 border border-white/15 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder:text-slate-500 text-sm outline-none transition"
+                    placeholder="Entrez votre mot de passe confidentiel"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-950/80 border border-white/15 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder:text-slate-500 text-sm outline-none transition"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition cursor-pointer"
+                    title={showPassword ? 'Masquer' : 'Afficher'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Remember Me */}
+              {/* Remember Me Toggle */}
               <div className="flex items-center justify-between pt-1">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -258,7 +421,7 @@ export default function LoginPage() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-4 h-4 rounded border-slate-700 text-amber-500 focus:ring-amber-400 bg-slate-950/80"
                   />
-                  <span className="text-xs text-slate-300">Rester connecté sur cet appareil</span>
+                  <span className="text-xs text-slate-300">Mémoriser cet appareil (hors mot de passe)</span>
                 </label>
               </div>
 
@@ -266,17 +429,17 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/25 transition duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer mt-2"
+                className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/25 transition duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
               >
                 {isLoading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                    <span>Vérification des autorisations canoniques...</span>
+                    <span>Vérification des autorisations...</span>
                   </>
                 ) : (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Se connecter au Back-office</span>
+                    <span>Accéder à l&apos;Espace {selectedRoleObj.title}</span>
                   </>
                 )}
               </button>
@@ -286,7 +449,7 @@ export default function LoginPage() {
             <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
               <div className="flex items-center gap-2">
                 <HelpCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Besoin d&apos;aide pour vous connecter ?</span>
+                <span>Assistance technique &amp; délivrance des accès :</span>
               </div>
               <a
                 href={`tel:${INSTITUTION_INFO.phone}`}
@@ -295,6 +458,7 @@ export default function LoginPage() {
                 <span>Secrétariat : {INSTITUTION_INFO.phone}</span>
               </a>
             </div>
+
           </div>
         </div>
       </main>
@@ -302,7 +466,7 @@ export default function LoginPage() {
       {/* Footer Notice */}
       <footer className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 text-center text-xs text-slate-400">
         <p>
-          &copy; {new Date().getFullYear()} {INSTITUTION_INFO.name} &bull; Système d&apos;Information Académique &amp; Scolarité.
+          &copy; {new Date().getFullYear()} {INSTITUTION_INFO.name} &bull; Système d&apos;Information Académique, Scolarité &amp; Gouvernance.
         </p>
       </footer>
     </div>

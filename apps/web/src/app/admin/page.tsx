@@ -84,6 +84,18 @@ export default function AdminPage() {
   // Tab navigation state
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
 
+  // Load saved role from login or session
+  useEffect(() => {
+    try {
+      const savedRole = localStorage.getItem('issr_logged_role') as UserRole;
+      if (savedRole && PROFILES_CONFIG[savedRole]) {
+        setActiveRole(savedRole);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   // Ensure activeTab is allowed when switching role
   useEffect(() => {
     if (!permissions.allowedTabs.includes(activeTab)) {
@@ -550,6 +562,9 @@ export default function AdminPage() {
                   onChange={(e) => {
                     const newR = e.target.value as UserRole;
                     setActiveRole(newR);
+                    try {
+                      localStorage.setItem('issr_logged_role', newR);
+                    } catch (err) {}
                     showToast(`Basculé sur le profil : ${PROFILES_CONFIG[newR].title} (${PROFILES_CONFIG[newR].name})`, 'info');
                   }}
                   className="bg-slate-900 text-white font-medium text-xs rounded-xl px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-issr-gold cursor-pointer"
