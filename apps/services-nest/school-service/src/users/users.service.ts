@@ -86,6 +86,7 @@ export class UsersService {
       lastName: 'MEKANA',
       department: 'Direction Générale',
       isActive: true,
+      passwordHash: 'ee9e99d71c4ebaadcb11955a6385065f:709b2e915dcc76dc59c95c535aae4790204372c411283e7c06e64bc1211bc9fa3137e53d09585295b28c38902801003cd1cb4c5ea29096d23c875cf059bdd2f0', // Direction@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -98,6 +99,7 @@ export class UsersService {
       lastName: 'NKOLO',
       department: 'Accueil & Admissions',
       isActive: true,
+      passwordHash: '882cd66274ef444b56baa99d012819ce:dd28e9728916b3154e2a8df33da7aceeee4385c8c5fed93074fab199448a3763f689648f63159bbe28bff63c109c35843b6268d76a549ac1ad5b4dd24f8e561e', // Secretariat@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -110,6 +112,7 @@ export class UsersService {
       lastName: 'MEKOULOU',
       department: 'Service de la Scolarité & Examens',
       isActive: true,
+      passwordHash: '6c4565ebb85bed2d266842afe7517ff0:db1cf44effd6c5ed13d3f7e2b4c2edda13172d97aac9904d3f3d619f1bb711fa0da1ddb2027405cb132d60dfa9501dfbc393dd6a3a0127fafb3e6209cbb6b839', // Scolarite@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -122,6 +125,7 @@ export class UsersService {
       lastName: 'ENGANEMBEN',
       department: 'Direction Académique & Pédagogique',
       isActive: true,
+      passwordHash: '2cac7cafef4bf1d0ae596ad566e2b3bd:960934e8666817753a5bf3b311424170e5859bf100a3fab410ec7db6968b3c203828aef219d43d73b6b523bf7ccafa847df2f3c59d7ab792e2112467dc867223', // Prefet@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -134,6 +138,7 @@ export class UsersService {
       lastName: 'BESSALA',
       department: 'Économat & Intendance',
       isActive: true,
+      passwordHash: '2f1058d7e3ac59ec9969808b987c7bff:a98a064dd26dd496bc9991c9ec5027f507a732eb4b665b3b179b908f39913b84ea4eb8d5b9209c0159f9733e72967e0ffac411af12e314a90d0066aa2b100130', // Economat@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -146,6 +151,7 @@ export class UsersService {
       lastName: 'ESSOMBA',
       department: 'Conseil Pédagogique',
       isActive: true,
+      passwordHash: '8d7a45e38f3282db38a8e7ff6a440f63:1bd9618291fadc1aef7256a5c742f1174106494f4e6ced0f8cce7704e18e257f930603fa37149a75c2a28e0d572f7356e8af65ea8fb039c836df37ff3e11c50d', // Delegue@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -158,6 +164,20 @@ export class UsersService {
       lastName: 'NDONG',
       department: 'Département d’Études Bibliques',
       isActive: true,
+      passwordHash: '6d78f287c994271a567e1e82fcfffa77:f9059e60aeb750b6a3a11ceae324824fe0f4440e0840f0be4ec756f250ea8ca89ce53e302970e56d9c8ad71bcb812cffcb98040b208f83bc3c2d5230c0a96654', // Enseignant@2026!
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-ens-02',
+      email: 'enseignant@issr-bakhita.cm',
+      role: 'enseignants',
+      roleTitle: 'Corps Professoral',
+      firstName: 'Théophile',
+      lastName: 'NDONG',
+      department: 'Département d’Études Bibliques',
+      isActive: true,
+      passwordHash: '6d78f287c994271a567e1e82fcfffa77:f9059e60aeb750b6a3a11ceae324824fe0f4440e0840f0be4ec756f250ea8ca89ce53e302970e56d9c8ad71bcb812cffcb98040b208f83bc3c2d5230c0a96654', // Enseignant@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },
@@ -170,12 +190,33 @@ export class UsersService {
       lastName: 'NGOUMOU',
       department: 'Promotion Saint Thomas d’Aquin',
       isActive: true,
+      passwordHash: '3e44303b5e2f8bd20e4a29b39862db30:d1aed1cca179dfa5cd43f380f8f8cf6ec6817deba4d953e6a21c247cb2a206eeb85575e4c04d14779e3c63cba7ee6070b624f9150cad96d90999266a4a206afe', // Etudiant@2026!
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-etud-02',
+      email: 'etudiant@issr-bakhita.cm',
+      role: 'etudiants',
+      roleTitle: 'Espace Étudiant',
+      firstName: 'Emmanuel',
+      lastName: 'NGOUMOU',
+      department: 'Promotion Saint Thomas d’Aquin',
+      isActive: true,
+      passwordHash: '3e44303b5e2f8bd20e4a29b39862db30:d1aed1cca179dfa5cd43f380f8f8cf6ec6817deba4d953e6a21c247cb2a206eeb85575e4c04d14779e3c63cba7ee6070b624f9150cad96d90999266a4a206afe', // Etudiant@2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     }
   ];
 
   constructor(private readonly mailService: MailService) {}
+
+  /**
+   * Get display title for a role
+   */
+  getRoleTitle(role: string): string {
+    return ROLE_TITLES[role as UserAccount['role']] || role;
+  }
 
   /**
    * List all user accounts

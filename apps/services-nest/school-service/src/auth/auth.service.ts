@@ -76,7 +76,7 @@ export class AuthService {
   /**
    * Validate login credentials
    */
-  async login(email: string, passwordPlain: string) {
+  async login(email: string, passwordPlain: string, expectedRole?: string) {
     const user = this.usersService.findByEmail(email);
     if (!user) {
       throw new BadRequestException("Identifiant ou mot de passe incorrect.");
@@ -97,6 +97,15 @@ export class AuthService {
       // Allowed
     } else {
       throw new BadRequestException("Identifiant ou mot de passe incorrect.");
+    }
+
+    // STRICT CLOISONNEMENT: Verify that the selected space/role on the login screen matches the user's role!
+    if (expectedRole && user.role !== expectedRole) {
+      const expectedTitle = this.usersService.getRoleTitle(expectedRole) || expectedRole;
+      const actualTitle = user.roleTitle || this.usersService.getRoleTitle(user.role) || user.role;
+      throw new BadRequestException(
+        `Accès refusé pour l'espace « ${expectedTitle} ». Ce compte est habilité exclusivement pour le rôle « ${actualTitle} ». Veuillez sélectionner l'espace « ${actualTitle} » pour vous connecter.`
+      );
     }
 
     return {

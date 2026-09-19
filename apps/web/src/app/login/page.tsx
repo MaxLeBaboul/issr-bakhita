@@ -154,6 +154,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           email: email.trim(),
           password: password.trim(),
+          expectedRole: selectedRole,
         }),
       });
 
@@ -162,7 +163,17 @@ export default function LoginPage() {
 
       if (res.ok && data.success) {
         const user = data.user;
-        const effectiveRole = (user.role as UserRole) || selectedRole;
+        
+        // Strictly verify that user.role matches selectedRole
+        if (user.role !== selectedRole) {
+          const userRoleObj = INSTITUTIONAL_ROLES.find(r => r.id === user.role) || INSTITUTIONAL_ROLES[0];
+          setLoginError(
+            `Accès refusé : Vos identifiants correspondent au profil « ${userRoleObj.title} ». Vous ne pouvez pas vous connecter dans l'espace « ${selectedRoleObj.title} ». Veuillez sélectionner « ${userRoleObj.title} » sur la gauche.`
+          );
+          return;
+        }
+
+        const effectiveRole = user.role as UserRole;
         const activeRoleObj = INSTITUTIONAL_ROLES.find(r => r.id === effectiveRole) || INSTITUTIONAL_ROLES[0];
         
         localStorage.setItem('issr_logged_role', effectiveRole);
@@ -184,11 +195,41 @@ export default function LoginPage() {
       // Local fallback in case the microservice is temporarily offline
       setIsLoading(false);
       const isMaxwell = email.trim().toLowerCase() === 'maxwellbaboula@gmail.com';
-      const validPasswords = ['Admin@Bakhita2026!', 'Bakhita2026!', 'Admin2026!'];
+      const validAdminPasswords = ['Admin@Bakhita2026!', 'Bakhita2026!', 'Admin2026!'];
       
-      if (isMaxwell && !validPasswords.includes(password.trim())) {
-        setLoginError('Mot de passe incorrect pour le compte Administrateur.');
-        return;
+      // Strict role check for Admin
+      if (isMaxwell) {
+        if (!validAdminPasswords.includes(password.trim())) {
+          setLoginError('Mot de passe incorrect pour le compte Administrateur.');
+          return;
+        }
+        if (selectedRole !== 'admin') {
+          setLoginError(
+            `Accès refusé : Ce compte est configuré avec le rôle « Administration Système (DSI) ». Vous ne pouvez pas vous connecter dans l'espace « ${selectedRoleObj.title} ». Veuillez sélectionner « Administration Système (DSI) » pour continuer.`
+          );
+          return;
+        }
+      }
+
+      // Strict role check for Student
+      if (selectedRole === 'etudiants') {
+        const isStudentEmail = email.toLowerCase().includes('etudiant') || email.toLowerCase().startsWith('e.');
+        if (!isStudentEmail && !isMaxwell) {
+          setLoginError(
+            `Accès refusé pour l'espace « Espace Étudiant » : Ces identifiants ne sont pas reconnus comme un compte étudiant matriculé.`
+          );
+          return;
+        }
+      }
+
+      // Check teacher
+      if (selectedRole === 'enseignants' || selectedRole === 'rep_enseignants') {
+        if (isMaxwell) {
+          setLoginError(
+            `Accès refusé : Le compte administrateur ne peut pas accéder à l'espace enseignant sans changer de rôle.`
+          );
+          return;
+        }
       }
 
       const effectiveRole = isMaxwell ? 'admin' : selectedRole;
@@ -373,13 +414,19 @@ export default function LoginPage() {
               </div>
 
               {/* Active Role Confirmation Banner */}
-              <div className="bg-slate-950/50 p-2.5 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                <span className="text-slate-400">
-                  Connexion demandée pour : <strong className="text-amber-300">{selectedRoleObj.title}</strong>
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                  {selectedRoleObj.badge}
-                </span>
+              <div className="bg-slate-950/70 p-3 rounded-2xl border border-amber-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span className="text-slate-300">
+                    Espace ciblé : <strong className="text-amber-300 font-bold">{selectedRoleObj.title}</strong>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">Identifiants cloisonnés à ce rôle</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    {selectedRoleObj.badge}
+                  </span>
+                </div>
               </div>
             </div>
 
