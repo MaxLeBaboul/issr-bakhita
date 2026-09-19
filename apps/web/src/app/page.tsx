@@ -29,61 +29,61 @@ export default function HomePage() {
       <Hero />
 
       {/* 2. Key Metrics & Institutional Affiliation Strip (Superposed Overlapping Design with Upward Animation) */}
-      <section className="relative z-20 -mt-12 sm:-mt-16 lg:-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
+      <section className="relative z-20 -mt-10 sm:-mt-16 lg:-mt-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6 text-center">
           
           {/* Rome 2022 - Royal Sapphire Card */}
           <div 
-            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-blue-200/90 shadow-xl shadow-blue-950/15 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-blue-200/90 shadow-xl shadow-blue-950/15 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '100ms' }}
           >
-            <div className="h-1.5 w-12 mx-auto rounded-full bg-blue-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-blue-400" />
-            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-blue-900 group-hover:text-blue-700 transition-colors">
+            <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-blue-600 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-blue-400" />
+            <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-blue-900 group-hover:text-blue-700 transition-colors">
               Rome <AnimatedCounter end={2022} duration={1500} />
             </span>
-            <span className="text-[11px] sm:text-xs font-bold text-blue-800/90 uppercase tracking-wider mt-1.5 block">
+            <span className="text-[10px] sm:text-xs font-bold text-blue-800/90 uppercase tracking-wider mt-1 sm:mt-1.5 block">
               Érection canonique officielle
             </span>
           </div>
 
           {/* UCAC - ICY - Cardinal Crimson Card */}
           <div 
-            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-rose-200/90 shadow-xl shadow-rose-950/15 hover:border-rose-500 hover:shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-rose-200/90 shadow-xl shadow-rose-950/15 hover:border-rose-500 hover:shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '200ms' }}
           >
-            <div className="h-1.5 w-12 mx-auto rounded-full bg-rose-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-rose-400" />
-            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-rose-900 group-hover:text-rose-700 transition-colors">
+            <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-rose-600 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-rose-400" />
+            <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-rose-900 group-hover:text-rose-700 transition-colors">
               UCAC - ICY
             </span>
-            <span className="text-[11px] sm:text-xs font-bold text-rose-800/90 uppercase tracking-wider mt-1.5 block">
+            <span className="text-[10px] sm:text-xs font-bold text-rose-800/90 uppercase tracking-wider mt-1 sm:mt-1.5 block">
               Faculté de Théologie
             </span>
           </div>
 
           {/* 9 Filières - Deep Purple/Navy Card */}
           <div 
-            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-indigo-200/90 shadow-xl shadow-indigo-950/15 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-indigo-200/90 shadow-xl shadow-indigo-950/15 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '300ms' }}
           >
-            <div className="h-1.5 w-12 mx-auto rounded-full bg-indigo-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-indigo-400" />
-            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-indigo-950 group-hover:text-indigo-700 transition-colors">
+            <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-indigo-600 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-indigo-400" />
+            <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-indigo-950 group-hover:text-indigo-700 transition-colors">
               <AnimatedCounter end={9} duration={1200} /> Filières
             </span>
-            <span className="text-[11px] sm:text-xs font-bold text-indigo-800/90 uppercase tracking-wider mt-1.5 block">
-              Canoniques &amp; Professionnelles
+            <span className="text-[10px] sm:text-xs font-bold text-indigo-800/90 uppercase tracking-wider mt-1 sm:mt-1.5 block">
+              Canoniques &amp; DU
             </span>
           </div>
 
           {/* 100% Hybride - Sacred Gold/Amber Card */}
           <div 
-            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-amber-300/90 shadow-xl shadow-amber-950/15 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-amber-300/90 shadow-xl shadow-amber-950/15 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '400ms' }}
           >
-            <div className="h-1.5 w-12 mx-auto rounded-full bg-amber-500 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-amber-400" />
-            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-amber-700 group-hover:text-amber-600 transition-colors">
+            <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-amber-500 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-amber-400" />
+            <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-700 group-hover:text-amber-600 transition-colors">
               <AnimatedCounter end={100} duration={1800} suffix="%" />
             </span>
-            <span className="text-[11px] sm:text-xs font-bold text-amber-900 uppercase tracking-wider mt-1.5 block">
+            <span className="text-[10px] sm:text-xs font-bold text-amber-900 uppercase tracking-wider mt-1 sm:mt-1.5 block">
               Présentiel &amp; En Ligne
             </span>
           </div>
@@ -198,13 +198,13 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             
             {/* Card 1: Rome (Royal Sapphire) */}
             <ScrollReveal delay={0} direction="up">
               <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/10 interactive-card group h-full flex flex-col justify-between overflow-hidden transition-all duration-300">
                 <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
-                <div className="p-7">
+                <div className="p-5 sm:p-7">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center mb-5 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300">
                     <ShieldCheck className="w-6 h-6 text-white" />
                   </div>
@@ -226,7 +226,7 @@ export default function HomePage() {
             <ScrollReveal delay={100} direction="up">
               <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 hover:border-rose-400/70 hover:shadow-2xl hover:shadow-rose-500/10 interactive-card group h-full flex flex-col justify-between overflow-hidden transition-all duration-300">
                 <div className="h-1.5 w-full bg-gradient-to-r from-rose-500 to-red-500" />
-                <div className="p-7">
+                <div className="p-5 sm:p-7">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center mb-5 shadow-lg shadow-rose-500/30 group-hover:scale-110 transition-transform duration-300">
                     <Award className="w-6 h-6 text-white" />
                   </div>
@@ -237,7 +237,7 @@ export default function HomePage() {
                     Baccalauréat canonique (Licence), Master, et Diplômes Universitaires (DU) reconnus dans l&apos;Église universelle.
                   </p>
                 </div>
-                <div className="px-7 pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-rose-300">
+                <div className="px-5 sm:px-7 pb-5 sm:pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-rose-300">
                   <CheckCircle2 className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                   <span>Validité ecclésiale &amp; d&apos;État</span>
                 </div>
@@ -248,7 +248,7 @@ export default function HomePage() {
             <ScrollReveal delay={200} direction="up">
               <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 hover:border-amber-400/70 hover:shadow-2xl hover:shadow-amber-500/10 interactive-card group h-full flex flex-col justify-between overflow-hidden transition-all duration-300">
                 <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 to-yellow-400" />
-                <div className="p-7">
+                <div className="p-5 sm:p-7">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 text-slate-950 flex items-center justify-center mb-5 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform duration-300">
                     <Users className="w-6 h-6 text-slate-950" />
                   </div>
@@ -259,7 +259,7 @@ export default function HomePage() {
                     Laïcs engagés, religieux, religieuses, séminaristes et prêtres — étudiants ordinaires et auditeurs libres.
                   </p>
                 </div>
-                <div className="px-7 pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-amber-300">
+                <div className="px-5 sm:px-7 pb-5 sm:pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-amber-300">
                   <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>Laïcs &amp; Consacrés</span>
                 </div>
@@ -270,7 +270,7 @@ export default function HomePage() {
             <ScrollReveal delay={300} direction="up">
               <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 hover:border-emerald-400/70 hover:shadow-2xl hover:shadow-emerald-500/10 interactive-card group h-full flex flex-col justify-between overflow-hidden transition-all duration-300">
                 <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 to-teal-400" />
-                <div className="p-7">
+                <div className="p-5 sm:p-7">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center mb-5 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform duration-300">
                     <Globe2 className="w-6 h-6 text-white" />
                   </div>
@@ -281,7 +281,7 @@ export default function HomePage() {
                     Cours en présentiel sur le campus de Mvolyé à Yaoundé et en direct synchrone via Zoom et Google Meet.
                   </p>
                 </div>
-                <div className="px-7 pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-emerald-300">
+                <div className="px-5 sm:px-7 pb-5 sm:pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-emerald-300">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>Mvolyé + Cours en Ligne</span>
                 </div>
@@ -359,13 +359,13 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-amber-100 flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-amber-800 bg-amber-100/70 px-3 py-1 rounded-lg border border-amber-300/60">
+                  <div className="pt-4 border-t border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span className="text-[11px] sm:text-xs font-extrabold text-amber-900 bg-amber-100/80 px-3 py-1.5 rounded-lg border border-amber-300/70 leading-relaxed self-start sm:self-auto">
                       Scolarité : {formation.tuition.annualTuition} / an
                     </span>
                     <Link
                       href={`/formations#${formation.id}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-900 hover:text-amber-700 transition-all duration-200 hover:translate-x-1"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-900 hover:text-amber-700 transition-all duration-200 hover:translate-x-1 shrink-0 self-start sm:self-auto"
                     >
                       <span>Consulter le programme</span>
                       <ArrowRight className="w-3.5 h-3.5 text-amber-600" />

@@ -16,12 +16,21 @@ export const Footer: React.FC = () => {
           {/* Col 1 : Identity */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/20">
-                <GraduationCap className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-white p-1.5 shadow-md shadow-amber-500/20 flex items-center justify-center shrink-0 border border-amber-400/30">
+                <img 
+                  src="/logo-seal.png" 
+                  alt="Logo Officiel ISSR Sainte Joséphine Bakhita" 
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <span className="font-serif font-bold text-white text-lg leading-tight tracking-tight">
-                ISSR SAINTE BAKHITA
-              </span>
+              <div className="flex flex-col">
+                <span className="font-serif font-bold text-white text-lg leading-tight tracking-tight">
+                  ISSR SAINTE BAKHITA
+                </span>
+                <span className="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">
+                  Institut Supérieur des Sciences Religieuses
+                </span>
+              </div>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed font-light">
               {INSTITUTION_INFO.name}. Établissement d&apos;enseignement supérieur catholique dédié à la formation intellectuelle, spirituelle et pastorale.
