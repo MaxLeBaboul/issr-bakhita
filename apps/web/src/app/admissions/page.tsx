@@ -106,10 +106,10 @@ const REQUIRED_DOCUMENTS: DocumentConfig[] = [
     title: "Photo d'identité d'étudiant récente",
     subtitle: "Pour la carte officielle d'étudiant ISSR 2026-2027",
     description: "Photo d'identité nette en couleur sur fond clair uni, tête nue et visage dégagé.",
-    mandatory: true,
+    mandatory: false,
     formats: ".jpg, .jpeg, .png",
     accept: ".jpg,.jpeg,.png,image/*",
-    typeLabel: "Image JPG ou PNG"
+    typeLabel: "Image JPG ou PNG (Optionnel)"
   }
 ];
 
@@ -216,11 +216,7 @@ function AdmissionsContent() {
     const missing: string[] = [];
     if (!uploadedDocs['idDocument']) missing.push("Acte de Naissance ou CNI / Passeport");
     if (!uploadedDocs['diploma']) missing.push("Copie certifiée du plus haut diplôme");
-    if (!uploadedDocs['motivation']) missing.push("Lettre de motivation");
-    if (!uploadedDocs['photo']) missing.push("Photo d'identité d'étudiant");
-    if (formData.status !== 'LAIC' && !uploadedDocs['recommendation']) {
-      missing.push("Lettre de recommandation ecclésiale (obligatoire pour clercs et consacrés)");
-    }
+    if (!uploadedDocs['motivation']) missing.push("Lettre de motivation & Projet d'études");
 
     if (missing.length > 0) {
       setValidationError(`Veuillez téléverser les documents obligatoires suivants avant de poursuivre : ${missing.join(', ')}.`);
@@ -724,8 +720,8 @@ function AdmissionsContent() {
 
                         {/* Upload Progress Pill */}
                         {(() => {
-                          const mandatoryCount = REQUIRED_DOCUMENTS.filter(d => d.mandatory || (d.key === 'recommendation' && formData.status !== 'LAIC')).length;
-                          const uploadedMandatoryCount = REQUIRED_DOCUMENTS.filter(d => (d.mandatory || (d.key === 'recommendation' && formData.status !== 'LAIC')) && !!uploadedDocs[d.key]).length;
+                          const mandatoryCount = REQUIRED_DOCUMENTS.filter(d => d.mandatory).length;
+                          const uploadedMandatoryCount = REQUIRED_DOCUMENTS.filter(d => d.mandatory && !!uploadedDocs[d.key]).length;
                           const isComplete = uploadedMandatoryCount >= mandatoryCount;
 
                           return (
@@ -756,7 +752,7 @@ function AdmissionsContent() {
                         {REQUIRED_DOCUMENTS.map((doc) => {
                           const isUploaded = !!uploadedDocs[doc.key];
                           const uploadedFile = uploadedDocs[doc.key];
-                          const isMandatory = doc.mandatory || (doc.key === 'recommendation' && formData.status !== 'LAIC');
+                          const isMandatory = doc.mandatory;
                           const isDragOver = dragOverKey === doc.key;
 
                           return (
@@ -804,9 +800,9 @@ function AdmissionsContent() {
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${
                                   isMandatory 
                                     ? 'bg-rose-100 text-rose-700' 
-                                    : 'bg-blue-50 text-blue-700'
+                                    : 'bg-slate-100 text-slate-600'
                                 }`}>
-                                  {isMandatory ? 'Obligatoire' : 'Recommandé'}
+                                  {isMandatory ? 'Obligatoire' : 'Optionnel'}
                                 </span>
                               </div>
 
