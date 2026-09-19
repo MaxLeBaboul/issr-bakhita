@@ -1,0 +1,83 @@
+# ==============================================
+# Security: Environment Variables & Secrets
+# ==============================================
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.env.local
+*.key
+*.pem
+*.crt
+*.cert
+*.p12
+*.pfx
+secrets/
+credentials.json
+*.keystore
+
+# ==============================================
+# Dependencies
+# ==============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Python virtualenvs & dependencies
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+# Python packaging build folders
+develop-eggs/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+env/
+
+# ==============================================
+# Build Artifacts
+# ==============================================
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ==============================================
+# Local logs, databases & temp files
+# ==============================================
+*.log
+logs/
+*.sqlite
+*.sqlite3
+*.db
+.tools/
+
+# ==============================================
+# OS & Editor
+# ==============================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo

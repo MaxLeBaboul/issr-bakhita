@@ -1,0 +1,26 @@
+services:
+  # 1. Microservice CMS (FastAPI Python)
+  - type: web
+    name: issr-bakhita-cms
+    runtime: python
+    rootDir: apps/services-python/cms-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # 2. Microservice Scolarité & Admissions (NestJS Node.js)
+  - type: web
+    name: issr-bakhita-school
+    runtime: node
+    rootDir: apps/services-nest/school-service
+    buildCommand: npm install && npm run build
+    startCommand: node dist/main.js
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
