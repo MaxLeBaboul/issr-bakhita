@@ -92,63 +92,138 @@ ARTICLES_DB: List[dict] = [
 
 FORMATIONS_DB: List[dict] = [
     {
-        "id": "baccalaureat-canonique",
-        "slug": "baccalaureat-canonique-sciences-religieuses",
-        "title": "Baccalauréat Canonique en Sciences Religieuses",
-        "subtitle": "Formation théologique et pastorale universitaire de 1er cycle (Équivalent Licence LMD)",
+        "id": "sciences-religieuses-licence",
+        "slug": "sciences-religieuses-baccalaureat-canonique",
+        "title": "Sciences Religieuses (Baccalauréat Canonique / Licence)",
+        "subtitle": "Formation théologique et philosophique fondamentale reconnue par Rome et l'UCAC",
         "category": "canonique",
         "duration": "3 ans (6 semestres)",
         "diploma": "Baccalauréat Canonique (Saint-Siège / UCAC)",
-        "modality": "Présentiel (Yaoundé – Mvolyé) & Distanciel hybride",
+        "modality": "Présentiel (campus de Mvolyé) et En direct en ligne",
         "tuition": {
-            "registrationFee": "50 000 FCFA",
-            "annualTuition": "450 000 FCFA",
-            "installments": "Payable en 3 tranches (Octobre, Janvier, Mars)"
+            "registrationFee": "10 000 FCFA",
+            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
+            "installments": "Payable en 3 tranches"
         }
     },
     {
-        "id": "master-sciences-religieuses",
-        "slug": "master-sciences-religieuses",
-        "title": "Master en Sciences Religieuses",
-        "subtitle": "Spécialisation approfondie : Pastorale & Évangélisation des cultures",
+        "id": "sciences-religieuses-master-foi-culture",
+        "slug": "master-sciences-religieuses-foi-culture-dialogue",
+        "title": "Master Sciences Religieuses : Foi, Culture & Dialogue Interreligieux",
+        "subtitle": "Cycle supérieur de recherche, inculturation et dialogue œcuménique (UCAC)",
         "category": "canonique",
         "duration": "2 ans (4 semestres)",
-        "diploma": "Licence Canonique / Master d'État (UCAC)",
-        "modality": "Présentiel & E-learning synchrone",
+        "diploma": "Master universitaire en Sciences Religieuses (UCAC)",
+        "modality": "Présentiel (cours du soir 17h00 - 20h30)",
         "tuition": {
-            "registrationFee": "50 000 FCFA",
-            "annualTuition": "550 000 FCFA",
+            "registrationFee": "15 000 FCFA",
+            "annualTuition": "450 000 FCFA (Laïcs) / 850 000 FCFA (Religieux)",
+            "installments": "Payable en tranches"
+        }
+    },
+    {
+        "id": "sciences-religieuses-master-pastorale-gouvernance",
+        "slug": "master-theologie-pastorale-gouvernance-ecclesiale",
+        "title": "Master Sciences Religieuses : Pastorale & Gouvernance Ecclésiale",
+        "subtitle": "Management institutionnel, audit pastoral et direction d'œuvres d'Église (UCAC)",
+        "category": "canonique",
+        "duration": "2 ans (4 semestres)",
+        "diploma": "Master universitaire en Sciences Religieuses (UCAC)",
+        "modality": "Présentiel et Enseignement synchrone à distance",
+        "tuition": {
+            "registrationFee": "15 000 FCFA",
+            "annualTuition": "450 000 FCFA (Laïcs) / 850 000 FCFA (Religieux)",
             "installments": "Payable en 3 tranches"
+        }
+    },
+    {
+        "id": "licence-ingenierie-pastorale",
+        "slug": "licence-sciences-religieuses-option-ingenierie-pastorale",
+        "title": "Licence Sciences Religieuses — Option Ingénierie Pastorale",
+        "subtitle": "Théologie pastorale approfondie, conduite de projets et évangélisation numérique",
+        "category": "professionnelle",
+        "duration": "3 ans",
+        "diploma": "Licence en Sciences Religieuses (UCAC / ISSR)",
+        "modality": "En ligne & Présentiel (Jour dès 8h ou Soir dès 17h)",
+        "tuition": {
+            "registrationFee": "10 000 FCFA",
+            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
+            "installments": "Payable par tranches"
+        }
+    },
+    {
+        "id": "licence-pedagogie-religieuse",
+        "slug": "licence-sciences-religieuses-option-pedagogie-religieuse",
+        "title": "Licence Sciences Religieuses — Option Pédagogie Religieuse",
+        "subtitle": "Devenez un acteur clé de l'éducation religieuse et de la formation des consciences",
+        "category": "professionnelle",
+        "duration": "3 ans",
+        "diploma": "Licence en Sciences Religieuses (UCAC / ISSR)",
+        "modality": "En ligne & Présentiel (Jour dès 8h ou Soir dès 17h)",
+        "tuition": {
+            "registrationFee": "10 000 FCFA",
+            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
+            "installments": "Payable par tranches"
         }
     },
     {
         "id": "du-ingenierie-pastorale",
         "slug": "du-ingenierie-pastorale",
-        "title": "DU en Ingénierie Pastorale & Projets d'Église",
-        "subtitle": "Gestion de projets caritatifs, aumôneries et management d'œuvres d'Église",
+        "title": "Diplôme Universitaire (DU) en Ingénierie Pastorale",
+        "subtitle": "Conception, gestion et accompagnement de projets pastoraux et caritatifs",
         "category": "professionnelle",
         "duration": "2 ans",
-        "diploma": "Diplôme Universitaire (DU - ISSR / UCAC)",
-        "modality": "Cours du soir & Samedis",
+        "diploma": "Diplôme Universitaire (DU - UCAC / ISSR)",
+        "modality": "Présentiel à Yaoundé (Mvolyé) ou En ligne",
         "tuition": {
-            "registrationFee": "35 000 FCFA",
-            "annualTuition": "350 000 FCFA",
-            "installments": "Payable en 3 tranches"
+            "registrationFee": "25 000 FCFA",
+            "annualTuition": "280 000 FCFA",
+            "installments": "Échelonné en 3 paiements"
         }
     },
     {
         "id": "du-pedagogie-religieuse",
         "slug": "du-pedagogie-religieuse",
-        "title": "DU en Pédagogie Religieuse & Catéchétique",
+        "title": "Diplôme Universitaire (DU) en Pédagogie Religieuse",
         "subtitle": "Formation pour enseignants du secondaire et coordinateurs de catéchèse",
         "category": "professionnelle",
         "duration": "2 ans",
-        "diploma": "Diplôme Universitaire (DU - ISSR / UCAC)",
-        "modality": "Présentiel & Hybride",
+        "diploma": "Diplôme Universitaire (DU - UCAC / ISSR)",
+        "modality": "Présentiel et En ligne",
         "tuition": {
-            "registrationFee": "35 000 FCFA",
-            "annualTuition": "350 000 FCFA",
-            "installments": "Payable en 3 tranches"
+            "registrationFee": "25 000 FCFA",
+            "annualTuition": "280 000 FCFA",
+            "installments": "Payable par tranches"
+        }
+    },
+    {
+        "id": "certificat-leadership-gestion-oeuvres",
+        "slug": "certificat-universitaire-leadership-gestion-oeuvres",
+        "title": "Certificat Universitaire en Leadership & Gestion des Œuvres",
+        "subtitle": "Gouvernance évangélique, comptabilité, gestion financière et droit ecclésial",
+        "category": "certificat",
+        "duration": "6 mois (oct-fév ou fév-juin) + stage 2 mois",
+        "diploma": "Certificat Universitaire (UCAC / ISSR)",
+        "modality": "100% En Ligne (Cours du soir à 17h00)",
+        "tuition": {
+            "registrationFee": "Inclus",
+            "annualTuition": "415 000 FCFA",
+            "installments": "Payable en 2 versements"
+        }
+    },
+    {
+        "id": "certificat-sciences-religieuses",
+        "slug": "certificat-universitaire-en-sciences-religieuses",
+        "title": "Certificat Universitaire en Sciences Religieuses",
+        "subtitle": "Formation théologique, doctrinale, spirituelle et humaine fondamentale",
+        "category": "certificat",
+        "duration": "1 an",
+        "diploma": "Certificat Universitaire (UCAC / ISSR)",
+        "modality": "Cours du soir ou 100% En Ligne",
+        "tuition": {
+            "registrationFee": "10 000 FCFA",
+            "annualTuition": "150 000 FCFA",
+            "installments": "Payable en tranches"
         }
     }
 ]

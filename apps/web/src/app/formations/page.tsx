@@ -101,7 +101,7 @@ export default function FormationsPage() {
                   : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
               }`}
             >
-              Sciences Religieuses (Rome)
+              Grades Canoniques &amp; Masters ({FORMATIONS.filter(f => f.category === 'canonique').length})
             </button>
             <button
               onClick={() => setActiveCategory('professionnelle')}
@@ -111,7 +111,17 @@ export default function FormationsPage() {
                   : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
               }`}
             >
-              Filières Professionnelles (DU)
+              Licences &amp; DU Professionnels ({FORMATIONS.filter(f => f.category === 'professionnelle').length})
+            </button>
+            <button
+              onClick={() => setActiveCategory('certificat')}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 ${
+                activeCategory === 'certificat'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md scale-[1.02] ring-2 ring-amber-500/20'
+                  : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
+              }`}
+            >
+              Certificats &amp; Formation Continue ({FORMATIONS.filter(f => f.category === 'certificat').length})
             </button>
           </div>
 
