@@ -53,6 +53,19 @@ export class UsersService {
   private users: UserAccount[] = [
     {
       id: 'usr-admin-01',
+      email: 'maxwellbaboula@gmail.com',
+      role: 'admin',
+      roleTitle: 'Super-Admin (DSI)',
+      firstName: 'Maxwell',
+      lastName: 'BABOULA',
+      department: 'Direction des Systèmes d’Information',
+      isActive: true,
+      passwordHash: 'bbb4b4be35030d5d2acbe4f83b63e084:e1aca59a50c170b14bde2d66e4a494d550a77307e5f55ec7dbcb6381c337cd81aa51876862a0550e2f7b8a64012d7351f50ed9e5755847f1ff03df84cad4081c', // Admin@Bakhita2026!
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-admin-02',
       email: 'dsi@issr-bakhita.cm',
       role: 'admin',
       roleTitle: 'Super-Admin (DSI)',
@@ -60,6 +73,7 @@ export class UsersService {
       lastName: 'ABANDA',
       department: 'Direction des Systèmes d’Information',
       isActive: true,
+      passwordHash: 'bbb4b4be35030d5d2acbe4f83b63e084:e1aca59a50c170b14bde2d66e4a494d550a77307e5f55ec7dbcb6381c337cd81aa51876862a0550e2f7b8a64012d7351f50ed9e5755847f1ff03df84cad4081c', // Admin@Bakhita2026!
       createdAt: '2026-09-01T08:00:00Z',
       createdBy: 'SYSTEM_BOOTSTRAP',
     },

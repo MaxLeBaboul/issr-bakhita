@@ -11,9 +11,9 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   admin: {
     id: 'usr-admin',
     role: 'admin',
-    name: 'M. Gaël Marcel ABANDA',
+    name: 'Maxwell BABOULA',
     title: 'Administrateur Système & DSI',
-    email: 'dsi@issr-bakhita.cm',
+    email: 'maxwellbaboula@gmail.com',
     department: 'Direction des Systèmes d’Information',
     badgeColor: 'bg-purple-100 text-purple-800 border-purple-300',
     badgeLabel: 'Super-Admin'
