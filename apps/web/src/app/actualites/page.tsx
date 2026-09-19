@@ -88,9 +88,20 @@ export default function ActualitesPage() {
   return (
     <div className="bg-[#FAF8F5] min-h-screen py-10">
       
-      {/* Header Banner with Ambient Lighting */}
+      {/* Header Banner with Authentic Academic Ceremony Background */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-        <div className="relative bg-gradient-to-br from-[#07192A] via-[#0B2545] to-[#13416F] text-white rounded-3xl p-8 md:p-12 shadow-2xl overflow-hidden border-t-4 border-amber-500">
+        <div className="relative overflow-hidden bg-issr-primary text-white rounded-3xl p-8 md:p-12 shadow-2xl border-t-4 border-amber-500">
+          
+          {/* Authentic Ceremony Background Image */}
+          <div 
+            className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100"
+            style={{ backgroundImage: `url('/images/mg-1964.jpg')` }}
+          />
+          {/* Deep Institutional Dark Gradient Overlay for Maximum Readability */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-950/95 via-[#0B2545]/90 to-slate-950/85" />
+          <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50" />
+
+          {/* Ambient Glows */}
           <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-400/15 blur-3xl pointer-events-none animate-float-slow" />
 

@@ -28,59 +28,71 @@ export default function HomePage() {
       {/* 1. Hero Section (No slider - Fixed high-impact banner as requested by Director) */}
       <Hero />
 
-      {/* 2. Key Metrics & Institutional Affiliation Strip (Vibrant Color Identities) */}
-      <section className="bg-white border-b border-amber-100/80 py-8 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal direction="up" distance="16px">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
-              
-              {/* Rome 2022 - Royal Sapphire Card */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-50/90 via-blue-50/40 to-indigo-50/60 border border-blue-200/90 hover:border-blue-400 hover:shadow-lg transition-all duration-300 group">
-                <span className="block font-serif text-2xl lg:text-3xl font-extrabold text-blue-900 group-hover:scale-105 transition-transform">
-                  Rome <AnimatedCounter end={2022} duration={1500} />
-                </span>
-                <span className="text-xs font-bold text-blue-800/90 uppercase tracking-wide mt-1 block">
-                  Érection canonique officielle
-                </span>
-              </div>
+      {/* 2. Key Metrics & Institutional Affiliation Strip (Superposed Overlapping Design with Upward Animation) */}
+      <section className="relative z-20 -mt-12 sm:-mt-16 lg:-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
+          
+          {/* Rome 2022 - Royal Sapphire Card */}
+          <div 
+            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-blue-200/90 shadow-xl shadow-blue-950/15 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            style={{ animationDelay: '100ms' }}
+          >
+            <div className="h-1.5 w-12 mx-auto rounded-full bg-blue-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-blue-400" />
+            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-blue-900 group-hover:text-blue-700 transition-colors">
+              Rome <AnimatedCounter end={2022} duration={1500} />
+            </span>
+            <span className="text-[11px] sm:text-xs font-bold text-blue-800/90 uppercase tracking-wider mt-1.5 block">
+              Érection canonique officielle
+            </span>
+          </div>
 
-              {/* UCAC - ICY - Cardinal Crimson Card */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-rose-50/90 via-rose-50/40 to-red-50/60 border border-rose-200/90 hover:border-rose-400 hover:shadow-lg transition-all duration-300 group">
-                <span className="block font-serif text-2xl lg:text-3xl font-extrabold text-rose-900 group-hover:scale-105 transition-transform">
-                  UCAC - ICY
-                </span>
-                <span className="text-xs font-bold text-rose-800/90 uppercase tracking-wide mt-1 block">
-                  Faculté de Théologie
-                </span>
-              </div>
+          {/* UCAC - ICY - Cardinal Crimson Card */}
+          <div 
+            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-rose-200/90 shadow-xl shadow-rose-950/15 hover:border-rose-500 hover:shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            style={{ animationDelay: '200ms' }}
+          >
+            <div className="h-1.5 w-12 mx-auto rounded-full bg-rose-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-rose-400" />
+            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-rose-900 group-hover:text-rose-700 transition-colors">
+              UCAC - ICY
+            </span>
+            <span className="text-[11px] sm:text-xs font-bold text-rose-800/90 uppercase tracking-wider mt-1.5 block">
+              Faculté de Théologie
+            </span>
+          </div>
 
-              {/* 9 Filières - Deep Purple/Navy Card */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50/90 via-indigo-50/40 to-purple-50/60 border border-indigo-200/90 hover:border-indigo-400 hover:shadow-lg transition-all duration-300 group">
-                <span className="block font-serif text-2xl lg:text-3xl font-extrabold text-indigo-950 group-hover:scale-105 transition-transform">
-                  <AnimatedCounter end={9} duration={1200} /> Filières
-                </span>
-                <span className="text-xs font-bold text-indigo-800/90 uppercase tracking-wide mt-1 block">
-                  Canoniques &amp; Professionnelles
-                </span>
-              </div>
+          {/* 9 Filières - Deep Purple/Navy Card */}
+          <div 
+            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-indigo-200/90 shadow-xl shadow-indigo-950/15 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
+            <div className="h-1.5 w-12 mx-auto rounded-full bg-indigo-600 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-indigo-400" />
+            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-indigo-950 group-hover:text-indigo-700 transition-colors">
+              <AnimatedCounter end={9} duration={1200} /> Filières
+            </span>
+            <span className="text-[11px] sm:text-xs font-bold text-indigo-800/90 uppercase tracking-wider mt-1.5 block">
+              Canoniques &amp; Professionnelles
+            </span>
+          </div>
 
-              {/* 100% Hybride - Sacred Gold/Amber Card */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-50 via-yellow-50/60 to-amber-100/50 border border-amber-300/90 hover:border-amber-500 hover:shadow-lg transition-all duration-300 group">
-                <span className="block font-serif text-2xl lg:text-3xl font-extrabold text-amber-700 group-hover:scale-105 transition-transform">
-                  <AnimatedCounter end={100} duration={1800} suffix="%" />
-                </span>
-                <span className="text-xs font-bold text-amber-900 uppercase tracking-wide mt-1 block">
-                  Présentiel &amp; En Ligne
-                </span>
-              </div>
+          {/* 100% Hybride - Sacred Gold/Amber Card */}
+          <div 
+            className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-amber-300/90 shadow-xl shadow-amber-950/15 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up"
+            style={{ animationDelay: '400ms' }}
+          >
+            <div className="h-1.5 w-12 mx-auto rounded-full bg-amber-500 mb-3 group-hover:w-20 transition-all duration-300 shadow-sm shadow-amber-400" />
+            <span className="block font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-amber-700 group-hover:text-amber-600 transition-colors">
+              <AnimatedCounter end={100} duration={1800} suffix="%" />
+            </span>
+            <span className="text-[11px] sm:text-xs font-bold text-amber-900 uppercase tracking-wider mt-1.5 block">
+              Présentiel &amp; En Ligne
+            </span>
+          </div>
 
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
       {/* 3. Mot du Directeur - Warm Sanctuary Parchment Card */}
-      <section className="py-16 lg:py-20 bg-[#FAF8F5] relative overflow-hidden">
+      <section className="pt-16 sm:pt-20 pb-16 lg:pb-20 bg-[#FAF8F5] relative overflow-hidden">
         {/* Ambient warm glows */}
         <div className="absolute top-0 right-1/4 w-80 h-80 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-80 h-80 rounded-full bg-rose-400/5 blur-3xl pointer-events-none" />

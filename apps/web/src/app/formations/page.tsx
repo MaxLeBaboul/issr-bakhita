@@ -57,8 +57,19 @@ export default function FormationsPage() {
   return (
     <div className="bg-[#FAF8F5] min-h-screen pb-24">
       
-      {/* Header Banner with Atmospheric Background */}
-      <section className="relative bg-gradient-to-br from-[#07192A] via-[#0B2545] to-[#13416F] text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b-4 border-amber-500 overflow-hidden">
+      {/* Header Banner with Authentic Academic Amphitheater Background */}
+      <section className="relative overflow-hidden bg-issr-primary text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b-4 border-amber-500">
+        
+        {/* Authentic Amphitheater Background Image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100"
+          style={{ backgroundImage: `url('/images/mg-2217.jpg')` }}
+        />
+        {/* Deep Institutional Dark Gradient Overlay for Maximum Readability */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-950/95 via-[#0B2545]/90 to-slate-950/85" />
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50" />
+
+        {/* Ambient Glows */}
         <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-400/15 blur-3xl pointer-events-none animate-float-slow" />
 

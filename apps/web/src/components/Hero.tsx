@@ -17,7 +17,7 @@ import { INSTITUTION_INFO } from '../data/mockData';
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-issr-primary text-white py-16 lg:py-24 border-b-4 border-issr-gold">
+    <section className="relative overflow-hidden bg-issr-primary text-white pt-16 pb-28 sm:pb-36 lg:pt-24 lg:pb-44 border-b-4 border-issr-gold">
       
       {/* 1. Real Authentic Image from the Main Site in the Background */}
       <div 

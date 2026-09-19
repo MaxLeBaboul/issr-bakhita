@@ -143,25 +143,43 @@ function AdmissionsContent() {
   const stepLabels = ['Formation', 'Statut', 'Identité', 'Parcours', 'Confirmation'];
 
   return (
-    <div className="bg-[#FAF8F5] min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="bg-[#FAF8F5] min-h-screen pb-20">
+      
+      {/* Header Banner with Authentic Student Study Background */}
+      <section className="relative overflow-hidden bg-issr-primary text-white pt-14 pb-20 sm:pb-24 px-4 sm:px-6 lg:px-8 border-b-4 border-amber-500">
         
-        {/* Header */}
-        <div className="text-center mb-8 space-y-2 animate-fade-in-down">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 text-xs font-bold text-amber-900 uppercase tracking-wider border border-amber-300 shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-amber-600" />
-            Portail Officiel d&apos;Admission 2026-2027
-          </span>
-          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900">
+        {/* Authentic Background Image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100"
+          style={{ backgroundImage: `url('/images/img-1050.jpg')` }}
+        />
+        {/* Deep Institutional Dark Gradient Overlay for Maximum Readability */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-950/95 via-[#0B2545]/90 to-slate-950/85" />
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50" />
+
+        {/* Ambient Glows */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-400/15 blur-3xl pointer-events-none animate-float-slow" />
+
+        <div className="max-w-3xl mx-auto text-center relative z-10 space-y-3 animate-fade-in-down">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold backdrop-blur-sm border border-amber-400/40 shadow-sm">
+            <ShieldCheck className="w-4 h-4 text-amber-400" />
+            <span>Portail Officiel d&apos;Admission 2026-2027</span>
+          </div>
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
             Dossier de Candidature en Ligne
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-light">
-            Institut Supérieur des Sciences Religieuses Sainte Bakhita • Affiliation UCAC-ICY (Rome 2022)
+          <p className="text-sm sm:text-base text-slate-200 max-w-xl mx-auto font-light leading-relaxed">
+            Rejoignez l&apos;Institut Supérieur des Sciences Religieuses Sainte Bakhita. Candidatures ouvertes pour les 9 filières canoniques et professionnelles.
           </p>
         </div>
+      </section>
 
+      {/* Main Container with Overlapping Wizard Card */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 relative z-20">
+        
         {/* Wizard Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-amber-100/90 shadow-xl relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-amber-100/90 shadow-2xl relative overflow-hidden">
           
           {!submitted ? (
             <div>
