@@ -55,7 +55,7 @@ export default function AdminPage() {
     author: currentUser,
     excerpt: '',
     content: '',
-    imageUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200',
+    imageUrl: '/images/img-1050.jpg',
     readTime: '3 min',
     featured: false
   });
@@ -229,7 +229,7 @@ export default function AdminPage() {
       author: currentUser,
       excerpt: '',
       content: '',
-      imageUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200',
+      imageUrl: '/images/img-1050.jpg',
       readTime: '3 min',
       featured: false
     });
@@ -1169,28 +1169,42 @@ export default function AdminPage() {
                   placeholder="https://..."
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
                 />
-                <div className="flex gap-2 mt-1.5 text-[10px] text-slate-500">
-                  <span>Presets :</span>
+                <div className="flex flex-wrap gap-2 mt-1.5 text-[10px] text-slate-500">
+                  <span className="font-semibold text-slate-700">Photos officielles ISSR :</span>
                   <button
                     type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200" })}
-                    className="text-issr-primary underline"
+                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/img-1050.jpg" })}
+                    className="text-issr-primary hover:text-amber-600 underline font-medium"
                   >
-                    Étudiants
+                    Étudiants &amp; Syllabus
                   </button>
                   <button
                     type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200" })}
-                    className="text-issr-primary underline"
-                  >
-                    Conférence
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=1200" })}
-                    className="text-issr-primary underline"
+                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/mg-2217.jpg" })}
+                    className="text-issr-primary hover:text-amber-600 underline font-medium"
                   >
                     Amphithéâtre
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/img-1139.jpg" })}
+                    className="text-issr-primary hover:text-amber-600 underline font-medium"
+                  >
+                    Vie Académique
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/mg-1964.jpg" })}
+                    className="text-issr-primary hover:text-amber-600 underline font-medium"
+                  >
+                    Cérémonie &amp; Diplômes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/hero-1608.jpg" })}
+                    className="text-issr-primary hover:text-amber-600 underline font-medium"
+                  >
+                    Campus Mvolyé
                   </button>
                 </div>
               </div>

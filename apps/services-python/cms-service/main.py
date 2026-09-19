@@ -32,7 +32,7 @@ class ArticleCreate(BaseModel):
     excerpt: str
     content: str
     author: str
-    imageUrl: Optional[str] = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200"
+    imageUrl: Optional[str] = "/images/img-1050.jpg"
     readTime: Optional[str] = "3 min"
     featured: Optional[bool] = False
 
@@ -58,7 +58,7 @@ ARTICLES_DB: List[dict] = [
         "content": "L'Institut Supérieur des Sciences Religieuses Sainte Joséphine Bakhita, érigé canoniquement par le Saint-Siège et rattaché à l'Université Catholique d'Afrique Centrale (UCAC-ICY), informe le public de l'ouverture des candidatures pour l'année académique 2026-2027. Que vous soyez laïc engagé désireux d'approfondir votre foi, religieux(se) en formation initiale ou permanente, ou pasteur en responsabilité, nos programmes d'excellence vous ouvrent leurs portes.",
         "author": "Secrétariat Général",
         "publishedAt": "15 Septembre 2026",
-        "imageUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200",
+        "imageUrl": "/images/img-1050.jpg",
         "readTime": "3 min",
         "featured": True
     },
@@ -71,7 +71,7 @@ ARTICLES_DB: List[dict] = [
         "content": "Sous la présidence du P. Dr Patrice MEKANA, sac, Directeur de l'Institut, l'ISSR Sainte Bakhita a accueilli une conférence académique majeure portant sur la place cruciale des laïcs chrétiens formés intellectuellement et spirituellement dans la société africaine actuelle. Les débats ont souligné l'urgence d'une foi adulte, capable de rendre compte de l'espérance chrétienne dans les sphères professionnelles, politiques et familiales.",
         "author": "P. Dr Patrice MEKANA, sac",
         "publishedAt": "04 Août 2026",
-        "imageUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200",
+        "imageUrl": "/images/mg-2217.jpg",
         "readTime": "5 min",
         "featured": False
     },
@@ -84,7 +84,7 @@ ARTICLES_DB: List[dict] = [
         "content": "Comment structurer une aumônerie d'hôpital ? Quels outils pour accompagner la réinsertion sociale en milieu carcéral ? Comment gérer une équipe bénévole et financer un projet paroissial ? Le DU en Ingénierie Pastorale de l'ISSR Bakhita offre 2 années de formation pratique et théorique pour professionnaliser l'action d'Église.",
         "author": "Sr. Patience ENGANEMBEN, ejnb",
         "publishedAt": "28 Juillet 2026",
-        "imageUrl": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1200",
+        "imageUrl": "/images/img-1139.jpg",
         "readTime": "4 min",
         "featured": False
     }

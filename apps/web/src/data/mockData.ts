@@ -29,7 +29,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Directeur",
     role: "Prêtre Pallottin, Docteur en Théologie",
     bio: "Responsable de la gouvernance académique et pastorale de l'Institut Supérieur des Sciences Religieuses.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2026/07/IMG_3976.jpg"
+    imageUrl: "/images/team/dir-patrice-mekana.jpg"
   },
   {
     id: "dir-2",
@@ -37,7 +37,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Préfet des Études",
     role: "Religieuse, Coordination pédagogique",
     bio: "Supervise l'organisation des cours, le suivi académique des apprenants et le corps enseignant.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2026/03/Sans-titre-2-499x499.jpg"
+    imageUrl: "/images/team/sr-patience-enganemben.jpg"
   },
   {
     id: "dir-3",
@@ -45,7 +45,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Représentant des Enseignants",
     role: "Enseignant chercheur",
     bio: "Porte-parole du corps professoral et garant de l'excellence pédagogique.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2026/03/Sans-titre-4-499x499.jpg"
+    imageUrl: "/images/team/jean-claude-mekoulou.jpg"
   },
   {
     id: "dir-4",
@@ -53,7 +53,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Économe",
     role: "Gestion financière et intendance",
     bio: "En charge de l'administration financière, des scolarités et de la gestion matérielle.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2026/03/Sans-titre-5-499x499.jpg"
+    imageUrl: "/images/team/gael-marcel-abanda.jpg"
   },
   {
     id: "dir-5",
@@ -61,7 +61,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Secrétaire Académique",
     role: "Accueil & Gestion des dossiers",
     bio: "Assistance aux admissions, gestion des inscriptions et relation avec les étudiants.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2026/03/Sans-titre-3-499x499.jpg"
+    imageUrl: "/images/team/lydie-tselle.jpg"
   },
   {
     id: "dir-6",
@@ -69,7 +69,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Secrétaire Administrative",
     role: "Secrétariat de direction",
     bio: "Gestion des correspondances officielles, archives et suivi administratif.",
-    imageUrl: "https://www.issr-bakhita.com/wp-content/uploads/2025/10/mlle-manuella-Nyambone-secretaire-mod.jpg"
+    imageUrl: "/images/team/manuella-nyambone.jpg"
   }
 ];
 
@@ -359,7 +359,7 @@ Que vous soyez laïc engagé désireux d'approfondir votre foi, religieux(se) en
 Les cours sont dispensés en mode présentiel sur notre campus de Yaoundé (Mvolyé, derrière le Collège Saint Benoît) ainsi qu'en mode distanciel synchrone (Zoom & Google Meet) pour les apprenants situés hors de Yaoundé ou de la région.`,
     author: "Secrétariat Général",
     publishedAt: "15 Septembre 2026",
-    imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200",
+    imageUrl: "/images/img-1050.jpg",
     readTime: "3 min",
     featured: true
   },
@@ -374,7 +374,7 @@ Les cours sont dispensés en mode présentiel sur notre campus de Yaoundé (Mvol
 Les débats ont souligné l'urgence d'une foi adulte, capable de rendre compte de l'espérance chrétienne dans les sphères professionnelles, politiques et familiales.`,
     author: "P. Dr Patrice MEKANA, sac",
     publishedAt: "04 Août 2026",
-    imageUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200",
+    imageUrl: "/images/mg-2217.jpg",
     readTime: "5 min",
     featured: false
   },
@@ -389,7 +389,7 @@ Les débats ont souligné l'urgence d'une foi adulte, capable de rendre compte d
 Le DU en Ingénierie Pastorale de l'ISSR Bakhita offre 2 années de formation pratique et théorique pour professionnaliser l'action d'Église. Les inscriptions sont en cours.`,
     author: "Sr. Patience ENGANEMBEN, ejnb",
     publishedAt: "28 Juillet 2026",
-    imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1200",
+    imageUrl: "/images/img-1139.jpg",
     readTime: "4 min",
     featured: false
   }

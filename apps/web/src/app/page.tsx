@@ -93,7 +93,7 @@ export default function HomePage() {
               <div className="lg:col-span-5 flex flex-col items-center text-center group">
                 <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-400 ring-4 ring-amber-400/20 group-hover:ring-amber-400/50 transition-all duration-300">
                   <img
-                    src="https://www.issr-bakhita.com/wp-content/uploads/2026/07/IMG_3976.jpg"
+                    src="/images/team/dir-patrice-mekana.jpg"
                     alt={INSTITUTION_INFO.director.name}
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   />
