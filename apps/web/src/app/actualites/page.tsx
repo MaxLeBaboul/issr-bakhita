@@ -309,7 +309,7 @@ export default function ActualitesPage() {
             </div>
 
             <Link
-              href="/admin"
+              href="/login"
               className="btn-shimmer relative z-10 whitespace-nowrap inline-flex items-center gap-2 bg-issr-gold hover:bg-issr-gold-light text-slate-950 font-bold px-6 py-3.5 rounded-xl transition shadow-md text-sm hover:scale-105 active:scale-95"
             >
               <span>Accéder au Back-office</span>

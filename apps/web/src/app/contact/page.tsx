@@ -346,13 +346,51 @@ export default function ContactPage() {
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                         Filière concernée (facultatif)
                       </label>
-                      <input
-                        type="text"
-                        value={formData.formationInterest}
-                        onChange={(e) => setFormData({ ...formData, formationInterest: e.target.value })}
-                        placeholder="Ex: Baccalauréat Canonique, DU Ingénierie Pastorale..."
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary focus:border-issr-primary outline-none transition text-sm bg-slate-50/50 focus:bg-white"
-                      />
+                      <div className="relative">
+                        <select
+                          value={formData.formationInterest}
+                          onChange={(e) => setFormData({ ...formData, formationInterest: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary focus:border-issr-primary outline-none transition text-sm bg-slate-50/50 focus:bg-white text-slate-800 cursor-pointer"
+                        >
+                          <option value="">-- Sélectionner une filière (facultatif) --</option>
+                          <optgroup label="Pôle I : Grades Canoniques & Masters (Saint-Siège & UCAC)">
+                            <option value="Baccalauréat Canonique en Sciences Religieuses (Équivalent Licence LMD)">
+                              1. Baccalauréat Canonique en Sciences Religieuses (Équivalent Licence LMD)
+                            </option>
+                            <option value="Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux">
+                              2. Master Sciences Religieuses : Foi, Culture &amp; Dialogue Interreligieux
+                            </option>
+                            <option value="Master Sciences Religieuses : Option Pastorale & Gouvernance Ecclésiale">
+                              3. Master Sciences Religieuses : Pastorale &amp; Gouvernance Ecclésiale
+                            </option>
+                          </optgroup>
+                          <optgroup label="Pôle II : Licences & Diplômes Universitaires Professionnels (UCAC / ISSR)">
+                            <option value="Licence en Sciences Religieuses : Option Ingénierie Pastorale">
+                              4. Licence en Sciences Religieuses : Option Ingénierie Pastorale
+                            </option>
+                            <option value="Licence en Sciences Religieuses : Option Pédagogie Religieuse">
+                              5. Licence en Sciences Religieuses : Option Pédagogie Religieuse
+                            </option>
+                            <option value="Diplôme Universitaire (DU) en Ingénierie Pastorale">
+                              6. Diplôme Universitaire (DU) en Ingénierie Pastorale
+                            </option>
+                            <option value="Diplôme Universitaire (DU) en Pédagogie Religieuse">
+                              7. Diplôme Universitaire (DU) en Pédagogie Religieuse
+                            </option>
+                          </optgroup>
+                          <optgroup label="Pôle III : Certificats Universitaires & Formation Continue (100% En Ligne)">
+                            <option value="Certificat Universitaire en Leadership & Gestion des Œuvres">
+                              8. Certificat Universitaire en Leadership &amp; Gestion des Œuvres
+                            </option>
+                            <option value="Certificat Universitaire en Sciences Religieuses">
+                              9. Certificat Universitaire en Sciences Religieuses
+                            </option>
+                          </optgroup>
+                          <optgroup label="Autre">
+                            <option value="Information générale / Autre filière">Information générale / Autre filière</option>
+                          </optgroup>
+                        </select>
+                      </div>
                     </div>
 
                     <div>

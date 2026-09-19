@@ -36,9 +36,9 @@ export const Navbar: React.FC = () => {
               <Mail className="w-3.5 h-3.5 text-amber-400" />
               <span className="font-medium">{INSTITUTION_INFO.email}</span>
             </a>
-            <Link href="/admin" className="text-amber-200/90 hover:text-white flex items-center gap-1 pl-2.5 border-l border-white/20 font-medium hover:underline">
+            <Link href="/login" className="text-amber-200/90 hover:text-white flex items-center gap-1.5 pl-2.5 border-l border-white/20 font-medium hover:underline">
               <UserCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Espace CMS</span>
+              <span>Se connecter</span>
             </Link>
           </div>
         </div>
@@ -154,6 +154,14 @@ export const Navbar: React.FC = () => {
             className="block py-2 text-base font-medium text-slate-800 hover:text-issr-primary border-b border-slate-50"
           >
             Contact
+          </Link>
+          <Link
+            href="/login"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-base font-medium text-amber-700 hover:text-amber-800 border-b border-slate-50 flex items-center gap-2"
+          >
+            <UserCheck className="w-4 h-4 text-amber-600" />
+            <span>Se connecter (Portail)</span>
           </Link>
           <div className="pt-2">
             <Link

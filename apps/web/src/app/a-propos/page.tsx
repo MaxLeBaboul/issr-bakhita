@@ -344,7 +344,8 @@ export default function AboutPage() {
                     <img
                       src={member.imageUrl}
                       alt={member.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      style={{ objectPosition: member.objectPosition || 'center top' }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold bg-blue-900/90 backdrop-blur-sm text-white shadow border border-blue-700">
                       {member.title}

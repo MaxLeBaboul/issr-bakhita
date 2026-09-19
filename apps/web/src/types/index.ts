@@ -32,6 +32,7 @@ export interface TeamMember {
   role: string;
   bio?: string;
   imageUrl?: string;
+  objectPosition?: string;
 }
 
 export interface Article {

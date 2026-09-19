@@ -69,7 +69,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Secrétaire Administrative",
     role: "Secrétariat de direction",
     bio: "Gestion des correspondances officielles, archives et suivi administratif.",
-    imageUrl: "/images/team/manuella-nyambone.jpg"
+    imageUrl: "/images/team/manuella-nyambone.jpg",
+    objectPosition: "center 20%"
   }
 ];
 

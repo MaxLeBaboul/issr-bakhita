@@ -26,7 +26,8 @@ import {
   ChevronRight,
   Check,
   UserCheck,
-  Download
+  Download,
+  LogOut
 } from 'lucide-react';
 import { ARTICLES, INSTITUTION_INFO } from '../../data/mockData';
 import { Article, AdmissionApplication } from '../../types';
@@ -305,6 +306,15 @@ export default function AdminPage() {
             >
               <span>Site Public</span>
               <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+
+            <Link
+              href="/login"
+              className="bg-rose-500/15 hover:bg-rose-500/25 text-rose-200 border border-rose-500/30 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
+              title="Se déconnecter"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Déconnexion</span>
             </Link>
           </div>
         </div>

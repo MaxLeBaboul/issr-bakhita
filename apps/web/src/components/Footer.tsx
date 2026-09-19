@@ -96,11 +96,6 @@ export const Footer: React.FC = () => {
                   <span className="text-amber-400/70">›</span> Nous contacter &amp; Accès campus
                 </Link>
               </li>
-              <li>
-                <Link href="/admin" className="hover:text-white transition text-slate-400 flex items-center gap-1.5">
-                  <span className="text-slate-500">›</span> Espace Administration (CMS)
-                </Link>
-              </li>
             </ul>
           </div>
 
