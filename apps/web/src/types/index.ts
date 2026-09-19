@@ -58,13 +58,14 @@ export interface UploadedDocumentItem {
   fileType: string;
   dataUrl?: string;
   uploadedAt: string;
+  status?: 'VERIFIED' | 'REJECTED' | 'PENDING';
 }
 
 export interface AdmissionApplication {
   id: string;
   trackingNumber: string;
   createdAt: string;
-  status: 'PENDING' | 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED';
+  status: 'PENDING' | 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED' | 'WAITLIST';
   personalInfo: {
     firstName: string;
     lastName: string;
@@ -85,16 +86,39 @@ export interface AdmissionApplication {
     modality: 'PRESENTIAL' | 'ONLINE' | 'HYBRID';
     academicYear: string;
   };
-  previousEducation: {
+  previousEducation?: {
     highestDegree: string;
     institution: string;
     yearObtained: string;
   };
-  documentsSubmitted: {
+  documentsSubmitted?: {
     idCardOrPassport: boolean;
     highestDiploma: boolean;
     recommendationLetter: boolean;
     motivationLetter: boolean;
   };
   uploadedDocuments?: UploadedDocumentItem[];
+  academicBackground?: {
+    highestDegree?: string;
+    degreeTitle?: string;
+    graduationYear?: string;
+    institution?: string;
+  };
+  religiousInfo?: {
+    parish?: string;
+    diocese?: string;
+    congregation?: string;
+    superiorName?: string;
+    superiorContact?: string;
+  };
+  documents?: {
+    id: string;
+    type?: string;
+    title: string;
+    fileName: string;
+    fileSize: string;
+    uploadedAt: string;
+    status: 'VERIFIED' | 'REJECTED' | 'PENDING';
+  }[];
+  notes?: string;
 }

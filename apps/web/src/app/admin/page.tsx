@@ -31,21 +31,74 @@ import {
   FileCheck,
   UploadCloud,
   X,
-  AlertCircle
+  AlertCircle,
+  Award,
+  DollarSign,
+  Lock,
+  Unlock,
+  CreditCard,
+  RefreshCw,
+  FileSpreadsheet,
+  Key,
+  AlertTriangle,
+  HelpCircle,
+  FileDown,
+  Printer
 } from 'lucide-react';
 import { ARTICLES, INSTITUTION_INFO } from '../../data/mockData';
 import { Article, AdmissionApplication, UploadedDocumentItem } from '../../types';
+import { 
+  UserRole, 
+  UserProfile, 
+  StudentGradeItem, 
+  FinancialTuitionRecord, 
+  CourseResourceItem, 
+  AuditLogEntry 
+} from '../../types/rbac';
+import { 
+  PROFILES_CONFIG, 
+  ROLE_PERMISSIONS, 
+  SAMPLE_GRADES, 
+  SAMPLE_FINANCES, 
+  SAMPLE_COURSES, 
+  SAMPLE_AUDIT_LOGS 
+} from '../../data/rbacConfig';
 
-type AdminTab = 'dashboard' | 'admissions' | 'articles' | 'messages' | 'pedagogy';
+type AdminTab = 
+  | 'dashboard' 
+  | 'admissions' 
+  | 'pedagogy' 
+  | 'grades' 
+  | 'finance' 
+  | 'courses' 
+  | 'articles' 
+  | 'messages' 
+  | 'security';
 
 export default function AdminPage() {
+  // Active Role state (defaults to Directeur)
+  const [activeRole, setActiveRole] = useState<UserRole>('directeur');
+  const currentProfile: UserProfile = PROFILES_CONFIG[activeRole];
+  const permissions = ROLE_PERMISSIONS[activeRole];
+
+  // Tab navigation state
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
-  const [currentUser, setCurrentUser] = useState<string>('P. Dr Patrice MEKANA (Directeur)');
+
+  // Ensure activeTab is allowed when switching role
+  useEffect(() => {
+    if (!permissions.allowedTabs.includes(activeTab)) {
+      setActiveTab((permissions.allowedTabs[0] as AdminTab) || 'dashboard');
+    }
+  }, [activeRole, permissions.allowedTabs, activeTab]);
 
   // Data states
   const [admissions, setAdmissions] = useState<AdmissionApplication[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [grades, setGrades] = useState<StudentGradeItem[]>(SAMPLE_GRADES);
+  const [finances, setFinances] = useState<FinancialTuitionRecord[]>(SAMPLE_FINANCES);
+  const [courses, setCourses] = useState<CourseResourceItem[]>(SAMPLE_COURSES);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(SAMPLE_AUDIT_LOGS);
 
   // Filter & Search states
   const [admissionFilter, setAdmissionFilter] = useState<string>('ALL');
@@ -53,12 +106,16 @@ export default function AdminPage() {
   const [selectedAdmission, setSelectedAdmission] = useState<AdmissionApplication | null>(null);
   const [previewDocument, setPreviewDocument] = useState<UploadedDocumentItem | null>(null);
 
+  // Grade edit states (for teachers)
+  const [editingGradeId, setEditingGradeId] = useState<string | null>(null);
+  const [editCC, setEditCC] = useState<number>(0);
+  const [editExam, setEditExam] = useState<number>(0);
+
   // Article creation form state
   const [showArticleModal, setShowArticleModal] = useState<boolean>(false);
   const [newArticle, setNewArticle] = useState({
     title: '',
     category: 'Admissions',
-    author: currentUser,
     excerpt: '',
     content: '',
     imageUrl: '/images/img-1050.jpg',
@@ -66,15 +123,36 @@ export default function AdminPage() {
     featured: false
   });
 
-  // Load initial data
+  // Action notification toast
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'warning' } | null>(null);
+
+  const showToast = (text: string, type: 'success' | 'info' | 'warning' = 'success') => {
+    setToastMessage({ text, type });
+    setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  // Add an audit log entry
+  const logAction = (action: string, target: string, details: string, severity: 'INFO' | 'WARNING' | 'CRITICAL' = 'INFO') => {
+    const newEntry: AuditLogEntry = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      actorName: currentProfile.name,
+      actorRole: activeRole,
+      action,
+      target,
+      details,
+      severity
+    };
+    setAuditLogs(prev => [newEntry, ...prev]);
+  };
+
+  // Load initial admissions & messages
   useEffect(() => {
-    // 1. Load admissions
     try {
       const storedAdmissions = JSON.parse(localStorage.getItem('issr_admissions') || '[]');
       if (Array.isArray(storedAdmissions) && storedAdmissions.length > 0) {
         setAdmissions(storedAdmissions);
       } else {
-        // Seed some sample realistic admissions if empty
         const sampleAdmissions: AdmissionApplication[] = [
           {
             id: "adm-101",
@@ -100,1402 +178,1687 @@ export default function AdminPage() {
               modality: "PRESENTIAL",
               academicYear: "2026-2027"
             },
-            previousEducation: {
-              highestDegree: "Baccalauréat A4",
-              institution: "Lycée Général Leclerc",
-              yearObtained: "2013"
+            academicBackground: {
+              highestDegree: "BACCALAUREAT",
+              degreeTitle: "Baccalauréat A4 Philosophie-Lettres",
+              graduationYear: "2023",
+              institution: "Collège François-Xavier Vogt"
             },
-            documentsSubmitted: {
-              idCardOrPassport: true,
-              highestDiploma: true,
-              recommendationLetter: true,
-              motivationLetter: true
+            religiousInfo: {
+              parish: "Paroisse Saint-Pierre de Tsinga, Yaoundé",
+              diocese: "Archidiocèse de Yaoundé"
             },
-            uploadedDocuments: [
+            documents: [
               {
-                id: "doc-101-1",
-                category: "idDocument",
-                title: "Acte de Naissance ou CNI / Passeport",
-                fileName: "CNI_Jean_Paul_Ndongo.pdf",
-                fileSize: "1.45 Mo",
-                fileType: "application/pdf",
-                uploadedAt: "10:35"
+                id: "doc-1",
+                type: "BIRTH_CERTIFICATE",
+                title: "Acte de Naissance certifié",
+                fileName: "acte_naissance_jp_ndongo.pdf",
+                fileSize: "1.4 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+                status: "VERIFIED"
               },
               {
-                id: "doc-101-2",
-                category: "diploma",
-                title: "Copie certifiée du plus haut diplôme",
-                fileName: "Baccalaureat_A4_Certifie.pdf",
-                fileSize: "2.10 Mo",
-                fileType: "application/pdf",
-                uploadedAt: "10:37"
+                id: "doc-2",
+                type: "HIGHEST_DIPLOMA",
+                title: "Diplôme du Baccalauréat A4",
+                fileName: "diplome_bac_a4_certifie.pdf",
+                fileSize: "2.1 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+                status: "VERIFIED"
               },
               {
-                id: "doc-101-3",
-                category: "motivation",
-                title: "Lettre de motivation & Projet d'études",
-                fileName: "Lettre_Motivation_Theologie.pdf",
-                fileSize: "680 Ko",
-                fileType: "application/pdf",
-                uploadedAt: "10:40"
-              },
-              {
-                id: "doc-101-4",
-                category: "photo",
-                title: "Photo d'identité d'étudiant récente",
-                fileName: "Photo_Identite_NDONGO.jpg",
-                fileSize: "420 Ko",
-                fileType: "image/jpeg",
-                uploadedAt: "10:41"
+                id: "doc-3",
+                type: "COVER_LETTER",
+                title: "Lettre de Motivation & Projet d'Études",
+                fileName: "lettre_motivation_ndongo.pdf",
+                fileSize: "680 KB",
+                uploadedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+                status: "VERIFIED"
               }
-            ]
+            ],
+            notes: "Dossier académique solide. Recommandé par la paroisse Saint-Pierre."
           },
           {
             id: "adm-102",
             trackingNumber: "ISSR-2026-3104",
-            createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+            createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
             status: "ACCEPTED",
             personalInfo: {
-              firstName: "Sr. Marie-Claire",
-              lastName: "FOTSO",
+              firstName: "Marie-Thérèse",
+              lastName: "MEFIRY",
               gender: "F",
-              dateOfBirth: "1988-11-23",
-              placeOfBirth: "Bafoussam",
+              dateOfBirth: "1998-03-24",
+              placeOfBirth: "Foumban",
               nationality: "Camerounaise",
-              phone: "+237 677 88 99 00",
-              whatsapp: "+237677889900",
-              email: "sr.marieclaire@soeurs-clarisses.org",
-              address: "Mvolyé, Couvent Sainte Claire",
-              status: "RELIGIEUSE",
-              congregationOrDiocese: "Sœurs Clarisses de Yaoundé"
+              phone: "+237 677 44 22 11",
+              whatsapp: "+237677442211",
+              email: "m.mefiry@congre-soeurs.org",
+              address: "Communauté des Soeurs Pallottines, Yaoundé",
+              status: "RELIGIEUSE"
             },
             academicChoice: {
-              formationId: "du-ingenierie-pastorale",
-              formationTitle: "DU en Ingénierie Pastorale & Gestion de Projets d'Église",
+              formationId: "licence-theologie-pastorale",
+              formationTitle: "Licence en Théologie Pastorale & Catéchétique",
+              modality: "PRESENTIAL",
+              academicYear: "2026-2027"
+            },
+            academicBackground: {
+              highestDegree: "LICENCE",
+              degreeTitle: "Licence en Sciences de l'Éducation",
+              graduationYear: "2021",
+              institution: "Université de Yaoundé I"
+            },
+            religiousInfo: {
+              congregation: "Soeurs Missionnaires de l'Apostolat Catholique (Pallottines)",
+              superiorName: "Sr. Véronique NKEMBE",
+              superiorContact: "+237 677 00 11 22",
+              diocese: "Archidiocèse de Yaoundé"
+            },
+            documents: [
+              {
+                id: "doc-201",
+                type: "BIRTH_CERTIFICATE",
+                title: "CNI Religieuse",
+                fileName: "cni_soeur_marie_therese.pdf",
+                fileSize: "1.1 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+                status: "VERIFIED"
+              },
+              {
+                id: "doc-202",
+                type: "HIGHEST_DIPLOMA",
+                title: "Licence Sciences de l'Éducation",
+                fileName: "diplome_licence_uy1.pdf",
+                fileSize: "2.8 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+                status: "VERIFIED"
+              },
+              {
+                id: "doc-203",
+                type: "COVER_LETTER",
+                title: "Lettre de mission de la Supérieure",
+                fileName: "autorisation_superieure_pallottines.pdf",
+                fileSize: "850 KB",
+                uploadedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+                status: "VERIFIED"
+              }
+            ],
+            notes: "Candidature officiellement validée par la Direction le 16/09/2026."
+          },
+          {
+            id: "adm-103",
+            trackingNumber: "ISSR-2026-9052",
+            createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+            status: "PENDING",
+            personalInfo: {
+              firstName: "Abbé Marc",
+              lastName: "ONANA",
+              gender: "M",
+              dateOfBirth: "1990-11-05",
+              placeOfBirth: "Mbalmayo",
+              nationality: "Camerounaise",
+              phone: "+237 698 88 77 66",
+              whatsapp: "+237698887766",
+              email: "m.onana@diocesembalmayo.org",
+              address: "Évêché de Mbalmayo",
+              status: "PRETRE"
+            },
+            academicChoice: {
+              formationId: "master-sciences-religieuses",
+              formationTitle: "Master Canonique / Licence Canonique en Sciences Religieuses",
               modality: "HYBRID",
               academicYear: "2026-2027"
             },
-            previousEducation: {
-              highestDegree: "Licence en Sciences de Gestion",
-              institution: "Université de Yaoundé II Soa",
-              yearObtained: "2018"
+            academicBackground: {
+              highestDegree: "AUTRE",
+              degreeTitle: "Baccalauréat Canonique en Théologie",
+              graduationYear: "2018",
+              institution: "Grand Séminaire Théologique de Nkolbisson"
             },
-            documentsSubmitted: {
-              idCardOrPassport: true,
-              highestDiploma: true,
-              recommendationLetter: true,
-              motivationLetter: true
+            religiousInfo: {
+              diocese: "Diocèse de Mbalmayo",
+              superiorName: "S.E. Mgr Joseph Marie NDI-OKALLA"
             },
-            uploadedDocuments: [
+            documents: [
               {
-                id: "doc-102-1",
-                category: "idDocument",
-                title: "Acte de Naissance ou CNI / Passeport",
-                fileName: "Passeport_Sr_Marie_Claire.pdf",
-                fileSize: "1.80 Mo",
-                fileType: "application/pdf",
-                uploadedAt: "14:10"
+                id: "doc-301",
+                type: "BIRTH_CERTIFICATE",
+                title: "Passeport & Celebret",
+                fileName: "celebret_abbe_marc.pdf",
+                fileSize: "1.9 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+                status: "PENDING"
               },
               {
-                id: "doc-102-2",
-                category: "diploma",
-                title: "Copie certifiée du plus haut diplôme",
-                fileName: "Licence_Gestion_Certifiee.pdf",
-                fileSize: "2.40 Mo",
-                fileType: "application/pdf",
-                uploadedAt: "14:12"
+                id: "doc-302",
+                type: "HIGHEST_DIPLOMA",
+                title: "Baccalauréat Canonique Théologie",
+                fileName: "bacc_canonique_theologie.pdf",
+                fileSize: "3.2 MB",
+                uploadedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+                status: "PENDING"
               },
               {
-                id: "doc-102-3",
-                category: "recommendation",
-                title: "Lettre de recommandation ecclésiale",
-                fileName: "Recommandation_Mere_Superieure.pdf",
-                fileSize: "950 Ko",
-                fileType: "application/pdf",
-                uploadedAt: "14:15"
-              },
-              {
-                id: "doc-102-4",
-                category: "motivation",
-                title: "Lettre de motivation & Projet d'études",
-                fileName: "Projet_Pastoral_Ingenierie.pdf",
-                fileSize: "820 Ko",
-                fileType: "application/pdf",
-                uploadedAt: "14:18"
+                id: "doc-303",
+                type: "COVER_LETTER",
+                title: "Projet de recherche Master",
+                fileName: "projet_recherche_master_onana.pdf",
+                fileSize: "920 KB",
+                uploadedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+                status: "PENDING"
               }
-            ]
+            ],
+            notes: "Dossier en attente de vérification des équivalences ecclésiastiques."
           }
         ];
         setAdmissions(sampleAdmissions);
         localStorage.setItem('issr_admissions', JSON.stringify(sampleAdmissions));
       }
-    } catch {
-      // fallback
+    } catch (e) {
+      console.error("Erreur chargement candidatures:", e);
     }
 
-    // 2. Load articles
-    try {
-      const storedArticles = JSON.parse(localStorage.getItem('issr_custom_articles') || '[]');
-      if (Array.isArray(storedArticles) && storedArticles.length > 0) {
-        setArticles([...storedArticles, ...ARTICLES]);
-      } else {
-        setArticles(ARTICLES);
-      }
-    } catch {
-      setArticles(ARTICLES);
-    }
+    setArticles(ARTICLES);
 
-    // 3. Load messages
-    try {
-      const storedMsgs = JSON.parse(localStorage.getItem('issr_contact_messages') || '[]');
-      if (Array.isArray(storedMsgs) && storedMsgs.length > 0) {
-        setMessages(storedMsgs);
-      } else {
-        const sampleMsgs = [
-          {
-            id: "msg-1",
-            name: "Abbé Martin ESSOMBA",
-            email: "martin.essomba@diocese-ebolowa.cm",
-            phone: "+237 690 11 22 33",
-            subject: "Dossier d’admission & Inscription",
-            formationInterest: "Master en Sciences Religieuses",
-            message: "Bonjour cher Père Directeur, nous souhaiterions envoyer 3 candidats pour le Master à distance. Les cours du samedi sont-ils enregistrés ?",
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-            read: false
-          }
-        ];
-        setMessages(sampleMsgs);
-        localStorage.setItem('issr_contact_messages', JSON.stringify(sampleMsgs));
+    setMessages([
+      {
+        id: "msg-1",
+        name: "Dr. Samuel BIKOI",
+        email: "s.bikoi@univ-yaounde.cm",
+        phone: "+237 699 45 12 00",
+        filiere: "Baccalauréat Canonique en Sciences Religieuses",
+        subject: "Renseignements sur les cours du soir et cours du samedi",
+        message: "Bonjour Père Directeur, je suis enseignant à l'université et je souhaiterais savoir si le Baccalauréat Canonique est accessible en formule cours du soir compatible avec mon emploi du temps.",
+        createdAt: "2026-09-18T10:14:00Z",
+        status: "NEW"
+      },
+      {
+        id: "msg-2",
+        name: "Sr. Bernadette MVONGO",
+        email: "bernadette.mvongo@yahoo.fr",
+        phone: "+237 671 23 89 90",
+        filiere: "Licence en Théologie Pastorale",
+        subject: "Prise en charge congréganiste des frais de scolarité",
+        message: "Bonjour, notre congrégation compte inscrire deux religieuses pour la rentrée d'octobre 2026. Pourrions-nous recevoir le relevé d'identité bancaire pour le virement de la première tranche ?",
+        createdAt: "2026-09-17T15:30:00Z",
+        status: "REPLIED"
       }
-    } catch {
-      // fallback
-    }
+    ]);
   }, []);
 
-  // Update admission status
-  const updateAdmissionStatus = (id: string, newStatus: AdmissionApplication['status']) => {
-    const updated = admissions.map(app => app.id === id ? { ...app, status: newStatus } : app);
+  // Save admissions changes
+  const updateAdmissionStatus = (id: string, newStatus: "PENDING" | "ACCEPTED" | "REJECTED" | "WAITLIST") => {
+    if (!permissions.canApproveAdmission && activeRole !== 'admin') {
+      showToast("Opération refusée : Seule la Direction est habilitée à statuer sur les admissions définitives.", "warning");
+      return;
+    }
+    const updated = admissions.map(adm => {
+      if (adm.id === id) {
+        return { ...adm, status: newStatus };
+      }
+      return adm;
+    });
     setAdmissions(updated);
     localStorage.setItem('issr_admissions', JSON.stringify(updated));
     if (selectedAdmission && selectedAdmission.id === id) {
       setSelectedAdmission({ ...selectedAdmission, status: newStatus });
     }
+    logAction(
+      `DÉCISION_ADMISSION_${newStatus}`,
+      id,
+      `Statut passé à ${newStatus} par ${currentProfile.name} (${currentProfile.title})`,
+      newStatus === 'REJECTED' ? 'WARNING' : 'INFO'
+    );
+    showToast(`Dossier ${id} mis à jour avec succès : Statut -> ${newStatus}`);
   };
 
-  // Publish new article
-  const handleCreateArticle = (e: React.FormEvent) => {
-    e.preventDefault();
-    const created: Article = {
-      id: `art-${Date.now()}`,
-      slug: newArticle.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      title: newArticle.title,
-      category: newArticle.category,
-      author: newArticle.author || currentUser,
-      excerpt: newArticle.excerpt,
-      content: newArticle.content,
-      imageUrl: newArticle.imageUrl,
-      readTime: newArticle.readTime,
-      publishedAt: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
-      featured: newArticle.featured
-    };
-
-    const customArticles = JSON.parse(localStorage.getItem('issr_custom_articles') || '[]');
-    customArticles.unshift(created);
-    localStorage.setItem('issr_custom_articles', JSON.stringify(customArticles));
-
-    setArticles([created, ...articles]);
-    setShowArticleModal(false);
-    setNewArticle({
-      title: '',
-      category: 'Admissions',
-      author: currentUser,
-      excerpt: '',
-      content: '',
-      imageUrl: '/images/img-1050.jpg',
-      readTime: '3 min',
-      featured: false
-    });
-  };
-
-  // Delete article
-  const handleDeleteArticle = (id: string) => {
-    if (confirm("Voulez-vous vraiment supprimer cet article ?")) {
-      const updated = articles.filter(a => a.id !== id);
-      setArticles(updated);
-      const customArticles = JSON.parse(localStorage.getItem('issr_custom_articles') || '[]').filter((a: any) => a.id !== id);
-      localStorage.setItem('issr_custom_articles', JSON.stringify(customArticles));
+  // Verify document
+  const toggleDocStatus = (admId: string, docId: string) => {
+    if (!permissions.canVerifyDocuments) {
+      showToast("Vous n'avez pas les droits de certification des pièces administratives.", "warning");
+      return;
     }
+    const updated = admissions.map(adm => {
+      if (adm.id === admId && adm.documents) {
+        const updatedDocs = adm.documents.map(doc => {
+          if (doc.id === docId) {
+            const nextStatus: "VERIFIED" | "REJECTED" | "PENDING" = 
+              doc.status === 'VERIFIED' ? 'REJECTED' : 'VERIFIED';
+            return { ...doc, status: nextStatus };
+          }
+          return doc;
+        });
+        return { ...adm, documents: updatedDocs };
+      }
+      return adm;
+    });
+    setAdmissions(updated);
+    localStorage.setItem('issr_admissions', JSON.stringify(updated));
+    if (selectedAdmission && selectedAdmission.id === admId) {
+      const refreshed = updated.find(a => a.id === admId);
+      if (refreshed) setSelectedAdmission(refreshed);
+    }
+    logAction('VÉRIFICATION_DOCUMENT', `${admId}/${docId}`, `Contrôle de conformité de pièce par ${currentProfile.name}`);
+    showToast("Statut de conformité du document mis à jour.");
   };
 
-  // Mark message as read
-  const markMessageAsRead = (id: string) => {
-    const updated = messages.map(m => m.id === id ? { ...m, read: true } : m);
-    setMessages(updated);
-    localStorage.setItem('issr_contact_messages', JSON.stringify(updated));
+  // Toggle Financial Quitus (for Économe)
+  const toggleFinancialQuitus = (recordId: string) => {
+    if (!permissions.canGrantQuitus) {
+      showToast("Accès restreint : Seul l'Économe peut octroyer le Quitus d'Examen officiel.", "warning");
+      return;
+    }
+    setFinances(prev => prev.map(rec => {
+      if (rec.id === recordId) {
+        const nextState = !rec.examQuitusGranted;
+        logAction(
+          nextState ? 'OCTROI_QUITUS_EXAMEN' : 'RÉVOCATION_QUITUS_EXAMEN',
+          rec.matricule,
+          `${nextState ? 'Quitus délivré' : 'Quitus révoqué'} pour ${rec.studentName} par ${currentProfile.name}`,
+          nextState ? 'INFO' : 'WARNING'
+        );
+        return {
+          ...rec,
+          examQuitusGranted: nextState,
+          quitusGrantedBy: nextState ? currentProfile.name : undefined,
+          quitusGrantedAt: nextState ? new Date().toISOString() : undefined
+        };
+      }
+      return rec;
+    }));
+    showToast("Statut du Quitus d'Examen mis à jour.");
   };
 
-  // Filtered admissions
-  const filteredAdmissions = admissions.filter(app => {
-    const matchesFilter = admissionFilter === 'ALL' || app.status === admissionFilter;
-    const query = admissionSearch.toLowerCase();
-    const matchesSearch = 
-      app.trackingNumber.toLowerCase().includes(query) ||
-      `${app.personalInfo.firstName} ${app.personalInfo.lastName}`.toLowerCase().includes(query) ||
-      app.academicChoice.formationTitle.toLowerCase().includes(query);
-    return matchesFilter && matchesSearch;
+  // Save grade edit (for Enseignant)
+  const handleSaveGrade = (gradeId: string) => {
+    if (!permissions.canEditGrades) {
+      showToast("Vous n'êtes pas autorisé à saisir des notes d'examen.", "warning");
+      return;
+    }
+    setGrades(prev => prev.map(grd => {
+      if (grd.id === gradeId) {
+        const avg = Math.round(((editCC * 0.4) + (editExam * 0.6)) * 10) / 10;
+        const status = avg >= 10 ? 'VALIDE' : 'RATTRAPAGE';
+        logAction(
+          'SAISIE_NOTE_EXAMEN',
+          `${grd.courseCode} - ${grd.studentName}`,
+          `Notes modifiées : CC=${editCC}/20, Examen=${editExam}/20, Moyenne=${avg}/20`,
+          'INFO'
+        );
+        return {
+          ...grd,
+          continuousAssessment: editCC,
+          finalExam: editExam,
+          average: avg,
+          status
+        };
+      }
+      return grd;
+    }));
+    setEditingGradeId(null);
+    showToast("Note enregistrée avec succès dans le procès-verbal.");
+  };
+
+  // Filter admissions
+  const filteredAdmissions = admissions.filter(item => {
+    const matchFilter = admissionFilter === 'ALL' || item.status === admissionFilter;
+    const q = admissionSearch.toLowerCase();
+    const matchSearch = 
+      item.trackingNumber.toLowerCase().includes(q) ||
+      item.personalInfo.firstName.toLowerCase().includes(q) ||
+      item.personalInfo.lastName.toLowerCase().includes(q) ||
+      item.academicChoice.formationTitle.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
   });
 
   return (
-    <div className="bg-slate-100 min-h-screen pb-16">
+    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
       
-      {/* Admin Top Navigation */}
-      <header className="bg-issr-primary text-white border-b border-issr-primary-light shadow-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-issr-gold text-slate-900 flex items-center justify-center font-bold font-serif text-lg shadow">
-              B
+      {/* 1. TOP HEADER & PERSONA ROLE SWITCHER */}
+      <header className="bg-slate-900 text-white shadow-xl sticky top-0 z-40 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-18 py-3">
+            
+            {/* Institute Identity */}
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-issr-gold to-amber-600 flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow-md ring-2 ring-white/10">
+                IB
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-serif font-bold text-white tracking-wide text-base">ISSR Sainte Joséphine Bakhita</span>
+                  <span className="text-[10px] uppercase font-bold tracking-widest bg-issr-gold/20 text-issr-gold px-2 py-0.5 rounded border border-issr-gold/30">
+                    ERP & CMS v2.6
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 font-medium">Portail Collaboratif de Gouvernance Universitaire</p>
+              </div>
             </div>
-            <div>
-              <div className="font-bold text-sm leading-none">ISSR Sainte Bakhita</div>
-              <div className="text-xs text-issr-gold-light mt-0.5">Portail de Gestion & CMS Collaboratif</div>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-4 text-xs">
-            {/* Persona switcher */}
-            <div className="hidden sm:flex items-center gap-2 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-slate-700">
-              <span className="text-slate-400">Connecté en tant que :</span>
-              <select
-                value={currentUser}
-                onChange={(e) => {
-                  setCurrentUser(e.target.value);
-                  setNewArticle(prev => ({ ...prev, author: e.target.value }));
-                }}
-                className="bg-transparent font-semibold text-issr-gold-light outline-none cursor-pointer"
+            {/* Central / Right: Role Persona Switcher */}
+            <div className="flex items-center gap-4">
+              
+              {/* Persona Switcher Selector */}
+              <div className="flex items-center bg-slate-800/90 rounded-2xl p-1.5 border border-slate-700/80 shadow-inner">
+                <span className="text-xs font-semibold text-slate-400 px-2.5 hidden md:inline-flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-issr-gold" />
+                  Rôle Actif :
+                </span>
+                <select
+                  value={activeRole}
+                  onChange={(e) => {
+                    const newR = e.target.value as UserRole;
+                    setActiveRole(newR);
+                    showToast(`Basculé sur le profil : ${PROFILES_CONFIG[newR].title} (${PROFILES_CONFIG[newR].name})`, 'info');
+                  }}
+                  className="bg-slate-900 text-white font-medium text-xs rounded-xl px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-issr-gold cursor-pointer"
+                >
+                  <option value="admin">1. Super-Admin (DSI)</option>
+                  <option value="directeur">2. Directeur (P. Dr Patrice MEKANA)</option>
+                  <option value="secretaire_admin">3. Secrétaire Administrative (Mme Christine NKOLO)</option>
+                  <option value="secretaire_acad">4. Secrétaire Académique (M. Jean Claude MEKOULOU)</option>
+                  <option value="prefet_etudes">5. Préfet des Études (Sr. Patience ENGANEMBEN)</option>
+                  <option value="econome">6. Économe (P. Jean-Paul BESSALA)</option>
+                  <option value="rep_enseignants">7. Délégué Enseignants (Pr. Antoine ESSOMBA)</option>
+                  <option value="enseignants">8. Enseignants (Dr. Théophile NDONG)</option>
+                  <option value="etudiants">9. Espace Étudiant (Fr. Emmanuel NGOUMOU)</option>
+                </select>
+              </div>
+
+              {/* View Public Website */}
+              <Link 
+                href="/"
+                target="_blank"
+                className="hidden lg:flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 transition"
               >
-                <option value="P. Dr Patrice MEKANA (Directeur)" className="text-slate-900">P. Dr Patrice MEKANA (Directeur)</option>
-                <option value="Sr. Patience ENGANEMBEN (Préfet Études)" className="text-slate-900">Sr. Patience ENGANEMBEN (Préfet Études)</option>
-                <option value="M. Jean Claude MEKOULOU (Enseignant)" className="text-slate-900">M. Jean Claude MEKOULOU (Enseignant)</option>
-                <option value="Secrétariat Académique" className="text-slate-900">Secrétariat Académique</option>
-                <option value="Délégué des Étudiants" className="text-slate-900">Délégué des Étudiants</option>
-              </select>
+                <span>Site Public</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              </Link>
+
             </div>
 
-            <Link
-              href="/"
-              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
-            >
-              <span>Site Public</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-
-            <Link
-              href="/login"
-              className="bg-rose-500/15 hover:bg-rose-500/25 text-rose-200 border border-rose-500/30 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
-              title="Se déconnecter"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Déconnexion</span>
-            </Link>
           </div>
         </div>
 
-        {/* Tab Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto text-xs sm:text-sm font-medium border-t border-issr-primary-light/40">
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`py-3 px-3 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'dashboard'
-                ? 'border-issr-gold text-issr-gold-light font-bold'
-                : 'border-transparent text-slate-300 hover:text-white'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Tableau de Bord</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('admissions')}
-            className={`py-3 px-3 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'admissions'
-                ? 'border-issr-gold text-issr-gold-light font-bold'
-                : 'border-transparent text-slate-300 hover:text-white'
-            }`}
-          >
-            <GraduationCap className="w-4 h-4" />
-            <span>Admissions & Inscriptions</span>
-            <span className="bg-issr-gold text-slate-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
-              {admissions.length}
-            </span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('articles')}
-            className={`py-3 px-3 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'articles'
-                ? 'border-issr-gold text-issr-gold-light font-bold'
-                : 'border-transparent text-slate-300 hover:text-white'
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>Articles & Annonces CMS</span>
-            <span className="bg-white/20 text-white font-bold px-1.5 py-0.2 rounded-full text-[10px]">
-              {articles.length}
-            </span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('messages')}
-            className={`py-3 px-3 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'messages'
-                ? 'border-issr-gold text-issr-gold-light font-bold'
-                : 'border-transparent text-slate-300 hover:text-white'
-            }`}
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>Messages Contact</span>
-            {messages.filter(m => !m.read).length > 0 && (
-              <span className="bg-red-500 text-white font-bold px-1.5 py-0.2 rounded-full text-[10px]">
-                {messages.filter(m => !m.read).length}
+        {/* Dynamic Context Banner for Current Role */}
+        <div className="bg-slate-950/60 border-t border-slate-800/80 px-4 py-2">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs gap-2">
+            <div className="flex items-center gap-3">
+              <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${currentProfile.badgeColor}`}>
+                {currentProfile.badgeLabel}
               </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('pedagogy')}
-            className={`py-3 px-3 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'pedagogy'
-                ? 'border-issr-gold text-issr-gold-light font-bold'
-                : 'border-transparent text-slate-300 hover:text-white'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Ressources Pédagogiques</span>
-          </button>
+              <span className="font-semibold text-white">{currentProfile.name}</span>
+              <span className="text-slate-400 hidden sm:inline">• {currentProfile.title}</span>
+              <span className="text-slate-500 hidden md:inline">({currentProfile.department})</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-400 text-[11px]">
+              <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Session Authentifiée RBAC
+              </span>
+              <span>•</span>
+              <span className="font-mono text-slate-400">{currentProfile.email}</span>
+            </div>
+          </div>
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-
-        {/* 1. DASHBOARD TAB */}
-        {activeTab === 'dashboard' && (
-          <div className="space-y-8">
-            
-            {/* Welcome banner */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <span className="text-xs font-bold uppercase text-issr-gold tracking-wider">
-                  Session Active
-                </span>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
-                  Bienvenue, {currentUser}
-                </h2>
-                <p className="text-slate-600 text-sm mt-1">
-                  Tableau de bord institutionnel pour le suivi des inscriptions, la publication d’articles et la gestion des flux.
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    setActiveTab('articles');
-                    setShowArticleModal(true);
-                  }}
-                  className="inline-flex items-center gap-2 bg-issr-primary hover:bg-issr-primary-light text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition"
-                >
-                  <PlusCircle className="w-4 h-4 text-issr-gold" />
-                  <span>Publier un Article</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('admissions')}
-                  className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition"
-                >
-                  <GraduationCap className="w-4 h-4 text-issr-gold" />
-                  <span>Examiner Candidatures</span>
-                </button>
-              </div>
-            </div>
-
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="p-3.5 bg-blue-50 text-blue-700 rounded-2xl">
-                  <GraduationCap className="w-7 h-7" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">{admissions.length}</div>
-                  <div className="text-xs text-slate-500 font-medium">Candidatures reçues</div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="p-3.5 bg-amber-50 text-amber-600 rounded-2xl">
-                  <Clock className="w-7 h-7" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">
-                    {admissions.filter(a => a.status === 'PENDING').length}
-                  </div>
-                  <div className="text-xs text-slate-500 font-medium">En attente d’examen</div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-2xl">
-                  <CheckCircle className="w-7 h-7" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">
-                    {admissions.filter(a => a.status === 'ACCEPTED').length}
-                  </div>
-                  <div className="text-xs text-slate-500 font-medium">Candidatures admises</div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="p-3.5 bg-purple-50 text-purple-600 rounded-2xl">
-                  <FileText className="w-7 h-7" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">{articles.length}</div>
-                  <div className="text-xs text-slate-500 font-medium">Articles & Annonces en ligne</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Recent Admissions & Quick Actions */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              
-              {/* Left 2 Cols: Recent Applications */}
-              <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-serif text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5 text-issr-primary" />
-                    <span>Dernières Candidatures Reçues</span>
-                  </h3>
-                  <button
-                    onClick={() => setActiveTab('admissions')}
-                    className="text-xs font-bold text-issr-primary hover:text-issr-gold transition flex items-center gap-1"
-                  >
-                    <span>Voir tout</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="divide-y divide-slate-100">
-                  {admissions.slice(0, 4).map(app => (
-                    <div key={app.id} className="py-3.5 flex items-center justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-slate-900">
-                            {app.personalInfo.firstName} {app.personalInfo.lastName}
-                          </span>
-                          <span className="text-[10px] font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">
-                            {app.trackingNumber}
-                          </span>
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">
-                          {app.academicChoice.formationTitle}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                          app.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-800' :
-                          app.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
-                          app.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {app.status}
-                        </span>
-
-                        <button
-                          onClick={() => {
-                            setSelectedAdmission(app);
-                            setActiveTab('admissions');
-                          }}
-                          className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-issr-primary transition"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Col: Quick Guidance & Direct Contact */}
-              <div className="space-y-6">
-                <div className="bg-issr-primary text-white rounded-3xl p-6 shadow-sm">
-                  <h4 className="font-serif text-base font-bold mb-2 flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-issr-gold" />
-                    <span>Statut Institutionnel</span>
-                  </h4>
-                  <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                    Institut Supérieur des Sciences Religieuses Sainte Joséphine Bakhita. Érection canonique par le Saint-Siège (Rome, 2022) et rattachement à la Faculté de Théologie de l&apos;UCAC.
-                  </p>
-                  <div className="text-[11px] text-issr-gold-light bg-black/20 p-3 rounded-xl">
-                    Numéro officiel d’assistance : <span className="font-bold text-white">{INSTITUTION_INFO.phone}</span>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
-                  <h4 className="font-serif text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-issr-gold" />
-                    <span>Actions Rapides</span>
-                  </h4>
-                  <div className="space-y-2 text-xs">
-                    <Link
-                      href="/admissions"
-                      target="_blank"
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 transition"
-                    >
-                      <span>Tester le formulaire d’admission</span>
-                      <ArrowUpRight className="w-4 h-4 text-slate-400" />
-                    </Link>
-                    <Link
-                      href="/actualites"
-                      target="_blank"
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 transition"
-                    >
-                      <span>Consulter la page Actualités publique</span>
-                      <ArrowUpRight className="w-4 h-4 text-slate-400" />
-                    </Link>
-                    <Link
-                      href="/contact"
-                      target="_blank"
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 transition"
-                    >
-                      <span>Vérifier la page Contact & Maps</span>
-                      <ArrowUpRight className="w-4 h-4 text-slate-400" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
+      {/* Global Toast Alert */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md animate-bounce">
+          <div className={`px-4 py-3 rounded-2xl shadow-2xl border flex items-center gap-3 ${
+            toastMessage.type === 'warning' 
+              ? 'bg-amber-900/90 text-white border-amber-500' 
+              : toastMessage.type === 'info'
+              ? 'bg-blue-900/90 text-white border-blue-500'
+              : 'bg-emerald-900/90 text-white border-emerald-500'
+          }`}>
+            {toastMessage.type === 'warning' ? (
+              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+            ) : (
+              <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+            )}
+            <p className="text-xs font-semibold leading-relaxed">{toastMessage.text}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* 2. ADMISSIONS TAB */}
-        {activeTab === 'admissions' && (
-          <div className="space-y-6">
-            
-            {/* Filter and search bar */}
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                {['ALL', 'PENDING', 'UNDER_REVIEW', 'ACCEPTED', 'REJECTED'].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setAdmissionFilter(status)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                      admissionFilter === status
-                        ? 'bg-issr-primary text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
-                  >
-                    {status === 'ALL' ? 'Toutes' :
-                     status === 'PENDING' ? 'En Attente' :
-                     status === 'UNDER_REVIEW' ? 'En Examen' :
-                     status === 'ACCEPTED' ? 'Admis' : 'Refusé'}
-                  </button>
-                ))}
+      {/* 2. MAIN LAYOUT: SIDEBAR + WORKSPACE */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1 flex flex-col md:flex-row gap-8">
+        
+        {/* SIDEBAR NAVIGATION */}
+        <aside className="w-full md:w-64 shrink-0 space-y-6">
+          
+          {/* User Badge Card */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-serif font-bold text-lg text-slate-700">
+                {currentProfile.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
               </div>
-
-              <div className="relative w-full md:w-72">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={admissionSearch}
-                  onChange={(e) => setAdmissionSearch(e.target.value)}
-                  placeholder="Rechercher nom, code suivi..."
-                  className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                />
+              <div className="min-w-0">
+                <h3 className="font-bold text-slate-900 text-sm truncate">{currentProfile.name}</h3>
+                <p className="text-xs text-slate-500 truncate">{currentProfile.title}</p>
               </div>
             </div>
-
-            {/* Applications Table */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
-                    <tr>
-                      <th className="px-6 py-4">Numéro de Suivi</th>
-                      <th className="px-6 py-4">Candidat</th>
-                      <th className="px-6 py-4">Statut Ecclésial</th>
-                      <th className="px-6 py-4">Filière Choisi</th>
-                      <th className="px-6 py-4">Modalité</th>
-                      <th className="px-6 py-4">Statut Dossier</th>
-                      <th className="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
-                    {filteredAdmissions.map((app) => (
-                      <tr key={app.id} className="hover:bg-slate-50 transition">
-                        <td className="px-6 py-4 font-mono font-bold text-issr-primary">
-                          {app.trackingNumber}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="font-bold text-slate-900">
-                            {app.personalInfo.firstName} {app.personalInfo.lastName}
-                          </div>
-                          <div className="text-[11px] text-slate-400">
-                            {app.personalInfo.email} • {app.personalInfo.phone}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">
-                            {app.personalInfo.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-medium max-w-xs truncate">
-                          {app.academicChoice.formationTitle}
-                        </td>
-                        <td className="px-6 py-4">
-                          {app.academicChoice.modality}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                            app.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-800' :
-                            app.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
-                            app.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {app.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => setSelectedAdmission(app)}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-issr-primary hover:text-issr-gold transition"
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Examiner</span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {filteredAdmissions.length === 0 && (
-                <div className="text-center py-12 text-slate-500 text-xs">
-                  Aucune candidature trouvée.
-                </div>
-              )}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span className="text-slate-400">Niveau d'accès :</span>
+              <span className="font-mono font-bold text-slate-700 uppercase">{activeRole}</span>
             </div>
-
           </div>
-        )}
 
-        {/* 3. ARTICLES / CMS TAB */}
-        {activeTab === 'articles' && (
-          <div className="space-y-6">
+          {/* Dynamic Sidebar Links */}
+          <nav className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 space-y-1">
             
-            {/* Action Bar */}
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h3 className="font-serif text-xl font-bold text-slate-900">
-                  Gestionnaire de Publications & Actualités
-                </h3>
-                <p className="text-slate-500 text-xs mt-1">
-                  Rédigez, modifiez ou supprimez les articles consultables sur le site public de l’ISSR Bakhita.
-                </p>
-              </div>
-
+            {permissions.allowedTabs.includes('dashboard') && (
               <button
-                onClick={() => setShowArticleModal(true)}
-                className="inline-flex items-center gap-2 bg-issr-primary hover:bg-issr-primary-light text-white text-xs font-bold py-3 px-5 rounded-xl shadow transition"
+                onClick={() => setActiveTab('dashboard')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'dashboard'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
               >
-                <PlusCircle className="w-4 h-4 text-issr-gold" />
-                <span>Rédiger un Nouvel Article</span>
+                <Layers className="w-4 h-4" />
+                <span>Tableau de Bord</span>
               </button>
-            </div>
+            )}
 
-            {/* Articles List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {articles.map((art) => (
-                <div key={art.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
-                  <div className="h-44 bg-slate-100 relative">
-                    <img src={art.imageUrl} alt={art.title} className="w-full h-full object-cover" />
-                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[11px] font-bold px-2.5 py-0.5 rounded-full text-issr-primary">
-                      {art.category}
+            {permissions.allowedTabs.includes('admissions') && (
+              <button
+                onClick={() => setActiveTab('admissions')}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'admissions'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Candidatures En Ligne</span>
+                </div>
+                <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {admissions.filter(a => a.status === 'PENDING').length}
+                </span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('pedagogy') && (
+              <button
+                onClick={() => setActiveTab('pedagogy')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'pedagogy'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Maquettes & Pédagogie</span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('grades') && (
+              <button
+                onClick={() => setActiveTab('grades')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'grades'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                <span>{activeRole === 'etudiants' ? 'Mes Notes & Relevé' : 'Notes & Examens'}</span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('finance') && (
+              <button
+                onClick={() => setActiveTab('finance')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'finance'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <DollarSign className="w-4 h-4" />
+                <span>{activeRole === 'etudiants' ? 'Ma Scolarité & Quitus' : 'Économat & Scolarités'}</span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('courses') && (
+              <button
+                onClick={() => setActiveTab('courses')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'courses'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>Cours & Ressources</span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('articles') && (
+              <button
+                onClick={() => setActiveTab('articles')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'articles'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <span>Articles & CMS</span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('messages') && (
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'messages'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Messages Contact</span>
+                </div>
+                <span className="bg-blue-100 text-blue-900 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {messages.length}
+                </span>
+              </button>
+            )}
+
+            {permissions.allowedTabs.includes('security') && (
+              <button
+                onClick={() => setActiveTab('security')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition ${
+                  activeTab === 'security'
+                    ? 'bg-issr-primary text-white shadow-md shadow-issr-primary/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Sécurité & Audit DSI</span>
+              </button>
+            )}
+
+          </nav>
+
+          {/* Quick Institutional Notice */}
+          <div className="bg-slate-900 text-slate-300 rounded-2xl p-4 text-xs space-y-2 border border-slate-800 shadow-sm">
+            <div className="flex items-center gap-2 text-issr-gold font-bold">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Gouvernance RBAC</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Toutes les actions de validation, saisie de notes et quittances financières sont enregistrées avec horodatage dans le journal d'audit officiel.
+            </p>
+          </div>
+
+        </aside>
+
+        {/* WORKSPACE CONTENT AREA */}
+        <main className="flex-1 min-w-0 space-y-6">
+
+          {/* ============================================================ */}
+          {/* TAB: DASHBOARD                                              */}
+          {/* ============================================================ */}
+          {activeTab === 'dashboard' && (
+            <div className="space-y-6">
+              
+              {/* Role Greeting Banner */}
+              <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-issr-primary rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+                <div className="relative z-10 space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-issr-gold text-xs font-semibold backdrop-blur-sm border border-white/10">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Espace Opérationnel • Session {currentProfile.badgeLabel}</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+                    Bienvenue, {currentProfile.name}
+                  </h1>
+                  <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                    Vous êtes connecté en tant que <strong className="text-white">{currentProfile.title}</strong>. 
+                    Votre tableau de bord centralise vos prérogatives institutionnelles pour l'année académique 2026-2027.
+                  </p>
+                </div>
+              </div>
+
+              {/* KPI Cards adapted to Active Role */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* KPI 1 */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider">
+                      {activeRole === 'etudiants' ? 'Moyenne Générale' : activeRole === 'econome' ? 'Recouvrement Global' : 'Candidatures 2026'}
                     </span>
-                    {art.featured && (
-                      <span className="absolute top-3 right-3 bg-issr-gold text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        À la une
-                      </span>
-                    )}
+                    <GraduationCap className="w-5 h-5 text-issr-primary" />
                   </div>
-
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="text-[11px] text-slate-400 mb-1 flex items-center gap-2">
-                        <span>{art.publishedAt}</span>
-                        <span>•</span>
-                        <span>{art.author}</span>
-                      </div>
-                      <h4 className="font-serif font-bold text-base text-slate-900 line-clamp-2 mb-2">
-                        {art.title}
-                      </h4>
-                      <p className="text-slate-600 text-xs line-clamp-3 mb-4">
-                        {art.excerpt}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                      <Link
-                        href="/actualites"
-                        target="_blank"
-                        className="text-xs font-semibold text-issr-primary hover:text-issr-gold flex items-center gap-1"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Aperçu public</span>
-                      </Link>
-
-                      <button
-                        onClick={() => handleDeleteArticle(art.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 transition rounded-lg hover:bg-red-50"
-                        title="Supprimer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                  <div className="text-2xl font-black text-slate-900">
+                    {activeRole === 'etudiants' ? '15.8 / 20' : activeRole === 'econome' ? '74.2 %' : admissions.length}
                   </div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        )}
-
-        {/* 4. MESSAGES TAB */}
-        {activeTab === 'messages' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-              <h3 className="font-serif text-xl font-bold text-slate-900 mb-1">
-                Boîte de Réception des Demandes de Contact
-              </h3>
-              <p className="text-slate-500 text-xs">
-                Messages envoyés par des futurs étudiants, prêtres, évêques ou fidèles depuis la page de contact du site.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {messages.map((msg) => (
-                <div 
-                  key={msg.id} 
-                  className={`p-6 rounded-2xl border transition ${
-                    msg.read ? 'bg-white border-slate-200' : 'bg-blue-50/40 border-blue-200 shadow-sm'
-                  }`}
-                >
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 text-sm">{msg.name}</span>
-                        {!msg.read && (
-                          <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            Nouveau
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-slate-500">
-                        {msg.email} • {msg.phone}
-                      </div>
-                    </div>
-
-                    <div className="text-xs text-slate-400">
-                      {new Date(msg.createdAt).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="text-xs font-semibold text-issr-primary mb-2">
-                    Objet : {msg.subject} {msg.formationInterest ? `(${msg.formationInterest})` : ''}
-                  </div>
-
-                  <p className="text-slate-700 text-xs sm:text-sm whitespace-pre-line bg-slate-50/80 p-4 rounded-xl border border-slate-100">
-                    {msg.message}
+                  <p className="text-[11px] text-slate-400">
+                    {activeRole === 'etudiants' ? 'Semestre 3 validé avec Mention Bien' : activeRole === 'econome' ? 'Objectif semestriel en bonne voie' : 'En hausse de +35% vs 2025'}
                   </p>
+                </div>
 
-                  <div className="mt-4 flex flex-wrap gap-3 items-center justify-between">
-                    <div className="flex gap-2">
-                      <a
-                        href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition inline-flex items-center gap-1.5"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Répondre sur WhatsApp</span>
-                      </a>
-
-                      <a
-                        href={`mailto:${msg.email}`}
-                        className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-xl transition"
-                      >
-                        Répondre par Email
-                      </a>
-                    </div>
-
-                    {!msg.read && (
-                      <button
-                        onClick={() => markMessageAsRead(msg.id)}
-                        className="text-xs text-slate-500 hover:text-slate-800 font-medium"
-                      >
-                        Marquer comme lu
-                      </button>
-                    )}
+                {/* KPI 2 */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider">
+                      {activeRole === 'etudiants' ? 'Crédits Validés' : activeRole === 'enseignants' ? 'Notes Saisies' : 'Dossiers En Attente'}
+                    </span>
+                    <Clock className="w-5 h-5 text-amber-500" />
                   </div>
-                </div>
-              ))}
-
-              {messages.length === 0 && (
-                <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 text-slate-400 text-xs">
-                  Aucun message de contact pour l’instant.
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* 5. PEDAGOGY TAB */}
-        {activeTab === 'pedagogy' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-              <h3 className="font-serif text-xl font-bold text-slate-900 mb-1">
-                Espace Pédagogique & Syllabi de Cours
-              </h3>
-              <p className="text-slate-500 text-xs">
-                Programmes de cours, emploi du temps des sessions intensives et ressources partagées par le corps professoral.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h4 className="font-serif font-bold text-slate-900 text-base mb-3 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-issr-primary" />
-                  <span>Calendrier Académique 2026-2027</span>
-                </h4>
-                <ul className="space-y-3 text-xs text-slate-600">
-                  <li className="flex items-start gap-2">
-                    <span className="font-bold text-slate-900 min-w-[90px]">15 Oct. 2026 :</span>
-                    <span>Rentrée académique solennelle & Messe de l’Esprit Saint</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="font-bold text-slate-900 min-w-[90px]">20 Oct. 2026 :</span>
-                    <span>Début des cours magistraux du 1er Semestre</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="font-bold text-slate-900 min-w-[90px]">15 Jan. 2027 :</span>
-                    <span>Session intensive d’examens partiels</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="font-bold text-slate-900 min-w-[90px]">01 Mars 2027 :</span>
-                    <span>Colloque annuel de l’Institut sur la Théologie Africaine</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h4 className="font-serif font-bold text-slate-900 text-base mb-3 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-issr-gold" />
-                  <span>Manuels & Règlements Intérieurs</span>
-                </h4>
-                <div className="space-y-2 text-xs">
-                  <div className="p-3 bg-slate-50 rounded-xl flex items-center justify-between">
-                    <span className="font-medium text-slate-800">Guide de l’Étudiant ISSR 2026-2027 (PDF)</span>
-                    <button className="text-issr-primary hover:text-issr-gold font-bold flex items-center gap-1">
-                      <Download className="w-4 h-4" />
-                      <span>Télécharger</span>
-                    </button>
+                  <div className="text-2xl font-black text-slate-900">
+                    {activeRole === 'etudiants' ? '78 / 180 ECTS' : activeRole === 'enseignants' ? '100 % (18/18)' : admissions.filter(a => a.status === 'PENDING').length}
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-xl flex items-center justify-between">
-                    <span className="font-medium text-slate-800">Statuts Canoniques & Charte Académique UCAC</span>
-                    <button className="text-issr-primary hover:text-issr-gold font-bold flex items-center gap-1">
-                      <Download className="w-4 h-4" />
-                      <span>Télécharger</span>
-                    </button>
+                  <p className="text-[11px] text-slate-400">
+                    {activeRole === 'etudiants' ? 'Progression normale vers la Licence' : activeRole === 'enseignants' ? 'Procès-verbal transmis au Préfet' : 'À statuer par la commission'}
+                  </p>
+                </div>
+
+                {/* KPI 3 */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider">
+                      {activeRole === 'etudiants' ? 'Statut Quitus Examen' : activeRole === 'econome' ? 'Quitus Accordés' : 'Admissions Validées'}
+                    </span>
+                    <CheckCircle className="w-5 h-5 text-emerald-500" />
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-xl flex items-center justify-between">
-                    <span className="font-medium text-slate-800">Normes de Rédaction du Mémoire de Master</span>
-                    <button className="text-issr-primary hover:text-issr-gold font-bold flex items-center gap-1">
-                      <Download className="w-4 h-4" />
-                      <span>Télécharger</span>
-                    </button>
+                  <div className="text-2xl font-black text-emerald-600">
+                    {activeRole === 'etudiants' ? 'DÉLIVRÉ' : activeRole === 'econome' ? finances.filter(f => f.examQuitusGranted).length : admissions.filter(a => a.status === 'ACCEPTED').length}
                   </div>
+                  <p className="text-[11px] text-slate-400">
+                    {activeRole === 'etudiants' ? 'Autorisé à composer aux examens de session' : activeRole === 'econome' ? 'Sur 3 étudiants actifs en suivi' : 'Étudiants inscrits définitivement'}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
 
-      </main>
-
-      {/* MODAL: CANDIDATE DOSSIER INSPECTOR */}
-      {selectedAdmission && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 relative border border-slate-200">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-              <div>
-                <span className="text-[10px] font-mono font-bold bg-issr-primary/10 text-issr-primary px-2.5 py-1 rounded">
-                  {selectedAdmission.trackingNumber}
-                </span>
-                <h3 className="font-serif text-2xl font-bold text-slate-900 mt-2">
-                  Dossier de {selectedAdmission.personalInfo.firstName} {selectedAdmission.personalInfo.lastName}
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedAdmission(null)}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-700 transition"
-              >
-                <XCircle className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-6 text-xs sm:text-sm">
-              
-              {/* Status Selector */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <span className="font-semibold text-slate-700">Décision de la Commission d’Admission :</span>
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={() => updateAdmissionStatus(selectedAdmission.id, 'ACCEPTED')}
-                    className={`px-3 py-1.5 rounded-xl font-bold text-xs transition ${
-                      selectedAdmission.status === 'ACCEPTED'
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-emerald-50'
-                    }`}
-                  >
-                    Valider / Admis
-                  </button>
-
-                  <button
-                    onClick={() => updateAdmissionStatus(selectedAdmission.id, 'UNDER_REVIEW')}
-                    className={`px-3 py-1.5 rounded-xl font-bold text-xs transition ${
-                      selectedAdmission.status === 'UNDER_REVIEW'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-blue-50'
-                    }`}
-                  >
-                    En Examen
-                  </button>
-
-                  <button
-                    onClick={() => updateAdmissionStatus(selectedAdmission.id, 'REJECTED')}
-                    className={`px-3 py-1.5 rounded-xl font-bold text-xs transition ${
-                      selectedAdmission.status === 'REJECTED'
-                        ? 'bg-red-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-red-50'
-                    }`}
-                  >
-                    Refuser
-                  </button>
+                {/* KPI 4 */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider">
+                      {activeRole === 'admin' ? 'Sécurité & Audit' : 'Articles Publiés'}
+                    </span>
+                    <FileText className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div className="text-2xl font-black text-slate-900">
+                    {activeRole === 'admin' ? `${auditLogs.length} logs` : articles.length}
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    {activeRole === 'admin' ? 'Système intègre 0 incident' : 'Actualités visibles en ligne'}
+                  </p>
                 </div>
+
               </div>
 
-              {/* Personal Info */}
-              <div>
-                <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2 text-issr-primary">
-                  1. Identité & Statut Ecclésial
-                </h4>
-                <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl text-xs">
-                  <div><span className="text-slate-400">Date & Lieu de naissance :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.dateOfBirth} ({selectedAdmission.personalInfo.placeOfBirth})</span></div>
-                  <div><span className="text-slate-400">Nationalité :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.nationality}</span></div>
-                  <div><span className="text-slate-400">Statut ecclésial :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.status}</span></div>
-                  <div><span className="text-slate-400">Congrégation / Diocèse :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.congregationOrDiocese || 'N/A'}</span></div>
-                  <div><span className="text-slate-400">Téléphone :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.phone}</span></div>
-                  <div><span className="text-slate-400">WhatsApp :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.whatsapp}</span></div>
-                  <div className="col-span-2"><span className="text-slate-400">Adresse de résidence :</span> <span className="font-semibold text-slate-800">{selectedAdmission.personalInfo.address}</span></div>
-                </div>
-              </div>
-
-              {/* Academic Choice */}
-              <div>
-                <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2 text-issr-primary">
-                  2. Programme d&apos;Études Choisi
-                </h4>
-                <div className="bg-slate-50 p-4 rounded-2xl text-xs space-y-1">
-                  <div><span className="text-slate-400">Formation :</span> <span className="font-bold text-slate-800">{selectedAdmission.academicChoice.formationTitle}</span></div>
-                  <div><span className="text-slate-400">Modalité d&apos;enseignement :</span> <span className="font-semibold text-slate-800">{selectedAdmission.academicChoice.modality}</span></div>
-                  <div><span className="text-slate-400">Année académique :</span> <span className="font-semibold text-slate-800">{selectedAdmission.academicChoice.academicYear}</span></div>
-                </div>
-              </div>
-
-              {/* Previous degrees */}
-              <div>
-                <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2 text-issr-primary">
-                  3. Diplôme Précédent & Établissement
-                </h4>
-                <div className="bg-slate-50 p-4 rounded-2xl text-xs space-y-1">
-                  <div><span className="text-slate-400">Plus haut diplôme :</span> <span className="font-semibold text-slate-800">{selectedAdmission.previousEducation.highestDegree}</span></div>
-                  <div><span className="text-slate-400">Établissement d&apos;obtention :</span> <span className="font-semibold text-slate-800">{selectedAdmission.previousEducation.institution}</span></div>
-                  <div><span className="text-slate-400">Année d&apos;obtention :</span> <span className="font-semibold text-slate-800">{selectedAdmission.previousEducation.yearObtained}</span></div>
-                </div>
-              </div>
-
-              {/* Documents check & download */}
-              <div>
-                <div className="flex items-center justify-between mb-2.5">
-                  <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider text-issr-primary flex items-center gap-1.5">
-                    <FileCheck className="w-4 h-4 text-emerald-600" />
-                    <span>4. Pièces Justificatives &amp; Documents Reçus en Ligne</span>
-                  </h4>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                    {selectedAdmission.uploadedDocuments && selectedAdmission.uploadedDocuments.length > 0 
-                      ? `${selectedAdmission.uploadedDocuments.length} pièce(s) transmise(s)`
-                      : 'Dossier physique attendu'}
+              {/* Specific Role Operational Center */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900 font-serif">Actions Clés & Prérogatives Accordées</h2>
+                    <p className="text-xs text-slate-500">Synthèse des autorisations opérationnelles actives pour votre profil</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${currentProfile.badgeColor}`}>
+                    {currentProfile.title}
                   </span>
                 </div>
 
-                {selectedAdmission.uploadedDocuments && selectedAdmission.uploadedDocuments.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {selectedAdmission.uploadedDocuments.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-300 transition text-xs group">
-                        <div className="flex items-center gap-2.5 truncate pr-2">
-                          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                            <FileText className="w-4 h-4" />
-                          </div>
-                          <div className="truncate">
-                            <span className="font-bold text-slate-800 block truncate text-xs">{doc.title}</span>
-                            <span className="text-[10px] text-slate-500 block truncate">
-                              {doc.fileName} &bull; {doc.fileSize}
-                            </span>
-                          </div>
-                        </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                  <div className={`p-4 rounded-2xl border ${permissions.canApproveAdmission ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canApproveAdmission ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Validation Admissions</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canApproveAdmission ? 'Signature et avis définitif sur les dossiers de candidature reçus.' : 'Réservé exclusivement à la Direction de l’Institut.'}
+                    </p>
+                  </div>
 
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => setPreviewDocument(doc)}
-                            className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-issr-primary hover:text-white text-slate-700 transition cursor-pointer"
-                            title="Consulter le document"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                          <a
-                            href={doc.dataUrl || '#'}
-                            download={`ISSR-${selectedAdmission.trackingNumber}_${doc.fileName}`}
-                            className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-emerald-600 hover:text-white text-slate-700 transition cursor-pointer"
-                            title="Télécharger le document"
-                          >
-                            <Download className="w-3.5 h-3.5" />
-                          </a>
+                  <div className={`p-4 rounded-2xl border ${permissions.canGrantQuitus ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canGrantQuitus ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Délivrance du Quitus Financier</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canGrantQuitus ? 'Autorisation d’examen accordée après apurement de la scolarité.' : 'Prérogative exclusive de l’Économat.'}
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${permissions.canEditGrades ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canEditGrades ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Saisie des Notes & Procès-Verbaux</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canEditGrades ? 'Saisie des notes de CC et d’examen de vos matières enseignées.' : 'Réservé aux enseignants et au secrétariat académique.'}
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${permissions.canVerifyDocuments ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canVerifyDocuments ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Vérification des Justificatifs</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canVerifyDocuments ? 'Contrôle d’authenticité des diplômes et pièces d’identité.' : 'Réservé aux secrétariats et à la direction.'}
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${permissions.canPublishArticles ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canPublishArticles ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Publication Immédiate CMS</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canPublishArticles ? 'Mise en ligne directe des articles et annonces officielles.' : 'Vos articles sont enregistrés en brouillon pour validation.'}
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${permissions.canViewAudit ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                    <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                      {permissions.canViewAudit ? <Check className="w-4 h-4 text-emerald-600" /> : <Lock className="w-4 h-4 text-slate-400" />}
+                      <span>Supervision Sécurité & Audit</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {permissions.canViewAudit ? 'Inspection intégrale des journaux d’audit et conformité DSI.' : 'Accès réservé au Super-Admin et au Directeur.'}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: ADMISSIONS                                             */}
+          {/* ============================================================ */}
+          {activeTab === 'admissions' && (
+            <div className="space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">Dossiers de Candidature Universitaire</h2>
+                  <p className="text-xs text-slate-500">Gestion des inscriptions, contrôle des pièces justificatives et validation des admissions</p>
+                </div>
+                
+                {/* Search & Filter bar */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Nom, matricule, filière..."
+                      value={admissionSearch}
+                      onChange={(e) => setAdmissionSearch(e.target.value)}
+                      className="pl-9 pr-4 py-2 bg-white rounded-xl border border-slate-200 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-primary w-52"
+                    />
+                  </div>
+
+                  <select
+                    value={admissionFilter}
+                    onChange={(e) => setAdmissionFilter(e.target.value)}
+                    className="bg-white rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-primary cursor-pointer"
+                  >
+                    <option value="ALL">Tous les statuts ({admissions.length})</option>
+                    <option value="PENDING">En attente ({admissions.filter(a => a.status === 'PENDING').length})</option>
+                    <option value="ACCEPTED">Admis ({admissions.filter(a => a.status === 'ACCEPTED').length})</option>
+                    <option value="REJECTED">Refusés ({admissions.filter(a => a.status === 'REJECTED').length})</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Admissions Table */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <tr>
+                        <th className="px-6 py-3.5">Réf & Date</th>
+                        <th className="px-6 py-3.5">Candidat</th>
+                        <th className="px-6 py-3.5">Filière Sollicitée</th>
+                        <th className="px-6 py-3.5">Pièces Reçues</th>
+                        <th className="px-6 py-3.5">Statut</th>
+                        <th className="px-6 py-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredAdmissions.map((adm) => {
+                        const verifiedDocs = adm.documents?.filter(d => d.status === 'VERIFIED').length || 0;
+                        const totalDocs = adm.documents?.length || 0;
+                        return (
+                          <tr key={adm.id} className="hover:bg-slate-50/80 transition">
+                            <td className="px-6 py-4">
+                              <span className="font-mono font-bold text-slate-900 block">{adm.trackingNumber}</span>
+                              <span className="text-slate-400 text-[11px]">
+                                {new Date(adm.createdAt).toLocaleDateString('fr-FR')}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="font-bold text-slate-900">
+                                {adm.personalInfo.firstName} {adm.personalInfo.lastName}
+                              </div>
+                              <div className="text-slate-500 text-[11px]">
+                                {adm.personalInfo.phone} • <span className="text-issr-primary font-semibold">{adm.personalInfo.status}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 max-w-xs">
+                              <span className="font-medium text-slate-800 line-clamp-1">
+                                {adm.academicChoice.formationTitle}
+                              </span>
+                              <span className="text-slate-400 text-[11px] block">
+                                Modalité: {adm.academicChoice.modality}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  verifiedDocs === totalDocs && totalDocs > 0
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-amber-100 text-amber-800'
+                                }`}>
+                                  {verifiedDocs}/{totalDocs} certifiées
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase ${
+                                adm.status === 'ACCEPTED'
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                  : adm.status === 'REJECTED'
+                                  ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                                  : 'bg-amber-100 text-amber-800 border border-amber-200'
+                              }`}>
+                                {adm.status === 'ACCEPTED' ? 'Admis Définitif' : adm.status === 'REJECTED' ? 'Refusé' : 'En Examen'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => setSelectedAdmission(adm)}
+                                className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-issr-primary hover:text-white text-slate-700 font-bold px-3 py-1.5 rounded-xl transition text-xs shadow-sm"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>Examiner</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Admission Detail Modal Drawer */}
+              {selectedAdmission && (
+                <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
+                  <div className="bg-white w-full max-w-2xl h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+                    
+                    {/* Modal Header */}
+                    <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs text-issr-gold font-bold">{selectedAdmission.trackingNumber}</span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                            selectedAdmission.status === 'ACCEPTED' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
+                          }`}>
+                            {selectedAdmission.status}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold font-serif text-white mt-1">
+                          {selectedAdmission.personalInfo.firstName} {selectedAdmission.personalInfo.lastName}
+                        </h3>
+                      </div>
+                      <button
+                        onClick={() => setSelectedAdmission(null)}
+                        className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Modal Scrollable Body */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6 text-xs text-slate-700">
+                      
+                      {/* Identity & Contact Card */}
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                          <UserCheck className="w-4 h-4 text-issr-primary" />
+                          État Civil & Coordonnées
+                        </h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Date et lieu de naissance</span>
+                            <span className="font-semibold">{selectedAdmission.personalInfo.dateOfBirth} à {selectedAdmission.personalInfo.placeOfBirth}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Nationalité & Statut</span>
+                            <span className="font-semibold">{selectedAdmission.personalInfo.nationality} ({selectedAdmission.personalInfo.status})</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Téléphone & WhatsApp</span>
+                            <span className="font-semibold">{selectedAdmission.personalInfo.phone}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Adresse email</span>
+                            <span className="font-semibold">{selectedAdmission.personalInfo.email}</span>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                      <span>Aucun fichier numérique téléversé directement lors de la pré-inscription.</span>
+
+                      {/* Formation Choice */}
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                        <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                          <BookOpen className="w-4 h-4 text-issr-primary" />
+                          Filière Sollicitée
+                        </h4>
+                        <div className="font-bold text-slate-900 text-sm">
+                          {selectedAdmission.academicChoice.formationTitle}
+                        </div>
+                        <div className="flex items-center gap-4 text-slate-500">
+                          <span>Modalité : <strong>{selectedAdmission.academicChoice.modality}</strong></span>
+                          <span>Session : <strong>{selectedAdmission.academicChoice.academicYear}</strong></span>
+                        </div>
+                      </div>
+
+                      {/* Attached Documents Verification list */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                            <FileCheck className="w-4 h-4 text-issr-primary" />
+                            Pièces Justificatives Téléversées ({selectedAdmission.documents?.length || 0})
+                          </h4>
+                          <span className="text-[10px] text-slate-400">Cliquez sur certifier pour attester de la conformité</span>
+                        </div>
+
+                        <div className="space-y-2">
+                          {selectedAdmission.documents?.map(doc => (
+                            <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold">
+                                  PDF
+                                </div>
+                                <div>
+                                  <div className="font-bold text-slate-900">{doc.title}</div>
+                                  <div className="text-slate-400 text-[10px]">{doc.fileName} • {doc.fileSize}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                  doc.status === 'VERIFIED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                }`}>
+                                  {doc.status === 'VERIFIED' ? 'Conforme' : 'À contrôler'}
+                                </span>
+                                {permissions.canVerifyDocuments && (
+                                  <button
+                                    onClick={() => toggleDocStatus(selectedAdmission.id, doc.id)}
+                                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800 transition"
+                                    title="Basculer conformité"
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Observations / Notes */}
+                      {selectedAdmission.notes && (
+                        <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 space-y-1">
+                          <span className="font-bold text-[11px] uppercase tracking-wider block">Notes & Observations Institutionnelles :</span>
+                          <p className="text-xs leading-relaxed">{selectedAdmission.notes}</p>
+                        </div>
+                      )}
+
                     </div>
-                    <a
-                      href={`https://wa.me/${selectedAdmission.personalInfo.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                        `Bonjour ${selectedAdmission.personalInfo.firstName}, la commission d'admission de l'ISSR Bakhita étudie votre dossier (${selectedAdmission.trackingNumber}). Merci de nous faire parvenir vos pièces justificatives (Acte de naissance, diplôme, lettre de motivation).`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow transition shrink-0"
-                    >
-                      <span>Relancer sur WhatsApp</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
+
+                    {/* Modal Decision Actions Footer */}
+                    <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                      <div className="text-slate-500 text-[11px]">
+                        Rôle actif : <strong className="text-slate-800">{currentProfile.title}</strong>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {permissions.canApproveAdmission ? (
+                          <>
+                            <button
+                              onClick={() => updateAdmissionStatus(selectedAdmission.id, 'REJECTED')}
+                              className="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition border border-rose-200"
+                            >
+                              Rejeter le dossier
+                            </button>
+                            <button
+                              onClick={() => updateAdmissionStatus(selectedAdmission.id, 'ACCEPTED')}
+                              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                              <span>Valider l'Admission Définitive</span>
+                            </button>
+                          </>
+                        ) : (
+                          <div className="text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1.5">
+                            <Lock className="w-3.5 h-3.5 shrink-0" />
+                            <span>Décision finale réservée au Directeur (P. Dr Patrice MEKANA)</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: GRADES & DELIBERATIONS                                  */}
+          {/* ============================================================ */}
+          {activeTab === 'grades' && (
+            <div className="space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">
+                    {activeRole === 'etudiants' ? 'Mon Relevé de Notes Académique' : 'Saisie & Délibérations des Examens'}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {activeRole === 'etudiants' 
+                      ? 'Consultez vos résultats semestriels et votre relevé sous réserve de quitus financier' 
+                      : 'Gestion des contrôles continus, examens terminaux et procès-verbaux semestriels'}
+                  </p>
+                </div>
+
+                {/* Quitus Banner for student */}
+                {activeRole === 'etudiants' && (
+                  <div className="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-2xl flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
+                    <div>
+                      <span className="font-bold text-emerald-900 text-xs block">Quitus d'Examen Validé</span>
+                      <span className="text-emerald-700 text-[10px]">Délivré par l'Économe • Relevé officiel disponible à l'impression</span>
+                    </div>
                   </div>
                 )}
               </div>
 
-            </div>
-
-            <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end">
-              <button
-                onClick={() => setSelectedAdmission(null)}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 px-6 rounded-xl transition cursor-pointer"
-              >
-                Fermer l&apos;inspecteur
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PREVIEW DOCUMENT MODAL */}
-      {previewDocument && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
-                  Visualisation de la pièce justificative
-                </span>
-                <h3 className="font-serif font-bold text-lg text-slate-900">
-                  {previewDocument.title}
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {previewDocument.fileName} &bull; {previewDocument.fileSize}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setPreviewDocument(null)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto py-6 flex items-center justify-center bg-slate-50 rounded-2xl my-4">
-              {previewDocument.dataUrl?.startsWith('data:image/') ? (
-                <img 
-                  src={previewDocument.dataUrl} 
-                  alt={previewDocument.title} 
-                  className="max-h-[60vh] max-w-full rounded-xl object-contain shadow"
-                />
-              ) : previewDocument.dataUrl?.startsWith('data:application/pdf') ? (
-                <div className="text-center space-y-3 p-8">
-                  <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-inner">
-                    <FileText className="w-8 h-8" />
-                  </div>
-                  <div className="font-bold text-slate-900 text-sm">{previewDocument.title}</div>
-                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                    Document PDF certifié conforme reçu en ligne.
-                  </p>
-                  <a
-                    href={previewDocument.dataUrl}
-                    download={previewDocument.fileName}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>Télécharger le PDF original</span>
-                  </a>
+              {/* Grades Table */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <tr>
+                        <th className="px-6 py-3.5">Code & Matière</th>
+                        <th className="px-6 py-3.5">Étudiant</th>
+                        <th className="px-6 py-3.5">Enseignant</th>
+                        <th className="px-6 py-3.5">CC (40%)</th>
+                        <th className="px-6 py-3.5">Examen (60%)</th>
+                        <th className="px-6 py-3.5">Moyenne /20</th>
+                        <th className="px-6 py-3.5">Crédits</th>
+                        <th className="px-6 py-3.5">Statut</th>
+                        {permissions.canEditGrades && <th className="px-6 py-3.5 text-right">Action</th>}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {grades.map((grd) => {
+                        const isEditing = editingGradeId === grd.id;
+                        return (
+                          <tr key={grd.id} className="hover:bg-slate-50/80 transition">
+                            <td className="px-6 py-4">
+                              <span className="font-mono font-bold text-issr-primary block">{grd.courseCode}</span>
+                              <span className="font-semibold text-slate-800">{grd.courseTitle}</span>
+                              <span className="text-[10px] text-slate-400 block">{grd.semester}</span>
+                            </td>
+                            <td className="px-6 py-4 font-bold text-slate-900">
+                              {grd.studentName}
+                            </td>
+                            <td className="px-6 py-4 text-slate-600 text-[11px]">
+                              {grd.teacherName}
+                            </td>
+                            <td className="px-6 py-4">
+                              {isEditing ? (
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max="20"
+                                  step="0.5"
+                                  value={editCC}
+                                  onChange={(e) => setEditCC(parseFloat(e.target.value) || 0)}
+                                  className="w-16 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold"
+                                />
+                              ) : (
+                                <span className="font-mono font-semibold">{grd.continuousAssessment.toFixed(1)}</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              {isEditing ? (
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max="20"
+                                  step="0.5"
+                                  value={editExam}
+                                  onChange={(e) => setEditExam(parseFloat(e.target.value) || 0)}
+                                  className="w-16 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold"
+                                />
+                              ) : (
+                                <span className="font-mono font-semibold">{grd.finalExam.toFixed(1)}</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`font-mono font-black text-sm ${
+                                grd.average >= 12 ? 'text-emerald-600' : grd.average >= 10 ? 'text-blue-600' : 'text-rose-600'
+                              }`}>
+                                {grd.average.toFixed(1)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 font-bold text-slate-700">
+                              {grd.credits} ECTS
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                grd.status === 'VALIDE' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                              }`}>
+                                {grd.status}
+                              </span>
+                            </td>
+                            {permissions.canEditGrades && (
+                              <td className="px-6 py-4 text-right">
+                                {isEditing ? (
+                                  <div className="flex items-center justify-end gap-1.5">
+                                    <button
+                                      onClick={() => handleSaveGrade(grd.id)}
+                                      className="p-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition"
+                                      title="Enregistrer"
+                                    >
+                                      <Check className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingGradeId(null)}
+                                      className="p-1.5 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition"
+                                      title="Annuler"
+                                    >
+                                      <X className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => {
+                                      setEditingGradeId(grd.id);
+                                      setEditCC(grd.continuousAssessment);
+                                      setEditExam(grd.finalExam);
+                                    }}
+                                    className="px-3 py-1 bg-slate-100 hover:bg-issr-primary hover:text-white rounded-xl text-slate-700 font-bold transition text-[11px]"
+                                  >
+                                    Saisir Note
+                                  </button>
+                                )}
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-              ) : (
-                <div className="text-center space-y-3 p-8">
-                  <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto shadow-inner">
-                    <FileText className="w-8 h-8" />
-                  </div>
-                  <div className="font-bold text-slate-900 text-sm">{previewDocument.fileName}</div>
-                  <a
-                    href={previewDocument.dataUrl || '#'}
-                    download={previewDocument.fileName}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
+              </div>
+
+              {/* Print Bulletin Button */}
+              {activeRole === 'etudiants' && (
+                <div className="flex justify-end">
+                  <button 
+                    onClick={() => window.print()}
+                    className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>Télécharger la pièce</span>
-                  </a>
+                    <Printer className="w-4 h-4 text-issr-gold" />
+                    <span>Imprimer mon Relevé Officiel (PDF)</span>
+                  </button>
                 </div>
               )}
+
             </div>
+          )}
 
-            <div className="flex justify-between items-center pt-2">
-              <a
-                href={previewDocument.dataUrl || '#'}
-                download={previewDocument.fileName}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-issr-primary hover:text-amber-600"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Télécharger une copie</span>
-              </a>
-              <button
-                type="button"
-                onClick={() => setPreviewDocument(null)}
-                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition cursor-pointer"
-              >
-                Fermer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: CREATE ARTICLE */}
-      {showArticleModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 relative border border-slate-200">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-              <div>
-                <h3 className="font-serif text-2xl font-bold text-slate-900">
-                  Rédiger un Nouvel Article / Annonce
-                </h3>
-                <p className="text-slate-500 text-xs mt-1">
-                  Ce texte apparaîtra instantanément sur la page Actualités et la page d’accueil.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowArticleModal(false)}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-700 transition"
-              >
-                <XCircle className="w-6 h-6" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateArticle} className="space-y-4 text-xs sm:text-sm">
-              <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                  Titre de l’article <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newArticle.title}
-                  onChange={(e) => setNewArticle({ ...newArticle, title: e.target.value })}
-                  placeholder="Ex: Conférence théologique : Église et enjeux contemporains en Afrique"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+          {/* ============================================================ */}
+          {/* TAB: FINANCE & QUITUS                                       */}
+          {/* ============================================================ */}
+          {activeTab === 'finance' && (
+            <div className="space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                    Catégorie <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={newArticle.category}
-                    onChange={(e) => setNewArticle({ ...newArticle, category: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none bg-white"
-                  >
-                    <option value="Admissions">Admissions</option>
-                    <option value="Événements">Événements</option>
-                    <option value="Formations">Formations</option>
-                    <option value="Pastorale">Pastorale</option>
-                    <option value="Vie de l’Institut">Vie de l’Institut</option>
-                  </select>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">
+                    {activeRole === 'etudiants' ? 'Situation Financière & Quitus d\'Examen' : 'Gestion Financière & Quitus d\'Examen'}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {activeRole === 'etudiants' 
+                      ? 'Suivi de vos versements de scolarité et délivrance de votre quitus pour composer' 
+                      : 'Contrôle des versements par tranches et attribution du Quitus Officiel d\'Examen'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Financial KPI Summary */}
+              {activeRole !== 'etudiants' && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Total Recouvré (Économat)</span>
+                    <span className="text-2xl font-black text-emerald-600 block mt-1">1 245 000 FCFA</span>
+                    <span className="text-slate-400 text-[11px]">Sur 1 680 000 FCFA budgétés (74.1%)</span>
+                  </div>
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Reste à Recouvrer</span>
+                    <span className="text-2xl font-black text-amber-600 block mt-1">435 000 FCFA</span>
+                    <span className="text-slate-400 text-[11px]">Échéance 2ème tranche : 15 Novembre 2026</span>
+                  </div>
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Quitus Examen Délivrés</span>
+                    <span className="text-2xl font-black text-slate-900 block mt-1">
+                      {finances.filter(f => f.examQuitusGranted).length} / {finances.length}
+                    </span>
+                    <span className="text-slate-400 text-[11px]">Étudiants en règle financière intégrale</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Financial Records Ledger */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                  <h3 className="font-bold text-slate-900 text-sm">Registre des Écolages & Frais de Dossier</h3>
+                  <span className="text-xs text-slate-400">Année Académique 2026-2027</span>
                 </div>
 
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <tr>
+                        <th className="px-6 py-3.5">Matricule & Étudiant</th>
+                        <th className="px-6 py-3.5">Filière</th>
+                        <th className="px-6 py-3.5">Statut Écolage</th>
+                        <th className="px-6 py-3.5">Total Dû</th>
+                        <th className="px-6 py-3.5">Versé</th>
+                        <th className="px-6 py-3.5">Reste</th>
+                        <th className="px-6 py-3.5">Quitus Examen</th>
+                        {permissions.canGrantQuitus && <th className="px-6 py-3.5 text-right">Action Économe</th>}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {finances.map((rec) => (
+                        <tr key={rec.id} className="hover:bg-slate-50/80 transition">
+                          <td className="px-6 py-4">
+                            <span className="font-mono font-bold text-slate-900 block">{rec.matricule}</span>
+                            <span className="font-semibold text-slate-800">{rec.studentName}</span>
+                            <span className="text-[10px] text-issr-primary font-bold block">{rec.category}</span>
+                          </td>
+                          <td className="px-6 py-4 max-w-xs">
+                            <span className="text-slate-700 font-medium line-clamp-1">{rec.filiere}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              rec.registrationFeePaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                            }`}>
+                              Dossier 50k: {rec.registrationFeePaid ? 'PAYÉ' : 'IMPAYÉ'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 font-mono font-bold text-slate-900">
+                            {rec.totalTuition.toLocaleString('fr-FR')} F
+                          </td>
+                          <td className="px-6 py-4 font-mono font-bold text-emerald-600">
+                            {rec.totalPaid.toLocaleString('fr-FR')} F
+                          </td>
+                          <td className="px-6 py-4 font-mono font-bold text-amber-600">
+                            {rec.remainingDue.toLocaleString('fr-FR')} F
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 w-fit ${
+                              rec.examQuitusGranted
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                : 'bg-amber-100 text-amber-800 border border-amber-300'
+                            }`}>
+                              {rec.examQuitusGranted ? <CheckCircle className="w-3 h-3 text-emerald-600" /> : <Clock className="w-3 h-3 text-amber-600" />}
+                              <span>{rec.examQuitusGranted ? 'ACCORDÉ' : 'EN ATTENTE'}</span>
+                            </span>
+                          </td>
+                          {permissions.canGrantQuitus && (
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => toggleFinancialQuitus(rec.id)}
+                                className={`px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ml-auto ${
+                                  rec.examQuitusGranted
+                                    ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+                                    : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+                                }`}
+                              >
+                                {rec.examQuitusGranted ? (
+                                  <>
+                                    <Lock className="w-3.5 h-3.5" />
+                                    <span>Révoquer</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <CheckCircle className="w-3.5 h-3.5" />
+                                    <span>Octroyer Quitus</span>
+                                  </>
+                                )}
+                              </button>
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: PEDAGOGY & MAQUETTE                                     */}
+          {/* ============================================================ */}
+          {activeTab === 'pedagogy' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                    Auteur
-                  </label>
-                  <input
-                    type="text"
-                    value={newArticle.author}
-                    onChange={(e) => setNewArticle({ ...newArticle, author: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                  />
+                  <h2 className="text-xl font-bold font-serif text-slate-900">Maquette Pédagogique & Répartition LMD</h2>
+                  <p className="text-xs text-slate-500">Organisation des Unités d'Enseignement, crédits ECTS et attributions professorales</p>
                 </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                  URL de l’image d’illustration
-                </label>
-                <input
-                  type="url"
-                  value={newArticle.imageUrl}
-                  onChange={(e) => setNewArticle({ ...newArticle, imageUrl: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                />
-                <div className="flex flex-wrap gap-2 mt-1.5 text-[10px] text-slate-500">
-                  <span className="font-semibold text-slate-700">Photos officielles ISSR :</span>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/img-1050.jpg" })}
-                    className="text-issr-primary hover:text-amber-600 underline font-medium"
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => showToast("Exportation de la maquette pédagogique 2026-2027 en cours...", "info")}
+                    className="flex items-center gap-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition shadow-sm"
                   >
-                    Étudiants &amp; Syllabus
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/mg-2217.jpg" })}
-                    className="text-issr-primary hover:text-amber-600 underline font-medium"
-                  >
-                    Amphithéâtre
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/img-1139.jpg" })}
-                    className="text-issr-primary hover:text-amber-600 underline font-medium"
-                  >
-                    Vie Académique
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/mg-1964.jpg" })}
-                    className="text-issr-primary hover:text-amber-600 underline font-medium"
-                  >
-                    Cérémonie &amp; Diplômes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewArticle({ ...newArticle, imageUrl: "/images/hero-1608.jpg" })}
-                    className="text-issr-primary hover:text-amber-600 underline font-medium"
-                  >
-                    Campus Mvolyé
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Télécharger la Maquette Officielle</span>
                   </button>
                 </div>
               </div>
 
-              <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                  Extrait / Résumé d&apos;accroche <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  required
-                  rows={2}
-                  value={newArticle.excerpt}
-                  onChange={(e) => setNewArticle({ ...newArticle, excerpt: e.target.value })}
-                  placeholder="Une courte synthèse en 1 ou 2 phrases pour les cartes d'aperçu..."
-                  className="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                ></textarea>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-issr-primary">Semestre 1 • 30 Crédits</span>
+                    <span className="bg-blue-50 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">Tronc Commun</span>
+                  </div>
+                  <h4 className="font-serif font-bold text-slate-900 text-sm">Fondements Bibliques & Théologiques</h4>
+                  <ul className="text-xs space-y-2 text-slate-600 divide-y divide-slate-100">
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Introduction à l'Ancien Testament (45h)</span>
+                      <strong className="text-slate-900">6 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Théologie Fondamentale & Révélation (45h)</span>
+                      <strong className="text-slate-900">6 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Histoire de l'Église Antique & Patristique (30h)</span>
+                      <strong className="text-slate-900">4 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Initiation aux Langues Bibliques : Grec Koinè (30h)</span>
+                      <strong className="text-slate-900">4 ECTS</strong>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-issr-primary">Semestre 2 • 30 Crédits</span>
+                    <span className="bg-amber-50 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Approfondissement</span>
+                  </div>
+                  <h4 className="font-serif font-bold text-slate-900 text-sm">Dogmatique, Morale & Pastorale</h4>
+                  <ul className="text-xs space-y-2 text-slate-600 divide-y divide-slate-100">
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Christologie & Sotériologie (45h)</span>
+                      <strong className="text-slate-900">6 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Théologie Morale Fondamentale (45h)</span>
+                      <strong className="text-slate-900">6 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Catéchétique & Méthodologie Pastorale (30h)</span>
+                      <strong className="text-slate-900">4 ECTS</strong>
+                    </li>
+                    <li className="pt-2 flex items-center justify-between">
+                      <span>Droit Canonique Fondamental (30h)</span>
+                      <strong className="text-slate-900">4 ECTS</strong>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: COURSES & DIGITAL RESOURCES                            */}
+          {/* ============================================================ */}
+          {activeTab === 'courses' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">Espace Pédagogique Numérique & Ressources</h2>
+                  <p className="text-xs text-slate-500">Supports de cours, syllabus académiques, fiches de TD et liens de visio-conférence</p>
+                </div>
+                {permissions.canDraftArticles && (
+                  <button 
+                    onClick={() => showToast("Modal d'ajout de support de cours ouvert.", "info")}
+                    className="flex items-center gap-1.5 bg-issr-primary hover:bg-issr-primary-light text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>Déposer un Support de Cours</span>
+                  </button>
+                )}
               </div>
 
-              <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
-                  Contenu complet <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  required
-                  rows={6}
-                  value={newArticle.content}
-                  onChange={(e) => setNewArticle({ ...newArticle, content: e.target.value })}
-                  placeholder="Développez ici l'ensemble de l'article ou de l'annonce..."
-                  className="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-issr-primary outline-none"
-                ></textarea>
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {courses.map((crs) => (
+                  <div key={crs.id} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[11px] font-bold text-issr-primary">{crs.courseCode}</span>
+                        <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded">
+                          {crs.type}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-slate-900 text-sm">{crs.title}</h4>
+                      <p className="text-slate-500 text-xs line-clamp-2">{crs.description}</p>
+                      <div className="pt-2 text-[11px] text-slate-400">
+                        <span>Enseignant : <strong>{crs.teacherName}</strong></span>
+                      </div>
+                    </div>
 
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={newArticle.featured}
-                  onChange={(e) => setNewArticle({ ...newArticle, featured: e.target.checked })}
-                  className="rounded border-slate-300 text-issr-primary focus:ring-issr-primary w-4 h-4"
-                />
-                <label htmlFor="featured" className="text-slate-700 font-medium text-xs">
-                  Mettre cet article « À la une » sur la page d’accueil et des actualités
-                </label>
+                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <span className="text-slate-400 text-[11px]">{crs.fileSize}</span>
+                      <div className="flex items-center gap-2">
+                        {crs.meetUrl && (
+                          <a 
+                            href={crs.meetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold transition"
+                            title="Rejoindre la salle virtuelle"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        <button 
+                          onClick={() => showToast(`Téléchargement de ${crs.title} initié.`, 'success')}
+                          className="flex items-center gap-1 bg-slate-900 hover:bg-issr-primary text-white font-bold px-3 py-1.5 rounded-xl transition text-[11px]"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Ouvrir</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+            </div>
+          )}
 
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          {/* ============================================================ */}
+          {/* TAB: ARTICLES & CMS                                         */}
+          {/* ============================================================ */}
+          {activeTab === 'articles' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">CMS & Actualités de l'Institut</h2>
+                  <p className="text-xs text-slate-500">Gestion des annonces paroissiales, colloques théologiques et communiqués officiels</p>
+                </div>
                 <button
-                  type="button"
-                  onClick={() => setShowArticleModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-xs transition"
+                  onClick={() => setShowArticleModal(true)}
+                  className="flex items-center gap-1.5 bg-issr-primary hover:bg-issr-primary-light text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow"
                 >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="bg-issr-primary hover:bg-issr-primary-light text-white font-bold text-xs py-2.5 px-6 rounded-xl transition shadow"
-                >
-                  Publier l&apos;Article
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Rédiger un Article</span>
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {articles.map((art) => (
+                  <div key={art.id} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="bg-issr-gold/20 text-issr-gold text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-issr-gold/30">
+                        {art.category}
+                      </span>
+                      <span className="text-slate-400 text-[11px]">{art.publishedAt}</span>
+                    </div>
+                    <h4 className="font-serif font-bold text-slate-900 text-base">{art.title}</h4>
+                    <p className="text-xs text-slate-600 line-clamp-2">{art.excerpt}</p>
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                      <span>Par {art.author}</span>
+                      <span className="text-emerald-600 font-bold text-[11px]">En ligne</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: MESSAGES                                               */}
+          {/* ============================================================ */}
+          {activeTab === 'messages' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold font-serif text-slate-900">Boîte de Réception & Demandes d'Information</h2>
+                <p className="text-xs text-slate-500">Messages soumis via le formulaire de contact du site institutionnel</p>
+              </div>
+
+              <div className="space-y-4">
+                {messages.map((msg) => (
+                  <div key={msg.id} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900 text-sm">{msg.name}</span>
+                        <span className="text-slate-400 text-xs">({msg.email} • {msg.phone})</span>
+                      </div>
+                      <span className="text-slate-400 text-xs">
+                        {new Date(msg.createdAt).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                    <div className="font-bold text-slate-800 text-xs bg-slate-50 p-2.5 rounded-xl">
+                      Filière ciblée : <span className="text-issr-primary">{msg.filiere}</span> — {msg.subject}
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{msg.message}</p>
+                    <div className="pt-2 flex items-center justify-end gap-2">
+                      <a 
+                        href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}?text=Bonjour%20${encodeURIComponent(msg.name)},%20suite%20%C3%A0%20votre%20demande%20sur%20le%20site%20de%20l'ISSR...`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Répondre par WhatsApp</span>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB: SECURITY & AUDIT DSI                                   */}
+          {/* ============================================================ */}
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold font-serif text-slate-900">Journal d'Audit & Supervision DSI</h2>
+                  <p className="text-xs text-slate-500">Traçabilité complète des délibérations, validations d'écolage et accès sécurisés</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                    <ShieldCheck className="w-4 h-4" />
+                    Audit Immuable Actif
+                  </span>
+                </div>
+              </div>
+
+              {/* Audit Logs Table */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <tr>
+                        <th className="px-6 py-3.5">Horodatage</th>
+                        <th className="px-6 py-3.5">Acteur & Rôle</th>
+                        <th className="px-6 py-3.5">Action</th>
+                        <th className="px-6 py-3.5">Cible</th>
+                        <th className="px-6 py-3.5">Détails Opérationnels</th>
+                        <th className="px-6 py-3.5">Gravité</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {auditLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-slate-50/80 transition">
+                          <td className="px-6 py-4 font-mono text-slate-500 text-[11px] whitespace-nowrap">
+                            {new Date(log.timestamp).toLocaleTimeString('fr-FR')}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="font-bold text-slate-900 block">{log.actorName}</span>
+                            <span className="font-mono text-slate-400 text-[10px] uppercase">{log.actorRole}</span>
+                          </td>
+                          <td className="px-6 py-4 font-mono font-bold text-slate-800 text-[11px]">
+                            {log.action}
+                          </td>
+                          <td className="px-6 py-4 font-medium text-slate-700">
+                            {log.target}
+                          </td>
+                          <td className="px-6 py-4 text-slate-600 max-w-sm">
+                            {log.details}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              log.severity === 'CRITICAL' 
+                                ? 'bg-rose-100 text-rose-800' 
+                                : log.severity === 'WARNING'
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-blue-50 text-blue-800'
+                            }`}>
+                              {log.severity}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </main>
+      </div>
 
     </div>
   );
