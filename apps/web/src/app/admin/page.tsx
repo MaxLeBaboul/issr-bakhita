@@ -27,10 +27,14 @@ import {
   Check,
   UserCheck,
   Download,
-  LogOut
+  LogOut,
+  FileCheck,
+  UploadCloud,
+  X,
+  AlertCircle
 } from 'lucide-react';
 import { ARTICLES, INSTITUTION_INFO } from '../../data/mockData';
-import { Article, AdmissionApplication } from '../../types';
+import { Article, AdmissionApplication, UploadedDocumentItem } from '../../types';
 
 type AdminTab = 'dashboard' | 'admissions' | 'articles' | 'messages' | 'pedagogy';
 
@@ -47,6 +51,7 @@ export default function AdminPage() {
   const [admissionFilter, setAdmissionFilter] = useState<string>('ALL');
   const [admissionSearch, setAdmissionSearch] = useState<string>('');
   const [selectedAdmission, setSelectedAdmission] = useState<AdmissionApplication | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<UploadedDocumentItem | null>(null);
 
   // Article creation form state
   const [showArticleModal, setShowArticleModal] = useState<boolean>(false);
@@ -105,7 +110,45 @@ export default function AdminPage() {
               highestDiploma: true,
               recommendationLetter: true,
               motivationLetter: true
-            }
+            },
+            uploadedDocuments: [
+              {
+                id: "doc-101-1",
+                category: "idDocument",
+                title: "Acte de Naissance ou CNI / Passeport",
+                fileName: "CNI_Jean_Paul_Ndongo.pdf",
+                fileSize: "1.45 Mo",
+                fileType: "application/pdf",
+                uploadedAt: "10:35"
+              },
+              {
+                id: "doc-101-2",
+                category: "diploma",
+                title: "Copie certifiée du plus haut diplôme",
+                fileName: "Baccalaureat_A4_Certifie.pdf",
+                fileSize: "2.10 Mo",
+                fileType: "application/pdf",
+                uploadedAt: "10:37"
+              },
+              {
+                id: "doc-101-3",
+                category: "motivation",
+                title: "Lettre de motivation & Projet d'études",
+                fileName: "Lettre_Motivation_Theologie.pdf",
+                fileSize: "680 Ko",
+                fileType: "application/pdf",
+                uploadedAt: "10:40"
+              },
+              {
+                id: "doc-101-4",
+                category: "photo",
+                title: "Photo d'identité d'étudiant récente",
+                fileName: "Photo_Identite_NDONGO.jpg",
+                fileSize: "420 Ko",
+                fileType: "image/jpeg",
+                uploadedAt: "10:41"
+              }
+            ]
           },
           {
             id: "adm-102",
@@ -142,7 +185,45 @@ export default function AdminPage() {
               highestDiploma: true,
               recommendationLetter: true,
               motivationLetter: true
-            }
+            },
+            uploadedDocuments: [
+              {
+                id: "doc-102-1",
+                category: "idDocument",
+                title: "Acte de Naissance ou CNI / Passeport",
+                fileName: "Passeport_Sr_Marie_Claire.pdf",
+                fileSize: "1.80 Mo",
+                fileType: "application/pdf",
+                uploadedAt: "14:10"
+              },
+              {
+                id: "doc-102-2",
+                category: "diploma",
+                title: "Copie certifiée du plus haut diplôme",
+                fileName: "Licence_Gestion_Certifiee.pdf",
+                fileSize: "2.40 Mo",
+                fileType: "application/pdf",
+                uploadedAt: "14:12"
+              },
+              {
+                id: "doc-102-3",
+                category: "recommendation",
+                title: "Lettre de recommandation ecclésiale",
+                fileName: "Recommandation_Mere_Superieure.pdf",
+                fileSize: "950 Ko",
+                fileType: "application/pdf",
+                uploadedAt: "14:15"
+              },
+              {
+                id: "doc-102-4",
+                category: "motivation",
+                title: "Lettre de motivation & Projet d'études",
+                fileName: "Projet_Pastoral_Ingenierie.pdf",
+                fileSize: "820 Ko",
+                fileType: "application/pdf",
+                uploadedAt: "14:18"
+              }
+            ]
           }
         ];
         setAdmissions(sampleAdmissions);
@@ -1062,29 +1143,76 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Documents check */}
+              {/* Documents check & download */}
               <div>
-                <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2 text-issr-primary">
-                  4. Pièces Justificatives Déclarées
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>Pièce d’identité / Passeport</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>Copie certifiée du diplôme</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>Lettre de recommandation</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>Lettre de motivation</span>
-                  </div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <h4 className="font-bold text-slate-900 uppercase text-xs tracking-wider text-issr-primary flex items-center gap-1.5">
+                    <FileCheck className="w-4 h-4 text-emerald-600" />
+                    <span>4. Pièces Justificatives &amp; Documents Reçus en Ligne</span>
+                  </h4>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    {selectedAdmission.uploadedDocuments && selectedAdmission.uploadedDocuments.length > 0 
+                      ? `${selectedAdmission.uploadedDocuments.length} pièce(s) transmise(s)`
+                      : 'Dossier physique attendu'}
+                  </span>
                 </div>
+
+                {selectedAdmission.uploadedDocuments && selectedAdmission.uploadedDocuments.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {selectedAdmission.uploadedDocuments.map((doc) => (
+                      <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-300 transition text-xs group">
+                        <div className="flex items-center gap-2.5 truncate pr-2">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div className="truncate">
+                            <span className="font-bold text-slate-800 block truncate text-xs">{doc.title}</span>
+                            <span className="text-[10px] text-slate-500 block truncate">
+                              {doc.fileName} &bull; {doc.fileSize}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setPreviewDocument(doc)}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-issr-primary hover:text-white text-slate-700 transition cursor-pointer"
+                            title="Consulter le document"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+                          <a
+                            href={doc.dataUrl || '#'}
+                            download={`ISSR-${selectedAdmission.trackingNumber}_${doc.fileName}`}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-emerald-600 hover:text-white text-slate-700 transition cursor-pointer"
+                            title="Télécharger le document"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>Aucun fichier numérique téléversé directement lors de la pré-inscription.</span>
+                    </div>
+                    <a
+                      href={`https://wa.me/${selectedAdmission.personalInfo.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                        `Bonjour ${selectedAdmission.personalInfo.firstName}, la commission d'admission de l'ISSR Bakhita étudie votre dossier (${selectedAdmission.trackingNumber}). Merci de nous faire parvenir vos pièces justificatives (Acte de naissance, diplôme, lettre de motivation).`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow transition shrink-0"
+                    >
+                      <span>Relancer sur WhatsApp</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -1092,9 +1220,98 @@ export default function AdminPage() {
             <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end">
               <button
                 onClick={() => setSelectedAdmission(null)}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 px-6 rounded-xl transition"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 px-6 rounded-xl transition cursor-pointer"
               >
                 Fermer l&apos;inspecteur
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PREVIEW DOCUMENT MODAL */}
+      {previewDocument && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                  Visualisation de la pièce justificative
+                </span>
+                <h3 className="font-serif font-bold text-lg text-slate-900">
+                  {previewDocument.title}
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {previewDocument.fileName} &bull; {previewDocument.fileSize}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewDocument(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto py-6 flex items-center justify-center bg-slate-50 rounded-2xl my-4">
+              {previewDocument.dataUrl?.startsWith('data:image/') ? (
+                <img 
+                  src={previewDocument.dataUrl} 
+                  alt={previewDocument.title} 
+                  className="max-h-[60vh] max-w-full rounded-xl object-contain shadow"
+                />
+              ) : previewDocument.dataUrl?.startsWith('data:application/pdf') ? (
+                <div className="text-center space-y-3 p-8">
+                  <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-inner">
+                    <FileText className="w-8 h-8" />
+                  </div>
+                  <div className="font-bold text-slate-900 text-sm">{previewDocument.title}</div>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                    Document PDF certifié conforme reçu en ligne.
+                  </p>
+                  <a
+                    href={previewDocument.dataUrl}
+                    download={previewDocument.fileName}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Télécharger le PDF original</span>
+                  </a>
+                </div>
+              ) : (
+                <div className="text-center space-y-3 p-8">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto shadow-inner">
+                    <FileText className="w-8 h-8" />
+                  </div>
+                  <div className="font-bold text-slate-900 text-sm">{previewDocument.fileName}</div>
+                  <a
+                    href={previewDocument.dataUrl || '#'}
+                    download={previewDocument.fileName}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Télécharger la pièce</span>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center pt-2">
+              <a
+                href={previewDocument.dataUrl || '#'}
+                download={previewDocument.fileName}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-issr-primary hover:text-amber-600"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Télécharger une copie</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setPreviewDocument(null)}
+                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition cursor-pointer"
+              >
+                Fermer
               </button>
             </div>
           </div>

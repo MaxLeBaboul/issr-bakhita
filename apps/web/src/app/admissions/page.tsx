@@ -1,26 +1,117 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { 
   GraduationCap, 
   CheckCircle, 
-  Check,
+  Check, 
   ArrowRight, 
   ArrowLeft, 
   Upload, 
   FileText, 
   ShieldCheck, 
-  Sparkles,
-  AlertCircle,
-  Copy,
-  CheckCheck,
-  Building2,
-  Calendar,
-  UserCheck
+  Sparkles, 
+  AlertCircle, 
+  Copy, 
+  CheckCheck, 
+  Building2, 
+  Calendar, 
+  UserCheck,
+  UploadCloud,
+  FileCheck,
+  File,
+  Image as ImageIcon,
+  Trash2,
+  Eye,
+  Download,
+  AlertTriangle,
+  X
 } from 'lucide-react';
 import { FORMATIONS, INSTITUTION_INFO } from '@/data/mockData';
+import { UploadedDocumentItem, AdmissionApplication } from '@/types';
+
+interface DocumentConfig {
+  key: string;
+  category: UploadedDocumentItem['category'];
+  title: string;
+  subtitle: string;
+  description: string;
+  mandatory: boolean;
+  formats: string;
+  accept: string;
+  typeLabel: string;
+}
+
+const REQUIRED_DOCUMENTS: DocumentConfig[] = [
+  {
+    key: 'idDocument',
+    category: 'idDocument',
+    title: "Acte de Naissance ou CNI / Passeport",
+    subtitle: "Justificatif d'état civil officiel",
+    description: "Photocopie légalisée de l'acte de naissance ou pièce d'identité en cours de validité (recto/verso).",
+    mandatory: true,
+    formats: ".pdf, .jpg, .jpeg, .png",
+    accept: ".pdf,.jpg,.jpeg,.png",
+    typeLabel: "PDF ou Image"
+  },
+  {
+    key: 'diploma',
+    category: 'diploma',
+    title: "Copie certifiée du plus haut diplôme",
+    subtitle: "Baccalauréat, Licence ou équivalent",
+    description: "Attestation de réussite ou diplôme officiel certifié par les autorités académiques compétentes.",
+    mandatory: true,
+    formats: ".pdf, .jpg, .jpeg, .png",
+    accept: ".pdf,.jpg,.jpeg,.png",
+    typeLabel: "PDF ou Image"
+  },
+  {
+    key: 'transcripts',
+    category: 'transcripts',
+    title: "Relevés de notes universitaires / scolaires",
+    subtitle: "Historique des résultats académiques",
+    description: "Relevés de notes de la dernière année d'études ou du cursus secondaire/supérieur.",
+    mandatory: false,
+    formats: ".pdf, .jpg, .jpeg, .png",
+    accept: ".pdf,.jpg,.jpeg,.png",
+    typeLabel: "PDF ou Image (Optionnel)"
+  },
+  {
+    key: 'recommendation',
+    category: 'recommendation',
+    title: "Lettre de recommandation ecclésiale",
+    subtitle: "Avis favorable de l'autorité ecclésiastique",
+    description: "Délivrée par l'Évêque ordinaire, le Supérieur(e) Majeur(e) ou le Curé de paroisse d'origine.",
+    mandatory: false,
+    formats: ".pdf, .doc, .docx, .jpg, .png",
+    accept: ".pdf,.doc,.docx,.jpg,.png",
+    typeLabel: "PDF, Word ou Image"
+  },
+  {
+    key: 'motivation',
+    category: 'motivation',
+    title: "Lettre de motivation & Projet d'études",
+    subtitle: "Exposé des motifs pour les sciences religieuses",
+    description: "Lettre expliquant vos attentes spirituelles, intellectuelles et professionnelles au sein de l'ISSR.",
+    mandatory: true,
+    formats: ".pdf, .doc, .docx, .jpg, .png",
+    accept: ".pdf,.doc,.docx,.jpg,.png",
+    typeLabel: "PDF, Word ou Image"
+  },
+  {
+    key: 'photo',
+    category: 'photo',
+    title: "Photo d'identité d'étudiant récente",
+    subtitle: "Pour la carte officielle d'étudiant ISSR 2026-2027",
+    description: "Photo d'identité nette en couleur sur fond clair uni, tête nue et visage dégagé.",
+    mandatory: true,
+    formats: ".jpg, .jpeg, .png",
+    accept: ".jpg,.jpeg,.png,image/*",
+    typeLabel: "Image JPG ou PNG"
+  }
+];
 
 function AdmissionsContent() {
   const searchParams = useSearchParams();
@@ -53,12 +144,13 @@ function AdmissionsContent() {
     highestDegree: 'Baccalauréat',
     institution: '',
     yearObtained: '2025',
-
-    // Files acknowledgment
-    hasIdDocument: false,
-    hasDiplomaCopy: false,
-    hasRecommendationLetter: false,
   });
+
+  // Real uploaded documents state (Base64 data URL persistent)
+  const [uploadedDocs, setUploadedDocs] = useState<Record<string, UploadedDocumentItem>>({});
+  const [dragOverKey, setDragOverKey] = useState<string | null>(null);
+  const [activePreviewDoc, setActivePreviewDoc] = useState<UploadedDocumentItem | null>(null);
+  const [validationError, setValidationError] = useState<string>('');
 
   const [submitted, setSubmitted] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -75,8 +167,68 @@ function AdmissionsContent() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (name: 'hasIdDocument' | 'hasDiplomaCopy' | 'hasRecommendationLetter') => {
-    setFormData(prev => ({ ...prev, [name]: !prev[name] }));
+  const handleFileUpload = (docKey: string, file: File) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Le fichier dépasse la taille maximale autorisée de 10 Mo.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      const formatSize = (bytes: number) => {
+        if (bytes < 1024) return bytes + ' o';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' Mo';
+      };
+
+      const docConfig = REQUIRED_DOCUMENTS.find(d => d.key === docKey);
+      const newDoc: UploadedDocumentItem = {
+        id: `doc-${Date.now()}-${docKey}`,
+        category: (docConfig?.category || 'idDocument') as any,
+        title: docConfig?.title || file.name,
+        fileName: file.name,
+        fileSize: formatSize(file.size),
+        fileType: file.type || 'application/octet-stream',
+        dataUrl: result,
+        uploadedAt: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      setUploadedDocs(prev => ({
+        ...prev,
+        [docKey]: newDoc
+      }));
+      setValidationError('');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveDoc = (docKey: string) => {
+    setUploadedDocs(prev => {
+      const updated = { ...prev };
+      delete updated[docKey];
+      return updated;
+    });
+  };
+
+  const handleGoToStep5 = () => {
+    const missing: string[] = [];
+    if (!uploadedDocs['idDocument']) missing.push("Acte de Naissance ou CNI / Passeport");
+    if (!uploadedDocs['diploma']) missing.push("Copie certifiée du plus haut diplôme");
+    if (!uploadedDocs['motivation']) missing.push("Lettre de motivation");
+    if (!uploadedDocs['photo']) missing.push("Photo d'identité d'étudiant");
+    if (formData.status !== 'LAIC' && !uploadedDocs['recommendation']) {
+      missing.push("Lettre de recommandation ecclésiale (obligatoire pour clercs et consacrés)");
+    }
+
+    if (missing.length > 0) {
+      setValidationError(`Veuillez téléverser les documents obligatoires suivants avant de poursuivre : ${missing.join(', ')}.`);
+      return;
+    }
+
+    setValidationError('');
+    setStep(5);
   };
 
   const copyTrackingNumber = () => {
@@ -93,46 +245,59 @@ function AdmissionsContent() {
     const tracking = `ISSR-2026-${randomCode}`;
     setTrackingNumber(tracking);
 
+    const docsList = Object.values(uploadedDocs);
+
+    const newApplication: AdmissionApplication = {
+      id: Date.now().toString(),
+      trackingNumber: tracking,
+      createdAt: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
+      status: 'PENDING' as const,
+      personalInfo: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        gender: formData.gender as 'M' | 'F',
+        dateOfBirth: formData.dateOfBirth,
+        placeOfBirth: formData.placeOfBirth,
+        nationality: formData.nationality,
+        phone: formData.phone,
+        whatsapp: formData.whatsapp || formData.phone,
+        email: formData.email,
+        address: formData.address,
+        status: formData.status as any,
+        congregationOrDiocese: formData.congregationOrDiocese,
+      },
+      academicChoice: {
+        formationId: 'filiere-selected',
+        formationTitle: formData.filiere,
+        modality: formData.modality as any,
+        academicYear: formData.academicYear,
+      },
+      previousEducation: {
+        highestDegree: formData.highestDegree,
+        institution: formData.institution,
+        yearObtained: formData.yearObtained,
+      },
+      documentsSubmitted: {
+        idCardOrPassport: !!uploadedDocs['idDocument'],
+        highestDiploma: !!uploadedDocs['diploma'],
+        recommendationLetter: !!uploadedDocs['recommendation'],
+        motivationLetter: !!uploadedDocs['motivation'],
+      },
+      uploadedDocuments: docsList
+    };
+
     try {
       const storedApplications = JSON.parse(localStorage.getItem('issr_admissions') || '[]');
-      const newApplication = {
-        id: Date.now().toString(),
-        trackingNumber: tracking,
-        createdAt: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
-        status: 'PENDING' as const,
-        personalInfo: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          gender: formData.gender,
-          dateOfBirth: formData.dateOfBirth,
-          placeOfBirth: formData.placeOfBirth,
-          nationality: formData.nationality,
-          phone: formData.phone,
-          whatsapp: formData.whatsapp || formData.phone,
-          email: formData.email,
-          address: formData.address,
-          status: formData.status,
-          congregationOrDiocese: formData.congregationOrDiocese,
-        },
-        academicChoice: {
-          formationId: 'filiere-selected',
-          formationTitle: formData.filiere,
-          modality: formData.modality,
-          academicYear: formData.academicYear,
-        },
-        previousEducation: {
-          highestDegree: formData.highestDegree,
-          institution: formData.institution,
-          yearObtained: formData.yearObtained,
-        },
-        documentsSubmitted: {
-          idCardOrPassport: formData.hasIdDocument,
-          highestDiploma: formData.hasDiplomaCopy,
-          recommendationLetter: formData.hasRecommendationLetter,
-          motivationLetter: true,
-        },
-      };
       localStorage.setItem('issr_admissions', JSON.stringify([newApplication, ...storedApplications]));
+
+      // Also send to NestJS school service in background
+      fetch('http://localhost:3001/api/admissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newApplication)
+      }).catch(() => {
+        // Fallback gracefully
+      });
     } catch {
       // Fallback
     }
@@ -140,7 +305,7 @@ function AdmissionsContent() {
     setSubmitted(true);
   };
 
-  const stepLabels = ['Formation', 'Statut', 'Identité', 'Parcours', 'Confirmation'];
+  const stepLabels = ['Formation', 'Statut', 'Identité', 'Parcours & Pièces', 'Confirmation'];
 
   return (
     <div className="bg-[#FAF8F5] min-h-screen pb-20">
@@ -546,58 +711,165 @@ function AdmissionsContent() {
                       </div>
                     </div>
 
-                    <div className="pt-2">
-                      <span className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        Pièces du dossier que vous vous engagez à fournir :
-                      </span>
-                      <div className="space-y-2.5">
-                        <div 
-                          onClick={() => handleCheckboxChange('hasIdDocument')}
-                          className={`p-3.5 rounded-2xl border cursor-pointer flex items-center justify-between text-xs transition-all duration-200 ${
-                            formData.hasIdDocument ? 'bg-amber-50/60 border-issr-gold text-slate-900 font-medium' : 'bg-slate-50 border-slate-200 text-slate-600'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition ${
-                              formData.hasIdDocument ? 'bg-issr-gold border-issr-gold text-white' : 'border-slate-300 bg-white'
-                            }`}>
-                              {formData.hasIdDocument && <Check className="w-3.5 h-3.5" />}
-                            </div>
-                            <span>Photocopie de l&apos;Acte de Naissance ou CNI / Passeport</span>
-                          </div>
+                    <div className="pt-4 border-t border-slate-200">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                        <div>
+                          <span className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                            Pièces justificatives du dossier numérique *
+                          </span>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Téléversez vos documents scannés ou photographiés (PDF, JPG, PNG, DOC - max 10 Mo par document).
+                          </p>
                         </div>
 
-                        <div 
-                          onClick={() => handleCheckboxChange('hasDiplomaCopy')}
-                          className={`p-3.5 rounded-2xl border cursor-pointer flex items-center justify-between text-xs transition-all duration-200 ${
-                            formData.hasDiplomaCopy ? 'bg-amber-50/60 border-issr-gold text-slate-900 font-medium' : 'bg-slate-50 border-slate-200 text-slate-600'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition ${
-                              formData.hasDiplomaCopy ? 'bg-issr-gold border-issr-gold text-white' : 'border-slate-300 bg-white'
-                            }`}>
-                              {formData.hasDiplomaCopy && <Check className="w-3.5 h-3.5" />}
-                            </div>
-                            <span>Copie certifiée conforme du plus haut diplôme (Baccalauréat ou Licence)</span>
-                          </div>
-                        </div>
+                        {/* Upload Progress Pill */}
+                        {(() => {
+                          const mandatoryCount = REQUIRED_DOCUMENTS.filter(d => d.mandatory || (d.key === 'recommendation' && formData.status !== 'LAIC')).length;
+                          const uploadedMandatoryCount = REQUIRED_DOCUMENTS.filter(d => (d.mandatory || (d.key === 'recommendation' && formData.status !== 'LAIC')) && !!uploadedDocs[d.key]).length;
+                          const isComplete = uploadedMandatoryCount >= mandatoryCount;
 
-                        <div 
-                          onClick={() => handleCheckboxChange('hasRecommendationLetter')}
-                          className={`p-3.5 rounded-2xl border cursor-pointer flex items-center justify-between text-xs transition-all duration-200 ${
-                            formData.hasRecommendationLetter ? 'bg-amber-50/60 border-issr-gold text-slate-900 font-medium' : 'bg-slate-50 border-slate-200 text-slate-600'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition ${
-                              formData.hasRecommendationLetter ? 'bg-issr-gold border-issr-gold text-white' : 'border-slate-300 bg-white'
+                          return (
+                            <div className={`px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-2 self-start sm:self-auto ${
+                              isComplete 
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300' 
+                                : 'bg-amber-50 text-amber-800 border-amber-300'
                             }`}>
-                              {formData.hasRecommendationLetter && <Check className="w-3.5 h-3.5" />}
+                              <span className={`w-2 h-2 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
+                              <span>Pièces obligatoires : {uploadedMandatoryCount} / {mandatoryCount}</span>
                             </div>
-                            <span>Lettre de recommandation de l&apos;Évêque, Supérieur(e) ou Curé de paroisse</span>
+                          );
+                        })()}
+                      </div>
+
+                      {validationError && (
+                        <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn">
+                          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                          <div>
+                            <span className="font-bold">Documents obligatoires manquants :</span>
+                            <p className="mt-0.5 leading-relaxed">{validationError}</p>
                           </div>
                         </div>
+                      )}
+
+                      {/* Documents Upload Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {REQUIRED_DOCUMENTS.map((doc) => {
+                          const isUploaded = !!uploadedDocs[doc.key];
+                          const uploadedFile = uploadedDocs[doc.key];
+                          const isMandatory = doc.mandatory || (doc.key === 'recommendation' && formData.status !== 'LAIC');
+                          const isDragOver = dragOverKey === doc.key;
+
+                          return (
+                            <div
+                              key={doc.key}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragOverKey(doc.key);
+                              }}
+                              onDragLeave={() => setDragOverKey(null)}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                setDragOverKey(null);
+                                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                  handleFileUpload(doc.key, e.dataTransfer.files[0]);
+                                }
+                              }}
+                              className={`p-4 rounded-2xl border transition-all duration-200 relative ${
+                                isUploaded
+                                  ? 'bg-emerald-50/50 border-emerald-300 shadow-xs'
+                                  : isDragOver
+                                  ? 'bg-amber-50 border-amber-500 ring-2 ring-amber-300 shadow-md'
+                                  : 'bg-white border-slate-200 hover:border-amber-300 hover:shadow-sm'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-3 mb-2">
+                                <div className="flex items-start gap-2.5">
+                                  <div className={`p-2 rounded-xl shrink-0 ${
+                                    isUploaded 
+                                      ? 'bg-emerald-100 text-emerald-700' 
+                                      : 'bg-slate-100 text-slate-600'
+                                  }`}>
+                                    {isUploaded ? <FileCheck className="w-5 h-5" /> : <UploadCloud className="w-5 h-5" />}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-bold text-slate-900 text-xs leading-snug">
+                                      {doc.title}
+                                    </h4>
+                                    <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                                      {doc.subtitle}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${
+                                  isMandatory 
+                                    ? 'bg-rose-100 text-rose-700' 
+                                    : 'bg-blue-50 text-blue-700'
+                                }`}>
+                                  {isMandatory ? 'Obligatoire' : 'Recommandé'}
+                                </span>
+                              </div>
+
+                              {/* Upload / Ready Area */}
+                              {isUploaded ? (
+                                <div className="mt-3 pt-2.5 border-t border-emerald-200/70 flex items-center justify-between text-xs">
+                                  <div className="truncate pr-2">
+                                    <span className="font-semibold text-slate-800 text-[11px] block truncate">
+                                      {uploadedFile.fileName}
+                                    </span>
+                                    <span className="text-[10px] text-emerald-700 font-medium">
+                                      ✓ Téléversé &bull; {uploadedFile.fileSize}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => setActivePreviewDoc(uploadedFile)}
+                                      className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-issr-primary hover:bg-slate-50 transition"
+                                      title="Visualiser la pièce"
+                                    >
+                                      <Eye className="w-3.5 h-3.5" />
+                                    </button>
+                                    <label className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-amber-600 hover:bg-slate-50 transition cursor-pointer" title="Remplacer le fichier">
+                                      <Upload className="w-3.5 h-3.5" />
+                                      <input
+                                        type="file"
+                                        accept={doc.accept}
+                                        onChange={(e) => e.target.files?.[0] && handleFileUpload(doc.key, e.target.files[0])}
+                                        className="hidden"
+                                      />
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveDoc(doc.key)}
+                                      className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-rose-600 hover:bg-rose-50 transition"
+                                      title="Supprimer la pièce"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <label className="mt-2.5 block border border-dashed border-slate-300 rounded-xl p-3 text-center bg-slate-50/70 hover:bg-amber-50/50 hover:border-amber-400 transition cursor-pointer group">
+                                  <div className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-700 group-hover:text-amber-900">
+                                    <Upload className="w-3.5 h-3.5 text-amber-600" />
+                                    <span>Choisir un fichier ou glisser-déposer</span>
+                                  </div>
+                                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                                    {doc.typeLabel} (max 10 Mo)
+                                  </span>
+                                  <input
+                                    type="file"
+                                    accept={doc.accept}
+                                    onChange={(e) => e.target.files?.[0] && handleFileUpload(doc.key, e.target.files[0])}
+                                    className="hidden"
+                                  />
+                                </label>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -612,7 +884,7 @@ function AdmissionsContent() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setStep(5)}
+                        onClick={handleGoToStep5}
                         className="btn-shimmer inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-issr-primary hover:bg-issr-primary-light text-white text-xs font-bold shadow-md transition-all hover:scale-105"
                       >
                         <span>Vérifier &amp; Confirmer</span>
@@ -627,7 +899,7 @@ function AdmissionsContent() {
                   <div className="space-y-5 animate-fade-in-up">
                     <h2 className="font-serif font-bold text-xl text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-issr-gold" />
-                      <span>Étape 5 : Récapitulatif et Transmission</span>
+                      <span>Étape 5 : Récapitulatif et Transmission du Dossier</span>
                     </h2>
 
                     <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-3">
@@ -657,12 +929,42 @@ function AdmissionsContent() {
                           <p className="text-slate-800 font-medium">{formData.phone}</p>
                         </div>
                       </div>
+
+                      {/* Attached Documents Recapitulative */}
+                      <div className="border-t border-slate-200 pt-2.5">
+                        <span className="text-slate-500 uppercase font-bold text-[10px] block mb-2">
+                          Pièces justificatives prêtes pour l&apos;envoi ({Object.keys(uploadedDocs).length}) :
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {Object.values(uploadedDocs).map((doc) => (
+                            <div 
+                              key={doc.id} 
+                              className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs"
+                            >
+                              <div className="flex items-center gap-2 truncate pr-2">
+                                <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                                <div className="truncate">
+                                  <span className="font-bold text-slate-800 block truncate text-[11px]">{doc.title}</span>
+                                  <span className="text-[10px] text-slate-500 truncate">{doc.fileName} ({doc.fileSize})</span>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setActivePreviewDoc(doc)}
+                                className="text-[11px] text-issr-primary hover:text-amber-600 font-semibold underline shrink-0"
+                              >
+                                Aperçu
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2.5">
                       <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                       <span>
-                        En soumettant ce formulaire, votre pré-inscription est instantanément enregistrée au secrétariat de l&apos;ISSR Sainte Bakhita. Un code de suivi officiel vous sera attribué pour toutes vos correspondances.
+                        En soumettant ce formulaire, votre candidature complète et vos pièces justificatives numériques sont instantanément enregistrées au secrétariat de l&apos;ISSR Sainte Bakhita. Un code de suivi officiel vous sera attribué pour toutes vos correspondances.
                       </span>
                     </div>
 
@@ -764,6 +1066,87 @@ function AdmissionsContent() {
           )}
 
         </div>
+
+        {/* Document Preview Modal */}
+        {activePreviewDoc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+            <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                    Aperçu de la pièce justificative
+                  </span>
+                  <h3 className="font-serif font-bold text-lg text-slate-900">
+                    {activePreviewDoc.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {activePreviewDoc.fileName} &bull; {activePreviewDoc.fileSize} &bull; Transmis à {activePreviewDoc.uploadedAt}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActivePreviewDoc(null)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto py-6 flex items-center justify-center bg-slate-50 rounded-2xl my-4">
+                {activePreviewDoc.dataUrl?.startsWith('data:image/') ? (
+                  <img 
+                    src={activePreviewDoc.dataUrl} 
+                    alt={activePreviewDoc.title} 
+                    className="max-h-[60vh] max-w-full rounded-xl object-contain shadow"
+                  />
+                ) : activePreviewDoc.dataUrl?.startsWith('data:application/pdf') ? (
+                  <div className="text-center space-y-3 p-8">
+                    <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-inner">
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <div className="font-bold text-slate-900 text-sm">Document PDF numérique certifié</div>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                      Ce document a été chiffré et encodé au format officiel pour l&apos;instruction du dossier.
+                    </p>
+                    <a
+                      href={activePreviewDoc.dataUrl}
+                      download={activePreviewDoc.fileName}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Télécharger le PDF original</span>
+                    </a>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-3 p-8">
+                    <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto shadow-inner">
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <div className="font-bold text-slate-900 text-sm">{activePreviewDoc.fileName}</div>
+                    <a
+                      href={activePreviewDoc.dataUrl}
+                      download={activePreviewDoc.fileName}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-issr-primary text-white text-xs font-bold hover:bg-issr-primary-light transition shadow"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Télécharger le fichier</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => setActivePreviewDoc(null)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition cursor-pointer"
+                >
+                  Fermer l&apos;aperçu
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

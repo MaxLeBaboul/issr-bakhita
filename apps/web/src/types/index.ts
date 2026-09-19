@@ -49,6 +49,17 @@ export interface Article {
   featured?: boolean;
 }
 
+export interface UploadedDocumentItem {
+  id: string;
+  category: 'idDocument' | 'diploma' | 'transcripts' | 'recommendation' | 'motivation' | 'photo';
+  title: string;
+  fileName: string;
+  fileSize: string;
+  fileType: string;
+  dataUrl?: string;
+  uploadedAt: string;
+}
+
 export interface AdmissionApplication {
   id: string;
   trackingNumber: string;
@@ -85,4 +96,5 @@ export interface AdmissionApplication {
     recommendationLetter: boolean;
     motivationLetter: boolean;
   };
+  uploadedDocuments?: UploadedDocumentItem[];
 }

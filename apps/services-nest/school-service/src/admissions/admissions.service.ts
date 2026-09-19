@@ -36,6 +36,7 @@ export interface AdmissionDossier {
     recommendationLetter: boolean;
     motivationLetter: boolean;
   };
+  uploadedDocuments?: any[];
 }
 
 @Injectable()
