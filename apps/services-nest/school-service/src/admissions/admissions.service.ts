@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { MailService } from '../notifications/mail.service';
 
 export interface AdmissionDossier {
   id: string;
@@ -117,6 +118,8 @@ export class AdmissionsService {
     },
   ];
 
+  constructor(private readonly mailService: MailService) {}
+
   findAll(status?: string): AdmissionDossier[] {
     if (status && status !== 'ALL') {
       return this.admissions.filter((a) => a.status === status);
@@ -146,19 +149,51 @@ export class AdmissionsService {
     };
     this.admissions.unshift(newAdmission);
 
-    // Event Bus simulated dispatch
+    // Dispatch automated email: ADMISSION_RECEIVED
+    if (newAdmission.personalInfo?.email) {
+      this.mailService.sendAdmissionReceivedEmail({
+        firstName: newAdmission.personalInfo.firstName,
+        lastName: newAdmission.personalInfo.lastName,
+        email: newAdmission.personalInfo.email,
+        trackingNumber: newAdmission.trackingNumber,
+        formationTitle: newAdmission.academicChoice?.formationTitle || 'Formation Théologique',
+      }).catch(err => console.error("Erreur envoi email accusé réception:", err));
+    }
+
+    // Event Bus dispatch
     console.log(`[EVENT_BUS] Event ADMISSION_SUBMITTED emitted for ${trackingNumber}`);
 
     return newAdmission;
   }
 
-  updateStatus(id: string, status: AdmissionDossier['status']): AdmissionDossier {
+  updateStatus(id: string, status: AdmissionDossier['status'], notes?: string): AdmissionDossier {
     const admission = this.admissions.find((a) => a.id === id || a.trackingNumber === id);
     if (!admission) {
       throw new NotFoundException(`Candidature avec identifiant ${id} non trouvée`);
     }
+    const previousStatus = admission.status;
     admission.status = status;
     console.log(`[EVENT_BUS] Event ADMISSION_STATUS_UPDATED for ${admission.trackingNumber}: ${status}`);
+
+    // Dispatch automated emails on status transitions
+    if (admission.personalInfo?.email && status !== previousStatus) {
+      const applicantInfo = {
+        firstName: admission.personalInfo.firstName,
+        lastName: admission.personalInfo.lastName,
+        email: admission.personalInfo.email,
+        trackingNumber: admission.trackingNumber,
+        formationTitle: admission.academicChoice?.formationTitle || 'Formation Théologique',
+      };
+
+      if (status === 'UNDER_REVIEW') {
+        this.mailService.sendAdmissionUnderReviewEmail(applicantInfo)
+          .catch(err => console.error("Erreur envoi email mise en examen:", err));
+      } else if (status === 'ACCEPTED' || status === 'REJECTED') {
+        this.mailService.sendAdmissionDecisionEmail(applicantInfo, status, notes)
+          .catch(err => console.error("Erreur envoi email décision admission:", err));
+      }
+    }
+
     return admission;
   }
 }

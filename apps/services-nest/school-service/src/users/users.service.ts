@@ -1,0 +1,287 @@
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import * as crypto from 'crypto';
+import { MailService } from '../notifications/mail.service';
+
+export interface UserAccount {
+  id: string;
+  email: string;
+  role: 
+    | 'admin'
+    | 'directeur'
+    | 'secretaire_admin'
+    | 'secretaire_acad'
+    | 'prefet_etudes'
+    | 'econome'
+    | 'rep_enseignants'
+    | 'enseignants'
+    | 'etudiants';
+  roleTitle: string;
+  firstName: string;
+  lastName: string;
+  department: string;
+  isActive: boolean;
+  passwordHash?: string;
+  resetToken?: string;
+  resetTokenExpires?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface CreateUserDto {
+  email: string;
+  role: UserAccount['role'];
+  roleTitle?: string;
+  firstName: string;
+  lastName: string;
+  department: string;
+}
+
+const ROLE_TITLES: Record<UserAccount['role'], string> = {
+  admin: 'Super-Admin (DSI)',
+  directeur: "Direction de l'Institut",
+  secretaire_admin: 'Secrétariat Administratif',
+  secretaire_acad: 'Secrétariat Académique & Examens',
+  prefet_etudes: 'Préfecture des Études',
+  econome: 'Économat & Intendance',
+  rep_enseignants: 'Délégation des Enseignants',
+  enseignants: 'Corps Professoral',
+  etudiants: 'Espace Étudiant',
+};
+
+@Injectable()
+export class UsersService {
+  private users: UserAccount[] = [
+    {
+      id: 'usr-admin-01',
+      email: 'dsi@issr-bakhita.cm',
+      role: 'admin',
+      roleTitle: 'Super-Admin (DSI)',
+      firstName: 'Gaël Marcel',
+      lastName: 'ABANDA',
+      department: 'Direction des Systèmes d’Information',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-dir-01',
+      email: 'direction@issr-bakhita.cm',
+      role: 'directeur',
+      roleTitle: "Direction de l'Institut",
+      firstName: 'Patrice',
+      lastName: 'MEKANA',
+      department: 'Direction Générale',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-secadmin-01',
+      email: 'secretariat@issr-bakhita.cm',
+      role: 'secretaire_admin',
+      roleTitle: 'Secrétariat Administratif',
+      firstName: 'Christine',
+      lastName: 'NKOLO',
+      department: 'Accueil & Admissions',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-secacad-01',
+      email: 'scolarite.acad@issr-bakhita.cm',
+      role: 'secretaire_acad',
+      roleTitle: 'Secrétariat Académique & Examens',
+      firstName: 'Jean Claude',
+      lastName: 'MEKOULOU',
+      department: 'Service de la Scolarité & Examens',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-prefet-01',
+      email: 'prefet.etudes@issr-bakhita.cm',
+      role: 'prefet_etudes',
+      roleTitle: 'Préfecture des Études',
+      firstName: 'Patience',
+      lastName: 'ENGANEMBEN',
+      department: 'Direction Académique & Pédagogique',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-econome-01',
+      email: 'economat@issr-bakhita.cm',
+      role: 'econome',
+      roleTitle: 'Économat & Intendance',
+      firstName: 'Jean-Paul',
+      lastName: 'BESSALA',
+      department: 'Économat & Intendance',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-repens-01',
+      email: 'rep.enseignants@issr-bakhita.cm',
+      role: 'rep_enseignants',
+      roleTitle: 'Délégation des Enseignants',
+      firstName: 'Antoine',
+      lastName: 'ESSOMBA',
+      department: 'Conseil Pédagogique',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-ens-01',
+      email: 't.ndong@issr-bakhita.cm',
+      role: 'enseignants',
+      roleTitle: 'Corps Professoral',
+      firstName: 'Théophile',
+      lastName: 'NDONG',
+      department: 'Département d’Études Bibliques',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    },
+    {
+      id: 'usr-etud-01',
+      email: 'e.ngoumou@etudiant.issr-bakhita.cm',
+      role: 'etudiants',
+      roleTitle: 'Espace Étudiant',
+      firstName: 'Emmanuel',
+      lastName: 'NGOUMOU',
+      department: 'Promotion Saint Thomas d’Aquin',
+      isActive: true,
+      createdAt: '2026-09-01T08:00:00Z',
+      createdBy: 'SYSTEM_BOOTSTRAP',
+    }
+  ];
+
+  constructor(private readonly mailService: MailService) {}
+
+  /**
+   * List all user accounts
+   */
+  findAll(): Omit<UserAccount, 'passwordHash' | 'resetToken'>[] {
+    return this.users.map(({ passwordHash, resetToken, ...safeUser }) => safeUser);
+  }
+
+  /**
+   * Find a user by email
+   */
+  findByEmail(email: string): UserAccount | undefined {
+    return this.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+  }
+
+  /**
+   * Find a user by reset token
+   */
+  findByResetToken(token: string): UserAccount | undefined {
+    return this.users.find(u => u.resetToken === token);
+  }
+
+  /**
+   * Manually create a user account (strictly restricted to Admin, Directeur, Secrétaire Admin)
+   */
+  async createUser(dto: CreateUserDto, actorRole: string): Promise<Omit<UserAccount, 'passwordHash' | 'resetToken'>> {
+    // 1. Check permissions
+    const authorizedRoles = ['admin', 'directeur', 'secretaire_admin'];
+    if (!authorizedRoles.includes(actorRole)) {
+      throw new ForbiddenException(
+        "Accès refusé : Seuls l'Administrateur (DSI), le Directeur et la Secrétaire Administrative sont autorisés à créer des comptes."
+      );
+    }
+
+    // 2. Check for duplicate email
+    const existing = this.findByEmail(dto.email);
+    if (existing) {
+      throw new BadRequestException(`Un compte existe déjà avec l'adresse email ${dto.email}`);
+    }
+
+    // 3. Generate secure reset token for initial password setup (valid 48h)
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpires = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
+
+    const roleTitle = dto.roleTitle || ROLE_TITLES[dto.role] || dto.role;
+
+    const newUser: UserAccount = {
+      id: `usr-${Date.now()}`,
+      email: dto.email.trim().toLowerCase(),
+      role: dto.role,
+      roleTitle,
+      firstName: dto.firstName.trim(),
+      lastName: dto.lastName.trim(),
+      department: dto.department.trim(),
+      isActive: false, // Activated once user sets their password
+      resetToken,
+      resetTokenExpires,
+      createdAt: new Date().toISOString(),
+      createdBy: actorRole,
+    };
+
+    this.users.unshift(newUser);
+
+    // 4. Dispatch official email with setup link
+    await this.mailService.sendAccountCreatedEmail(
+      {
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        roleTitle: newUser.roleTitle,
+        department: newUser.department,
+      },
+      resetToken
+    );
+
+    const { passwordHash, resetToken: _, ...safeUser } = newUser;
+    return safeUser;
+  }
+
+  /**
+   * Set a reset token for forgot password
+   */
+  async setResetToken(email: string): Promise<string> {
+    const user = this.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException(`Aucun compte institutionnel n'est associé à l'adresse ${email}`);
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetToken = resetToken;
+    user.resetTokenExpires = new Date(Date.now() + 24 * 3600 * 1000).toISOString(); // 24h
+
+    // Dispatch email
+    await this.mailService.sendPasswordResetEmail(user.email, resetToken);
+
+    return resetToken;
+  }
+
+  /**
+   * Apply password reset
+   */
+  async resetPassword(token: string, newPasswordPlain: string): Promise<boolean> {
+    const user = this.findByResetToken(token);
+    if (!user) {
+      throw new BadRequestException("Jeton de réinitialisation invalide ou inexistant.");
+    }
+
+    if (user.resetTokenExpires && new Date(user.resetTokenExpires) < new Date()) {
+      throw new BadRequestException("Le jeton de réinitialisation a expiré. Veuillez refaire une demande.");
+    }
+
+    // Hash password with SHA-256 + salt
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.scryptSync(newPasswordPlain, salt, 64).toString('hex');
+    user.passwordHash = `${salt}:${hash}`;
+    user.resetToken = undefined;
+    user.resetTokenExpires = undefined;
+    user.isActive = true;
+
+    console.log(`[USERS_SERVICE] 🔐 Mot de passe mis à jour avec succès pour ${user.email}`);
+    return true;
+  }
+}

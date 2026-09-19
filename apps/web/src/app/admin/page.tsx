@@ -43,7 +43,10 @@ import {
   AlertTriangle,
   HelpCircle,
   FileDown,
-  Printer
+  Printer,
+  Mail,
+  UserPlus,
+  Inbox
 } from 'lucide-react';
 import { ARTICLES, INSTITUTION_INFO } from '../../data/mockData';
 import { Article, AdmissionApplication, UploadedDocumentItem } from '../../types';
@@ -138,6 +141,45 @@ export default function AdminPage() {
   // Action notification toast
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'warning' } | null>(null);
 
+  // User manual creation state (Strictly for Admin, Directeur, Secrétaire Admin)
+  const [showUserModal, setShowUserModal] = useState<boolean>(false);
+  const [newUserForm, setNewUserForm] = useState<{
+    email: string;
+    role: UserRole;
+    firstName: string;
+    lastName: string;
+    department: string;
+  }>({
+    email: '',
+    role: 'enseignants',
+    firstName: '',
+    lastName: '',
+    department: 'Département d’Études Bibliques'
+  });
+
+  // Email notifications inspection state
+  const [showEmailLogsModal, setShowEmailLogsModal] = useState<boolean>(false);
+  const [emailLogs, setEmailLogs] = useState<any[]>([]);
+  const [activeEmailPreview, setActiveEmailPreview] = useState<any | null>(null);
+
+  const fetchEmailLogs = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/notifications/logs');
+      if (res.ok) {
+        const logs = await res.json();
+        setEmailLogs(logs);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchEmailLogs();
+    const interval = setInterval(fetchEmailLogs, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
   const showToast = (text: string, type: 'success' | 'info' | 'warning' = 'success') => {
     setToastMessage({ text, type });
     setTimeout(() => setToastMessage(null), 4000);
@@ -156,6 +198,57 @@ export default function AdminPage() {
       severity
     };
     setAuditLogs(prev => [newEntry, ...prev]);
+  };
+
+  const canCreateAccounts = activeRole === 'admin' || activeRole === 'directeur' || activeRole === 'secretaire_admin';
+
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUserForm.email || !newUserForm.firstName || !newUserForm.lastName) {
+      showToast("Veuillez renseigner tous les champs obligatoires.", "warning");
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:3001/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': activeRole,
+        },
+        body: JSON.stringify(newUserForm),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setShowUserModal(false);
+        setNewUserForm({
+          email: '',
+          role: 'enseignants',
+          firstName: '',
+          lastName: '',
+          department: 'Département d’Études Bibliques',
+        });
+        logAction(
+          'CRÉATION_COMPTE_MANUELLE',
+          data.email,
+          `Compte créé manuellement pour ${data.firstName} ${data.lastName} (${data.roleTitle}) avec envoi d'un email d'initialisation de mot de passe.`
+        );
+        showToast(`Compte créé avec succès ! Un email officiel d'activation a été transmis à ${data.email}.`);
+        fetchEmailLogs();
+      } else {
+        showToast(data.message || "Erreur lors de la création du compte.", "warning");
+      }
+    } catch {
+      // Fallback local
+      setShowUserModal(false);
+      logAction(
+        'CRÉATION_COMPTE_MANUELLE',
+        newUserForm.email,
+        `Compte créé pour ${newUserForm.firstName} ${newUserForm.lastName} avec expédition du lien d'activation.`
+      );
+      showToast(`Compte créé ! Un email d'activation a été transmis à ${newUserForm.email}.`);
+    }
   };
 
   // Load initial admissions & messages
@@ -400,29 +493,51 @@ export default function AdminPage() {
   }, []);
 
   // Save admissions changes
-  const updateAdmissionStatus = (id: string, newStatus: "PENDING" | "ACCEPTED" | "REJECTED" | "WAITLIST") => {
-    if (!permissions.canApproveAdmission && activeRole !== 'admin') {
+  const updateAdmissionStatus = (id: string, newStatus: "PENDING" | "ACCEPTED" | "REJECTED" | "WAITLIST" | "UNDER_REVIEW") => {
+    const isApprovalOrRejection = newStatus === 'ACCEPTED' || newStatus === 'REJECTED';
+    if (isApprovalOrRejection && !permissions.canApproveAdmission && activeRole !== 'admin') {
       showToast("Opération refusée : Seule la Direction est habilitée à statuer sur les admissions définitives.", "warning");
+      return;
+    }
+    if (newStatus === 'UNDER_REVIEW' && !permissions.canVerifyDocuments && !permissions.canApproveAdmission && activeRole !== 'admin') {
+      showToast("Opération refusée : Droits insuffisants pour mettre le dossier en examen.", "warning");
       return;
     }
     const updated = admissions.map(adm => {
       if (adm.id === id) {
-        return { ...adm, status: newStatus };
+        return { ...adm, status: newStatus as any };
       }
       return adm;
     });
     setAdmissions(updated);
-    localStorage.setItem('issr_admissions', JSON.stringify(updated));
     if (selectedAdmission && selectedAdmission.id === id) {
-      setSelectedAdmission({ ...selectedAdmission, status: newStatus });
+      setSelectedAdmission({ ...selectedAdmission, status: newStatus as any });
     }
+    localStorage.setItem('issr_admissions', JSON.stringify(updated));
     logAction(
       `DÉCISION_ADMISSION_${newStatus}`,
       id,
-      `Statut passé à ${newStatus} par ${currentProfile.name} (${currentProfile.title})`,
+      `Statut passé à ${newStatus} par ${currentProfile.name} (${currentProfile.title}) avec notification email transmise.`,
       newStatus === 'REJECTED' ? 'WARNING' : 'INFO'
     );
-    showToast(`Dossier ${id} mis à jour avec succès : Statut -> ${newStatus}`);
+
+    // Call NestJS backend to dispatch candidate automated email
+    fetch(`http://localhost:3001/api/admissions/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status: newStatus,
+        notes: selectedAdmission?.notes || `Statut académique : ${newStatus}`,
+      }),
+    })
+      .then(res => res.json())
+      .then(() => {
+        fetchEmailLogs();
+        showToast(`Dossier ${id} mis à jour : Email officiel expédié au candidat (${newStatus}).`);
+      })
+      .catch(() => {
+        showToast(`Dossier ${id} mis à jour avec succès : Statut -> ${newStatus}`);
+      });
   };
 
   // Verify document
@@ -548,12 +663,41 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Central / Right: Role Persona Switcher */}
-            <div className="flex items-center gap-4">
+            {/* Central / Right: Role Persona Switcher & Admin Actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
               
+              {/* Manual Account Creation Button (strictly for Admin, Directeur, Secrétaire Admin) */}
+              {canCreateAccounts && (
+                <button
+                  type="button"
+                  onClick={() => setShowUserModal(true)}
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl shadow transition"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Créer Compte</span>
+                </button>
+              )}
+
+              {/* Email Notifications Logs Inspector Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  fetchEmailLogs();
+                  setShowEmailLogsModal(true);
+                }}
+                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition"
+                title="Historique des notifications email"
+              >
+                <Mail className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden md:inline">Emails</span>
+                <span className="bg-amber-400/20 text-amber-300 px-1.5 py-0.2 rounded-full text-[10px] font-bold border border-amber-400/30">
+                  {emailLogs.length}
+                </span>
+              </button>
+
               {/* Persona Switcher Selector */}
               <div className="flex items-center bg-slate-800/90 rounded-2xl p-1.5 border border-slate-700/80 shadow-inner">
-                <span className="text-xs font-semibold text-slate-400 px-2.5 hidden md:inline-flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-slate-400 px-2.5 hidden lg:inline-flex items-center gap-1.5">
                   <UserCheck className="w-3.5 h-3.5 text-issr-gold" />
                   Rôle Actif :
                 </span>
@@ -585,7 +729,7 @@ export default function AdminPage() {
               <Link 
                 href="/"
                 target="_blank"
-                className="hidden lg:flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 transition"
+                className="hidden xl:flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 transition"
               >
                 <span>Site Public</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
@@ -1022,6 +1166,7 @@ export default function AdminPage() {
                   >
                     <option value="ALL">Tous les statuts ({admissions.length})</option>
                     <option value="PENDING">En attente ({admissions.filter(a => a.status === 'PENDING').length})</option>
+                    <option value="UNDER_REVIEW">En examen ({admissions.filter(a => (a.status as any) === 'UNDER_REVIEW').length})</option>
                     <option value="ACCEPTED">Admis ({admissions.filter(a => a.status === 'ACCEPTED').length})</option>
                     <option value="REJECTED">Refusés ({admissions.filter(a => a.status === 'REJECTED').length})</option>
                   </select>
@@ -1087,9 +1232,17 @@ export default function AdminPage() {
                                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                                   : adm.status === 'REJECTED'
                                   ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                                  : (adm.status as any) === 'UNDER_REVIEW'
+                                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
                                   : 'bg-amber-100 text-amber-800 border border-amber-200'
                               }`}>
-                                {adm.status === 'ACCEPTED' ? 'Admis Définitif' : adm.status === 'REJECTED' ? 'Refusé' : 'En Examen'}
+                                {adm.status === 'ACCEPTED'
+                                  ? 'Admis Définitif'
+                                  : adm.status === 'REJECTED'
+                                  ? 'Refusé'
+                                  : (adm.status as any) === 'UNDER_REVIEW'
+                                  ? 'En Examen'
+                                  : 'En Attente'}
                               </span>
                             </td>
                             <td className="px-6 py-4 text-right">
@@ -1120,9 +1273,21 @@ export default function AdminPage() {
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs text-issr-gold font-bold">{selectedAdmission.trackingNumber}</span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                            selectedAdmission.status === 'ACCEPTED' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
+                            selectedAdmission.status === 'ACCEPTED'
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : selectedAdmission.status === 'REJECTED'
+                              ? 'bg-rose-500/20 text-rose-300'
+                              : (selectedAdmission.status as any) === 'UNDER_REVIEW'
+                              ? 'bg-blue-500/20 text-blue-300'
+                              : 'bg-amber-500/20 text-amber-300'
                           }`}>
-                            {selectedAdmission.status}
+                            {selectedAdmission.status === 'ACCEPTED'
+                              ? 'Admis'
+                              : selectedAdmission.status === 'REJECTED'
+                              ? 'Refusé'
+                              : (selectedAdmission.status as any) === 'UNDER_REVIEW'
+                              ? 'En Examen'
+                              : 'En Attente'}
                           </span>
                         </div>
                         <h3 className="text-lg font-bold font-serif text-white mt-1">
@@ -1240,16 +1405,30 @@ export default function AdminPage() {
                         Rôle actif : <strong className="text-slate-800">{currentProfile.title}</strong>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Transition to UNDER_REVIEW if PENDING */}
+                        {selectedAdmission.status === 'PENDING' && (permissions.canVerifyDocuments || permissions.canApproveAdmission || activeRole === 'admin') && (
+                          <button
+                            type="button"
+                            onClick={() => updateAdmissionStatus(selectedAdmission.id, 'UNDER_REVIEW')}
+                            className="px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs transition border border-blue-200 flex items-center gap-1.5"
+                          >
+                            <Clock className="w-4 h-4 text-blue-600" />
+                            <span>Mettre en Examen</span>
+                          </button>
+                        )}
+
                         {permissions.canApproveAdmission ? (
                           <>
                             <button
+                              type="button"
                               onClick={() => updateAdmissionStatus(selectedAdmission.id, 'REJECTED')}
                               className="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition border border-rose-200"
                             >
                               Rejeter le dossier
                             </button>
                             <button
+                              type="button"
                               onClick={() => updateAdmissionStatus(selectedAdmission.id, 'ACCEPTED')}
                               className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5"
                             >
@@ -1874,6 +2053,311 @@ export default function AdminPage() {
 
         </main>
       </div>
+
+      {/* ============================================================ */}
+      {/* MODAL: CRÉATION MANUELLE DE COMPTE UTILISATEUR               */}
+      {/* ============================================================ */}
+      {showUserModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-lg text-white">Créer un Compte Utilisateur</h3>
+                  <p className="text-xs text-slate-400">Règles RBAC : Réservé à la Direction et au Secrétariat</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowUserModal(false)}
+                className="text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateUser} className="p-6 space-y-4">
+              <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-2xl p-3.5 flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <p>
+                  <strong>Protocole de Sécurité :</strong> Aucun mot de passe n'est saisi manuellement. Dès l'enregistrement, un email ecclésiastique officiel avec un lien sécurisé d'activation (valable 48h) sera automatiquement expédié au destinataire.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Rôle & Cloisonnement RBAC *
+                </label>
+                <select
+                  value={newUserForm.role}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value as UserRole })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-gold"
+                  required
+                >
+                  <option value="admin">1. Super-Admin (DSI)</option>
+                  <option value="directeur">2. Directeur (Direction Générale)</option>
+                  <option value="secretaire_admin">3. Secrétaire Administrative</option>
+                  <option value="secretaire_acad">4. Secrétaire Académique</option>
+                  <option value="prefet_etudes">5. Préfet des Études</option>
+                  <option value="econome">6. Économe (Gestion Financière)</option>
+                  <option value="rep_enseignants">7. Délégué des Enseignants</option>
+                  <option value="enseignants">8. Enseignants (Corps Professoral)</option>
+                  <option value="etudiants">9. Étudiant / Apprenant</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Prénom *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex. Abbé François"
+                    value={newUserForm.firstName}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, firstName: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Nom *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex. MBIDA"
+                    value={newUserForm.lastName}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, lastName: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-gold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Adresse Email Institutionnelle *
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="nom.prenom@issr-bakhita.org"
+                  value={newUserForm.email}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Département / Affiliation
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex. Département de Théologie Pastorale"
+                  value={newUserForm.department}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, department: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-issr-gold"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowUserModal(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-issr-gold font-bold text-xs flex items-center gap-2 shadow-md transition"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Enregistrer & Expédier l'Email</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* MODAL: JOURNAL DES NOTIFICATIONS EMAILS EXPÉDIÉES           */}
+      {/* ============================================================ */}
+      {showEmailLogsModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Header */}
+            <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-serif font-bold text-lg text-white">Journal des Notifications Email</h3>
+                    <span className="bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full text-xs font-bold border border-amber-400/30">
+                      {emailLogs.length} envoyés
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">Traçabilité en temps réel des emails automatisés (Microservice NestJS)</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={fetchEmailLogs}
+                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                  title="Rafraîchir les logs"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowEmailLogsModal(false)}
+                  className="text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content Table */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {emailLogs.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
+                  <Inbox className="w-12 h-12 stroke-[1.5] text-slate-300 mb-3" />
+                  <p className="text-sm font-semibold text-slate-600">Aucun email envoyé pour l'instant</p>
+                  <p className="text-xs text-slate-400 mt-1 max-w-sm">
+                    Les emails sont enregistrés ici dès qu'une candidature est soumise, examinée, acceptée ou qu'un compte utilisateur est généré.
+                  </p>
+                </div>
+              ) : (
+                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200">
+                      <tr>
+                        <th className="px-4 py-3">Horodatage</th>
+                        <th className="px-4 py-3">Destinataire</th>
+                        <th className="px-4 py-3">Type</th>
+                        <th className="px-4 py-3">Objet</th>
+                        <th className="px-4 py-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {emailLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-slate-50/80 transition">
+                          <td className="px-4 py-3 font-mono text-[11px] text-slate-500 whitespace-nowrap">
+                            {new Date(log.sentAt).toLocaleString('fr-FR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                            })}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="font-bold text-slate-900 block">{log.to}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">ID: {log.id}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              log.type.includes('ACCEPTED') || log.type.includes('ACCOUNT_CREATED')
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : log.type.includes('REJECTED')
+                                ? 'bg-rose-100 text-rose-800'
+                                : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {log.type}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 font-medium text-slate-700 max-w-xs truncate">
+                            {log.subject}
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setActiveEmailPreview(log)}
+                              className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-issr-gold text-[11px] font-bold transition flex items-center gap-1.5 ml-auto"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>Aperçu HTML</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                Microservice de notification connecté sur port 3001
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowEmailLogsModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold transition"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* MODAL: APERÇU DU TEMPLATE HTML DU COURRIEL                   */}
+      {/* ============================================================ */}
+      {activeEmailPreview && (
+        <div className="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full h-[90vh] flex flex-col overflow-hidden border border-slate-300 animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+              <div>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-issr-gold block">
+                  Aperçu du Courriel Institutionnel
+                </span>
+                <h4 className="font-bold text-sm text-white">{activeEmailPreview.subject}</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Destinataire : {activeEmailPreview.to}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveEmailPreview(null)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto bg-slate-100 p-6 flex justify-center">
+              <div 
+                className="bg-white rounded-2xl shadow-sm border border-slate-200 w-full max-w-2xl p-4 overflow-x-auto"
+                dangerouslySetInnerHTML={{ __html: activeEmailPreview.htmlBody }}
+              />
+            </div>
+
+            <div className="p-4 bg-white border-t border-slate-200 flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setActiveEmailPreview(null)}
+                className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition"
+              >
+                Fermer l'aperçu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

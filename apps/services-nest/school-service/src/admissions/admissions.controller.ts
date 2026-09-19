@@ -24,7 +24,8 @@ export class AdmissionsController {
   updateStatus(
     @Param('id') id: string,
     @Body('status') status: AdmissionDossier['status'],
+    @Body('notes') notes?: string,
   ): AdmissionDossier {
-    return this.admissionsService.updateStatus(id, status);
+    return this.admissionsService.updateStatus(id, status, notes);
   }
 }

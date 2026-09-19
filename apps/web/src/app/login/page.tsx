@@ -379,14 +379,12 @@ export default function LoginPage() {
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
                     3. Mot de passe <span className="text-amber-400">*</span>
                   </label>
-                  <a 
-                    href={`https://wa.me/237655165757?text=${encodeURIComponent("Bonjour Secrétariat ISSR, j'ai besoin d'une réinitialisation de mes accès institutionnels.")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] text-amber-300 hover:text-amber-200 hover:underline"
+                  <Link 
+                    href="/forgot-password"
+                    className="text-[11px] text-amber-300 hover:text-amber-200 hover:underline font-semibold"
                   >
                     Mot de passe oublié ?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
