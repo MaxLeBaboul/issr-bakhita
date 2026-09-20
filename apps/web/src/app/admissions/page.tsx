@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   GraduationCap, 
@@ -114,14 +113,11 @@ const REQUIRED_DOCUMENTS: DocumentConfig[] = [
   }
 ];
 
-function AdmissionsContent() {
-  const searchParams = useSearchParams();
-  const preselectedFiliere = searchParams.get('filiere') || '';
-
+export default function AdmissionsPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1: Academic Choice
-    filiere: preselectedFiliere || FORMATIONS[0].title,
+    filiere: FORMATIONS[0].title,
     modality: 'PRESENTIAL',
     academicYear: '2026-2027',
 
@@ -158,10 +154,14 @@ function AdmissionsContent() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (preselectedFiliere) {
-      setFormData(prev => ({ ...prev, filiere: preselectedFiliere }));
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const filiereParam = params.get('filiere');
+      if (filiereParam) {
+        setFormData(prev => ({ ...prev, filiere: filiereParam }));
+      }
     }
-  }, [preselectedFiliere]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -213,15 +213,41 @@ function AdmissionsContent() {
     });
   };
 
-  const handleGoToStep5 = () => {
-    const missing: string[] = [];
-    if (!uploadedDocs['idDocument']) missing.push("Acte de Naissance ou CNI / Passeport");
-    if (!uploadedDocs['diploma']) missing.push("Copie certifiée du plus haut diplôme");
-    if (!uploadedDocs['motivation']) missing.push("Lettre de motivation & Projet d'études");
+  const [deferPhysicalDocs, setDeferPhysicalDocs] = useState(false);
 
-    if (missing.length > 0) {
-      setValidationError(`Veuillez téléverser les documents obligatoires suivants avant de poursuivre : ${missing.join(', ')}.`);
+  const handleGoToStep3 = () => {
+    if (formData.status !== 'LAIC' && !formData.congregationOrDiocese.trim()) {
+      setValidationError("Veuillez renseigner le nom de votre Congrégation, Institut ou Diocèse.");
       return;
+    }
+    setValidationError('');
+    setStep(3);
+  };
+
+  const handleGoToStep4 = () => {
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      setValidationError("Veuillez renseigner votre Prénom et Nom de famille.");
+      return;
+    }
+    if (!formData.phone.trim() || !formData.email.trim()) {
+      setValidationError("Veuillez renseigner un numéro de Téléphone et une Adresse Email valides.");
+      return;
+    }
+    setValidationError('');
+    setStep(4);
+  };
+
+  const handleGoToStep5 = () => {
+    if (!deferPhysicalDocs) {
+      const missing: string[] = [];
+      if (!uploadedDocs['idDocument']) missing.push("Acte de Naissance ou CNI / Passeport");
+      if (!uploadedDocs['diploma']) missing.push("Copie certifiée du plus haut diplôme");
+      if (!uploadedDocs['motivation']) missing.push("Lettre de motivation & Projet d'études");
+
+      if (missing.length > 0) {
+        setValidationError(`Veuillez téléverser les documents obligatoires suivants (ou cocher l'option de dépôt physique sur campus) : ${missing.join(', ')}.`);
+        return;
+      }
     }
 
     setValidationError('');
@@ -284,19 +310,39 @@ function AdmissionsContent() {
     };
 
     try {
-      const storedApplications = JSON.parse(localStorage.getItem('issr_admissions') || '[]');
-      localStorage.setItem('issr_admissions', JSON.stringify([newApplication, ...storedApplications]));
-
-      // Also send to NestJS school service in background
-      fetch(`${SCHOOL_API_URL}/api/admissions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newApplication)
-      }).catch(() => {
-        // Fallback gracefully
-      });
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const safeApp = {
+          ...newApplication,
+          uploadedDocuments: docsList.map(d => ({
+            id: d.id,
+            category: d.category,
+            title: d.title,
+            fileName: d.fileName,
+            fileSize: d.fileSize,
+            fileType: d.fileType,
+            uploadedAt: d.uploadedAt,
+            dataUrl: d.dataUrl && d.dataUrl.length > 80000 ? '[Document volumineux sécurisé]' : d.dataUrl
+          }))
+        };
+        const storedApplications = JSON.parse(localStorage.getItem('issr_admissions') || '[]');
+        localStorage.setItem('issr_admissions', JSON.stringify([safeApp, ...storedApplications.slice(0, 50)]));
+      }
     } catch {
       // Fallback
+    }
+
+    if (SCHOOL_API_URL && !SCHOOL_API_URL.includes('localhost')) {
+      try {
+        fetch(`${SCHOOL_API_URL}/api/admissions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newApplication)
+        }).catch(() => {
+          // Graceful offline fallback
+        });
+      } catch {
+        // Graceful offline fallback
+      }
     }
 
     setSubmitted(true);
@@ -516,10 +562,23 @@ function AdmissionsContent() {
                       </div>
                     )}
 
+                    {validationError && (
+                      <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn">
+                        <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold">Attention :</span>
+                          <p className="mt-0.5 leading-relaxed">{validationError}</p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="pt-4 flex justify-between">
                       <button
                         type="button"
-                        onClick={() => setStep(1)}
+                        onClick={() => {
+                          setValidationError('');
+                          setStep(1);
+                        }}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition"
                       >
                         <ArrowLeft className="w-4 h-4" />
@@ -527,7 +586,7 @@ function AdmissionsContent() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setStep(3)}
+                        onClick={handleGoToStep3}
                         className="btn-shimmer inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-issr-primary hover:bg-issr-primary-light text-white text-xs font-bold shadow-md transition-all hover:scale-105"
                       >
                         <span>Suivant</span>
@@ -649,10 +708,23 @@ function AdmissionsContent() {
                       </div>
                     </div>
 
+                    {validationError && (
+                      <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn">
+                        <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold">Attention :</span>
+                          <p className="mt-0.5 leading-relaxed">{validationError}</p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="pt-4 flex justify-between">
                       <button
                         type="button"
-                        onClick={() => setStep(2)}
+                        onClick={() => {
+                          setValidationError('');
+                          setStep(2);
+                        }}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition"
                       >
                         <ArrowLeft className="w-4 h-4" />
@@ -660,7 +732,7 @@ function AdmissionsContent() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setStep(4)}
+                        onClick={handleGoToStep4}
                         className="btn-shimmer inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-issr-primary hover:bg-issr-primary-light text-white text-xs font-bold shadow-md transition-all hover:scale-105"
                       >
                         <span>Suivant</span>
@@ -868,12 +940,37 @@ function AdmissionsContent() {
                           );
                         })}
                       </div>
+
+                      {/* Option for physical deposit */}
+                      <div className="mt-4 p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="deferPhysicalDocs"
+                          checked={deferPhysicalDocs}
+                          onChange={(e) => {
+                            setDeferPhysicalDocs(e.target.checked);
+                            if (e.target.checked) setValidationError('');
+                          }}
+                          className="mt-1 h-4 w-4 rounded border-slate-300 text-issr-primary focus:ring-issr-primary cursor-pointer"
+                        />
+                        <label htmlFor="deferPhysicalDocs" className="text-xs text-slate-700 cursor-pointer select-none">
+                          <span className="font-bold text-slate-900 block text-xs">
+                            Dépôt ultérieur des pièces physiques sur le campus (Yaoundé - Mvolyé)
+                          </span>
+                          <span className="text-[11px] text-slate-600 block mt-0.5">
+                            Je ne dispose pas de toutes mes pièces numérisées actuellement. Je m&apos;engage à déposer les copies certifiées conformes et originaux au secrétariat académique lors de mon entretien d&apos;admission.
+                          </span>
+                        </label>
+                      </div>
                     </div>
 
                     <div className="pt-4 flex justify-between">
                       <button
                         type="button"
-                        onClick={() => setStep(3)}
+                        onClick={() => {
+                          setValidationError('');
+                          setStep(3);
+                        }}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition"
                       >
                         <ArrowLeft className="w-4 h-4" />
@@ -930,31 +1027,40 @@ function AdmissionsContent() {
                       {/* Attached Documents Recapitulative */}
                       <div className="border-t border-slate-200 pt-2.5">
                         <span className="text-slate-500 uppercase font-bold text-[10px] block mb-2">
-                          Pièces justificatives prêtes pour l&apos;envoi ({Object.keys(uploadedDocs).length}) :
+                          Pièces justificatives du dossier ({Object.keys(uploadedDocs).length}) :
                         </span>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {Object.values(uploadedDocs).map((doc) => (
-                            <div 
-                              key={doc.id} 
-                              className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs"
-                            >
-                              <div className="flex items-center gap-2 truncate pr-2">
-                                <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                                <div className="truncate">
-                                  <span className="font-bold text-slate-800 block truncate text-[11px]">{doc.title}</span>
-                                  <span className="text-[10px] text-slate-500 truncate">{doc.fileName} ({doc.fileSize})</span>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => setActivePreviewDoc(doc)}
-                                className="text-[11px] text-issr-primary hover:text-amber-600 font-semibold underline shrink-0"
+                        {Object.keys(uploadedDocs).length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {Object.values(uploadedDocs).map((doc) => (
+                              <div 
+                                key={doc.id} 
+                                className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs"
                               >
-                                Aperçu
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                                <div className="flex items-center gap-2 truncate pr-2">
+                                  <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <div className="truncate">
+                                    <span className="font-bold text-slate-800 block truncate text-[11px]">{doc.title}</span>
+                                    <span className="text-[10px] text-slate-500 truncate">{doc.fileName} ({doc.fileSize})</span>
+                                  </div>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => setActivePreviewDoc(doc)}
+                                  className="text-[11px] text-issr-primary hover:text-amber-600 font-semibold underline shrink-0"
+                                >
+                                  Aperçu
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5">
+                            <CheckCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span>
+                              <strong>Option dépôt physique sur campus validée :</strong> Vous présenterez vos justificatifs originaux et photocopies au secrétariat académique de Mvolyé.
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -1150,10 +1256,3 @@ function AdmissionsContent() {
   );
 }
 
-export default function AdmissionsPage() {
-  return (
-    <Suspense fallback={<div className="p-12 text-center text-slate-500">Chargement du portail d&apos;admission...</div>}>
-      <AdmissionsContent />
-    </Suspense>
-  );
-}
