@@ -1,12 +1,62 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck, LogOut, LayoutDashboard } from 'lucide-react';
 import { INSTITUTION_INFO } from '../data/mockData';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  const syncAuth = () => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('issr_logged_role');
+      const userStr = localStorage.getItem('issr_logged_user');
+      const isAdminRoute = pathname?.startsWith('/admin');
+
+      if (role || isAdminRoute) {
+        setIsLoggedIn(true);
+        if (userStr) {
+          try {
+            const parsed = JSON.parse(userStr);
+            setUserName(parsed.name || parsed.roleTitle || 'Session Active');
+          } catch {
+            setUserName('Session Active');
+          }
+        } else {
+          setUserName('Session Active');
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserName('');
+      }
+    }
+  };
+
+  useEffect(() => {
+    syncAuth();
+
+    const handleStorageChange = () => syncAuth();
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [pathname]);
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('issr_logged_role');
+      localStorage.removeItem('issr_logged_user');
+      setIsLoggedIn(false);
+      setUserName('');
+      window.dispatchEvent(new Event('storage'));
+    }
+    router.push('/login');
+  };
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -36,10 +86,35 @@ export const Navbar: React.FC = () => {
               <Mail className="w-3.5 h-3.5 text-amber-400" />
               <span className="font-medium">{INSTITUTION_INFO.email}</span>
             </a>
-            <Link href="/login" className="text-amber-200/90 hover:text-white flex items-center gap-1.5 pl-2.5 border-l border-white/20 font-medium hover:underline">
-              <UserCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Se connecter</span>
-            </Link>
+            
+            {isLoggedIn ? (
+              <div className="flex items-center gap-3 pl-2.5 border-l border-white/20">
+                <Link 
+                  href="/admin" 
+                  className={`flex items-center gap-1.5 font-semibold transition ${
+                    pathname?.startsWith('/admin') ? 'text-amber-300' : 'text-amber-200/90 hover:text-white'
+                  }`}
+                  title="Accéder au tableau de bord d'administration"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Tableau de bord</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-rose-300 hover:text-rose-100 flex items-center gap-1.5 font-bold hover:underline cursor-pointer pl-2 border-l border-white/20"
+                  title="Se déconnecter du portail"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Se déconnecter</span>
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className="text-amber-200/90 hover:text-white flex items-center gap-1.5 pl-2.5 border-l border-white/20 font-medium hover:underline">
+                <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span>Se connecter</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -155,14 +230,38 @@ export const Navbar: React.FC = () => {
           >
             Contact
           </Link>
-          <Link
-            href="/login"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-base font-medium text-amber-700 hover:text-amber-800 border-b border-slate-50 flex items-center gap-2"
-          >
-            <UserCheck className="w-4 h-4 text-amber-600" />
-            <span>Se connecter (Portail)</span>
-          </Link>
+          {isLoggedIn ? (
+            <div className="space-y-1 border-b border-slate-100 pb-2">
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-semibold text-issr-primary hover:text-blue-950 flex items-center gap-2"
+              >
+                <LayoutDashboard className="w-4 h-4 text-amber-500" />
+                <span>Tableau de bord {userName ? `(${userName})` : ''}</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full text-left py-2 text-base font-bold text-rose-600 hover:text-rose-800 flex items-center gap-2 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4 text-rose-600" />
+                <span>Se déconnecter</span>
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-base font-medium text-amber-700 hover:text-amber-800 border-b border-slate-50 flex items-center gap-2"
+            >
+              <UserCheck className="w-4 h-4 text-amber-600" />
+              <span>Se connecter (Portail)</span>
+            </Link>
+          )}
           <div className="pt-2">
             <Link
               href="/admissions"

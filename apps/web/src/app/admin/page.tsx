@@ -100,6 +100,15 @@ export default function AdminPage() {
     }
   }, []);
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('issr_logged_role');
+      localStorage.removeItem('issr_logged_user');
+      window.dispatchEvent(new Event('storage'));
+    } catch (e) {}
+    window.location.href = '/login';
+  };
+
   // Ensure activeTab is allowed when switching role
   useEffect(() => {
     if (!permissions.allowedTabs.includes(activeTab)) {
@@ -736,6 +745,17 @@ export default function AdminPage() {
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </Link>
 
+              {/* Explicit Logout Button in Admin Header */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/60 hover:bg-rose-900 px-3.5 py-2 rounded-xl border border-rose-700/60 transition shadow-sm cursor-pointer"
+                title="Mettre fin à la session et se déconnecter"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                <span>Se déconnecter</span>
+              </button>
+
             </div>
 
           </div>
@@ -945,6 +965,18 @@ export default function AdminPage() {
                 <span>Sécurité & Audit DSI</span>
               </button>
             )}
+
+            <div className="pt-2 mt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition cursor-pointer"
+                title="Quitter la session d'administration"
+              >
+                <LogOut className="w-4 h-4 text-rose-500" />
+                <span>Se déconnecter</span>
+              </button>
+            </div>
 
           </nav>
 
