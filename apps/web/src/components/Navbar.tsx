@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck, LogOut, LayoutDashboard, Globe, ExternalLink } from 'lucide-react';
 import { INSTITUTION_INFO } from '../data/mockData';
 
 export const Navbar: React.FC = () => {
@@ -89,16 +89,28 @@ export const Navbar: React.FC = () => {
             
             {isLoggedIn ? (
               <div className="flex items-center gap-3 pl-2.5 border-l border-white/20">
-                <Link 
-                  href="/admin" 
-                  className={`flex items-center gap-1.5 font-semibold transition ${
-                    pathname?.startsWith('/admin') ? 'text-amber-300' : 'text-amber-200/90 hover:text-white'
-                  }`}
-                  title="Accéder au tableau de bord d'administration"
-                >
-                  <LayoutDashboard className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Tableau de bord</span>
-                </Link>
+                {pathname?.startsWith('/admin') ? (
+                  <Link 
+                    href="/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 font-semibold text-amber-200/90 hover:text-white transition"
+                    title="Visiter le site public dans un nouvel onglet"
+                  >
+                    <Globe className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Site Public</span>
+                    <ExternalLink className="w-3 h-3 text-amber-300/70" />
+                  </Link>
+                ) : (
+                  <Link 
+                    href="/admin" 
+                    className="flex items-center gap-1.5 font-semibold text-amber-200/90 hover:text-white transition"
+                    title="Accéder au tableau de bord d'administration"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Tableau de bord</span>
+                  </Link>
+                )}
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -232,14 +244,30 @@ export const Navbar: React.FC = () => {
           </Link>
           {isLoggedIn ? (
             <div className="space-y-1 border-b border-slate-100 pb-2">
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-base font-semibold text-issr-primary hover:text-blue-950 flex items-center gap-2"
-              >
-                <LayoutDashboard className="w-4 h-4 text-amber-500" />
-                <span>Tableau de bord {userName ? `(${userName})` : ''}</span>
-              </Link>
+              {pathname?.startsWith('/admin') ? (
+                <Link
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-base font-semibold text-slate-800 hover:text-issr-primary flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-amber-600" />
+                    <span>Site Public</span>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-slate-400" />
+                </Link>
+              ) : (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-base font-semibold text-issr-primary hover:text-blue-950 flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-amber-500" />
+                  <span>Tableau de bord {userName ? `(${userName})` : ''}</span>
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => {
