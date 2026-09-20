@@ -658,18 +658,20 @@ export default function AdminPage() {
           <div className="flex items-center justify-between min-h-[4.5rem] py-3.5 gap-4">
             
             {/* Institute Identity */}
-            <div className="flex items-center gap-3.5 min-w-0">
+            <div className="flex items-center gap-3.5 shrink-0">
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-issr-gold to-amber-600 flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow-md ring-2 ring-white/10 shrink-0">
                 IB
               </div>
-              <div className="min-w-0">
+              <div className="shrink-0">
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <span className="font-serif font-bold text-white tracking-wide text-base">ISSR Sainte Joséphine Bakhita</span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest bg-issr-gold/20 text-issr-gold px-2.5 py-0.5 rounded-md border border-issr-gold/30">
+                  <span className="text-[10px] uppercase font-bold tracking-widest bg-issr-gold/20 text-issr-gold px-2.5 py-0.5 rounded-md border border-issr-gold/30 shrink-0">
                     ERP & CMS v2.6
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 font-medium truncate">Portail Collaboratif de Gouvernance Universitaire</p>
+                <p className="text-[11px] text-slate-400 font-medium whitespace-nowrap leading-relaxed">
+                  Portail Collaboratif de Gouvernance Universitaire
+                </p>
               </div>
             </div>
 
