@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { INSTITUTION_INFO } from '../../data/mockData';
 import { UserRole } from '../../types/rbac';
+import { SCHOOL_API_URL } from '../../lib/api';
 
 interface InstitutionalRoleOption {
   id: UserRole;
@@ -148,7 +149,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/auth/login', {
+      const res = await fetch(`${SCHOOL_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

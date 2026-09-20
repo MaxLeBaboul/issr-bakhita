@@ -16,6 +16,7 @@
 *.pfx
 secrets/
 credentials.json
+cpanel-backup/
 *.keystore
 
 # ==============================================
@@ -57,6 +58,7 @@ env/
 .next/
 out/
 dist/
+cpanel-bundles/
 *.tsbuildinfo
 next-env.d.ts
 

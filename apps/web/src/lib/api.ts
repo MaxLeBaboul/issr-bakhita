@@ -10,8 +10,8 @@
 import { Article, AdmissionApplication } from '../types';
 import { ARTICLES, FORMATIONS } from '../data/mockData';
 
-export const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:8000';
-export const SCHOOL_API_URL = process.env.NEXT_PUBLIC_SCHOOL_API_URL || 'http://localhost:3001';
+export const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'https://api-cms.issr-bakhita.com';
+export const SCHOOL_API_URL = process.env.NEXT_PUBLIC_SCHOOL_API_URL || 'https://api-school.issr-bakhita.com';
 
 // ========================================================
 // 1. CMS Microservice (FastAPI Python on Render)

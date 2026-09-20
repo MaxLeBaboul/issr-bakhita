@@ -16,6 +16,7 @@ import {
   X
 } from 'lucide-react';
 import { INSTITUTION_INFO } from '../../data/mockData';
+import { SCHOOL_API_URL } from '../../lib/api';
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -46,7 +47,7 @@ function ResetPasswordContent() {
     }
 
     // Call backend to verify token
-    fetch(`http://localhost:3001/api/auth/verify-token?token=${encodeURIComponent(token)}`)
+    fetch(`${SCHOOL_API_URL}/api/auth/verify-token?token=${encodeURIComponent(token)}`)
       .then(res => res.json())
       .then(data => {
         if (data.valid) {
@@ -75,7 +76,7 @@ function ResetPasswordContent() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/auth/reset-password', {
+      const res = await fetch(`${SCHOOL_API_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),

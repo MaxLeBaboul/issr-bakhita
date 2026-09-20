@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingActions } from "@/components/FloatingActions";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://issr-bakhita.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.issr-bakhita.com";
 
 export const viewport: Viewport = {
   themeColor: "#0F2A47",

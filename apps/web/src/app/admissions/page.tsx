@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { FORMATIONS, INSTITUTION_INFO } from '@/data/mockData';
 import { UploadedDocumentItem, AdmissionApplication } from '@/types';
+import { SCHOOL_API_URL } from '@/lib/api';
 
 interface DocumentConfig {
   key: string;
@@ -287,7 +288,7 @@ function AdmissionsContent() {
       localStorage.setItem('issr_admissions', JSON.stringify([newApplication, ...storedApplications]));
 
       // Also send to NestJS school service in background
-      fetch('http://localhost:3001/api/admissions', {
+      fetch(`${SCHOOL_API_URL}/api/admissions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newApplication)

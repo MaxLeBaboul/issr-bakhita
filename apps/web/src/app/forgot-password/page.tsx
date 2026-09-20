@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { INSTITUTION_INFO } from '../../data/mockData';
+import { SCHOOL_API_URL } from '../../lib/api';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -34,7 +35,7 @@ export default function ForgotPasswordPage() {
 
     try {
       // Call NestJS backend
-      const response = await fetch('http://localhost:3001/api/auth/forgot-password', {
+      const response = await fetch(`${SCHOOL_API_URL}/api/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim() }),

@@ -50,6 +50,7 @@ import {
 } from 'lucide-react';
 import { ARTICLES, INSTITUTION_INFO } from '../../data/mockData';
 import { Article, AdmissionApplication, UploadedDocumentItem } from '../../types';
+import { SCHOOL_API_URL, CMS_API_URL } from '../../lib/api';
 import { 
   UserRole, 
   UserProfile, 
@@ -164,7 +165,7 @@ export default function AdminPage() {
 
   const fetchEmailLogs = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/notifications/logs');
+      const res = await fetch(`${SCHOOL_API_URL}/api/notifications/logs`);
       if (res.ok) {
         const logs = await res.json();
         setEmailLogs(logs);
@@ -210,7 +211,7 @@ export default function AdminPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/users', {
+      const res = await fetch(`${SCHOOL_API_URL}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -522,7 +523,7 @@ export default function AdminPage() {
     );
 
     // Call NestJS backend to dispatch candidate automated email
-    fetch(`http://localhost:3001/api/admissions/${id}/status`, {
+    fetch(`${SCHOOL_API_URL}/api/admissions/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
