@@ -737,16 +737,6 @@ export default function AdminPage() {
                 </select>
               </div>
 
-              {/* View Public Website */}
-              <Link 
-                href="/"
-                target="_blank"
-                className="hidden xl:flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/90 hover:bg-slate-700 px-3.5 py-2 rounded-xl border border-slate-700 transition"
-              >
-                <span>Site Public</span>
-                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-              </Link>
-
             </div>
 
           </div>
