@@ -655,33 +655,33 @@ export default function AdminPage() {
       {/* 1. TOP HEADER & PERSONA ROLE SWITCHER */}
       <header className="bg-slate-900 text-white shadow-xl sticky top-0 z-40 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18 py-3">
+          <div className="flex items-center justify-between min-h-[4.5rem] py-3.5 gap-4">
             
             {/* Institute Identity */}
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-issr-gold to-amber-600 flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow-md ring-2 ring-white/10">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-issr-gold to-amber-600 flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow-md ring-2 ring-white/10 shrink-0">
                 IB
               </div>
-              <div>
-                <div className="flex items-center gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2.5 flex-wrap">
                   <span className="font-serif font-bold text-white tracking-wide text-base">ISSR Sainte Joséphine Bakhita</span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest bg-issr-gold/20 text-issr-gold px-2 py-0.5 rounded border border-issr-gold/30">
+                  <span className="text-[10px] uppercase font-bold tracking-widest bg-issr-gold/20 text-issr-gold px-2.5 py-0.5 rounded-md border border-issr-gold/30">
                     ERP & CMS v2.6
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 font-medium">Portail Collaboratif de Gouvernance Universitaire</p>
+                <p className="text-xs text-slate-400 font-medium truncate">Portail Collaboratif de Gouvernance Universitaire</p>
               </div>
             </div>
 
             {/* Central / Right: Role Persona Switcher & Admin Actions */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
               
               {/* Manual Account Creation Button (strictly for Admin, Directeur, Secrétaire Admin) */}
               {canCreateAccounts && (
                 <button
                   type="button"
                   onClick={() => setShowUserModal(true)}
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl shadow transition"
+                  className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl shadow-sm transition hover:scale-105 active:scale-95"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Créer Compte</span>
@@ -695,12 +695,12 @@ export default function AdminPage() {
                   fetchEmailLogs();
                   setShowEmailLogsModal(true);
                 }}
-                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition"
+                className="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition hover:scale-105"
                 title="Historique des notifications email"
               >
                 <Mail className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden md:inline">Emails</span>
-                <span className="bg-amber-400/20 text-amber-300 px-1.5 py-0.2 rounded-full text-[10px] font-bold border border-amber-400/30">
+                <span className="bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full text-[10px] font-bold border border-amber-400/30">
                   {emailLogs.length}
                 </span>
               </button>
@@ -739,22 +739,11 @@ export default function AdminPage() {
               <Link 
                 href="/"
                 target="_blank"
-                className="hidden xl:flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 transition"
+                className="hidden xl:flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/90 hover:bg-slate-700 px-3.5 py-2 rounded-xl border border-slate-700 transition"
               >
                 <span>Site Public</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </Link>
-
-              {/* Explicit Logout Button in Admin Header */}
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/60 hover:bg-rose-900 px-3.5 py-2 rounded-xl border border-rose-700/60 transition shadow-sm cursor-pointer"
-                title="Mettre fin à la session et se déconnecter"
-              >
-                <LogOut className="w-3.5 h-3.5 text-rose-400" />
-                <span>Se déconnecter</span>
-              </button>
 
             </div>
 
