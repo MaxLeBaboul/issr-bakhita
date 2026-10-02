@@ -122,48 +122,33 @@ FORMATIONS_DB: List[dict] = [
         }
     },
     {
-        "id": "sciences-religieuses-master-pastorale-gouvernance",
-        "slug": "master-theologie-pastorale-gouvernance-ecclesiale",
-        "title": "Master Sciences Religieuses : Pastorale & Gouvernance Ecclésiale",
-        "subtitle": "Management institutionnel, audit pastoral et direction d'œuvres d'Église (UCAC)",
-        "category": "canonique",
-        "duration": "2 ans (4 semestres)",
-        "diploma": "Master universitaire en Sciences Religieuses (UCAC)",
-        "modality": "Présentiel et Enseignement synchrone à distance",
-        "tuition": {
-            "registrationFee": "15 000 FCFA",
-            "annualTuition": "450 000 FCFA (Laïcs) / 850 000 FCFA (Religieux)",
-            "installments": "Payable en 3 tranches"
-        }
-    },
-    {
         "id": "licence-ingenierie-pastorale",
         "slug": "licence-sciences-religieuses-option-ingenierie-pastorale",
-        "title": "Licence Sciences Religieuses — Option Ingénierie Pastorale",
-        "subtitle": "Théologie pastorale approfondie, conduite de projets et évangélisation numérique",
+        "title": "Licence Professionnelle en Ingénierie Pastorale",
+        "subtitle": "Formation théologique, pastorale, managériale et psychologique pour la conduite d'œuvres d'Église et de projets socio-éducatifs",
         "category": "professionnelle",
-        "duration": "3 ans",
-        "diploma": "Licence en Sciences Religieuses (UCAC / ISSR)",
-        "modality": "En ligne & Présentiel (Jour dès 8h ou Soir dès 17h)",
+        "duration": "3 ans (6 semestres, 180 crédits ECTS)",
+        "diploma": "Licence Professionnelle en Ingénierie Pastorale (UCAC / ISSR)",
+        "modality": "Présentiel (Mvolyé) et En direct en ligne",
         "tuition": {
             "registrationFee": "10 000 FCFA",
             "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-            "installments": "Payable par tranches"
+            "installments": "Payable par tranches trimestrielles"
         }
     },
     {
         "id": "licence-pedagogie-religieuse",
         "slug": "licence-sciences-religieuses-option-pedagogie-religieuse",
-        "title": "Licence Sciences Religieuses — Option Pédagogie Religieuse",
-        "subtitle": "Devenez un acteur clé de l'éducation religieuse et de la formation des consciences",
+        "title": "Licence Professionnelle en Pédagogie Religieuse",
+        "subtitle": "Formation théologique, didactique et pédagogique pour l'enseignement religieux, moral et civique",
         "category": "professionnelle",
-        "duration": "3 ans",
-        "diploma": "Licence en Sciences Religieuses (UCAC / ISSR)",
-        "modality": "En ligne & Présentiel (Jour dès 8h ou Soir dès 17h)",
+        "duration": "3 ans (6 semestres, 180 crédits ECTS)",
+        "diploma": "Licence Professionnelle en Pédagogie Religieuse (UCAC / ISSR)",
+        "modality": "Présentiel (Mvolyé) et En direct en ligne",
         "tuition": {
             "registrationFee": "10 000 FCFA",
             "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-            "installments": "Payable par tranches"
+            "installments": "Payable par tranches trimestrielles"
         }
     },
     {

@@ -32,14 +32,14 @@ export default function HomePage() {
       <section className="relative z-20 -mt-10 sm:-mt-16 lg:-mt-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6 text-center">
           
-          {/* Rome 2022 - Royal Sapphire Card */}
+          {/* Rome 2012 - Royal Sapphire Card */}
           <div 
             className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-blue-200/90 shadow-xl shadow-blue-950/15 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '100ms' }}
           >
             <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-blue-600 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-blue-400" />
             <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-blue-900 group-hover:text-blue-700 transition-colors">
-              Rome <AnimatedCounter end={2022} duration={1500} />
+              Rome <AnimatedCounter end={2012} duration={1500} />
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-blue-800/90 uppercase tracking-wider mt-1 sm:mt-1.5 block">
               Érection canonique officielle
@@ -60,14 +60,14 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* 9 Filières - Deep Purple/Navy Card */}
+          {/* 8 Filières - Deep Purple/Navy Card */}
           <div 
             className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-indigo-200/90 shadow-xl shadow-indigo-950/15 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-300 group cursor-default animate-fade-in-up flex flex-col justify-center"
             style={{ animationDelay: '300ms' }}
           >
             <div className="h-1 sm:h-1.5 w-8 sm:w-12 mx-auto rounded-full bg-indigo-600 mb-2 sm:mb-3 group-hover:w-16 sm:group-hover:w-20 transition-all duration-300 shadow-sm shadow-indigo-400" />
             <span className="block font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-indigo-950 group-hover:text-indigo-700 transition-colors">
-              <AnimatedCounter end={9} duration={1200} /> Filières
+              <AnimatedCounter end={8} duration={1200} /> Filières
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-indigo-800/90 uppercase tracking-wider mt-1 sm:mt-1.5 block">
               Canoniques &amp; DU
@@ -212,7 +212,7 @@ export default function HomePage() {
                     Accréditation du Saint-Siège
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-light">
-                    Institut canoniquement érigé par Rome en 2022 et rattaché à la Faculté de Théologie de l&apos;UCAC-ICY.
+                    Institut canoniquement érigé par Rome (2012) et rattaché à la Faculté de Théologie de l&apos;UCAC-ICY.
                   </p>
                 </div>
                 <div className="px-7 pb-6 pt-2 border-t border-white/10 flex items-center gap-1.5 text-xs font-semibold text-blue-300">
@@ -312,7 +312,7 @@ export default function HomePage() {
                 href="/formations"
                 className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-900 hover:text-amber-700 transition-all duration-200 hover:translate-x-1 shrink-0"
               >
-                <span>Voir tout le catalogue (9 filières)</span>
+                <span>Voir tout le catalogue (8 filières)</span>
                 <ChevronRight className="w-4 h-4 text-amber-600" />
               </Link>
             </div>

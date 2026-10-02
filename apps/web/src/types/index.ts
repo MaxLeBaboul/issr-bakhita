@@ -23,6 +23,8 @@ export interface Formation {
     annualTuition: string;
     installments: string;
   };
+  pedagogicalMethods?: string[];
+  teachingTeam?: string[];
 }
 
 export interface TeamMember {

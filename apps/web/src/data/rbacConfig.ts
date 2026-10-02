@@ -41,22 +41,22 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   secretaire_acad: {
     id: 'usr-sec-acad',
     role: 'secretaire_acad',
-    name: 'M. Jean Claude MEKOULOU',
-    title: 'Secrétaire Académique',
+    name: 'Mlle Lydie TSELI',
+    title: 'Secrétariat de direction (Cours du jour)',
     email: 'scolarite.acad@issr-bakhita.cm',
-    department: 'Service de la Scolarité & Examens',
+    department: 'Secrétariat de direction — Cours du jour',
     badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-300',
-    badgeLabel: 'Secrétariat Académique'
+    badgeLabel: 'Secrétariat Cours du Jour'
   },
   secretaire_admin: {
     id: 'usr-sec-admin',
     role: 'secretaire_admin',
-    name: 'Mme Christine NKOLO',
-    title: 'Secrétaire Administrative',
+    name: 'Mlle Manuella NYAMBONE',
+    title: 'Secrétariat de direction (Cours du soir)',
     email: 'secretariat@issr-bakhita.cm',
-    department: 'Accueil & Admissions',
+    department: 'Secrétariat de direction — Cours du soir',
     badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    badgeLabel: 'Secrétariat Administratif'
+    badgeLabel: 'Secrétariat Cours du Soir'
   },
   econome: {
     id: 'usr-econome',
@@ -310,9 +310,9 @@ export const SAMPLE_GRADES: StudentGradeItem[] = [
     id: 'grd-05',
     studentId: 'std-104',
     studentName: 'Abbé Justin FOE',
-    courseCode: 'GOUV-401',
-    courseTitle: 'Gouvernance et Droit Canonique Appliqué',
-    filiere: 'Master Sciences Religieuses : Option Pastorale & Gouvernance Ecclésiale',
+    courseCode: 'FOI-401',
+    courseTitle: 'Herméneutique et Dialogue Interreligieux',
+    filiere: 'Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux',
     semester: 'Semestre 1',
     continuousAssessment: 16.0,
     finalExam: 16.5,
@@ -392,7 +392,7 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     studentId: 'std-104',
     studentName: 'Abbé Justin FOE',
     matricule: 'ISSR-2026-029',
-    filiere: 'Master Sciences Religieuses : Option Pastorale & Gouvernance Ecclésiale',
+    filiere: 'Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux',
     academicYear: '2026-2027',
     category: 'PRETRE',
     sponsor: 'Archidiocèse de Yaoundé',
@@ -459,17 +459,17 @@ export const SAMPLE_COURSES: CourseResourceItem[] = [
   },
   {
     id: 'crs-04',
-    courseCode: 'GOUV-401',
-    courseTitle: 'Gouvernance et Droit Canonique Appliqué',
-    filiere: 'Master Sciences Religieuses : Option Pastorale & Gouvernance Ecclésiale',
+    courseCode: 'FOI-401',
+    courseTitle: 'Herméneutique et Dialogue Interreligieux',
+    filiere: 'Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux',
     semester: 'Semestre 1',
     teacherName: 'P. Dr Patrice MEKANA',
-    title: 'Recueil des canons applicables aux biens temporels d’Église',
-    description: 'Code de droit canonique (Livre V) et décrets d’application des conférences épiscopales régionales.',
+    title: 'Recueil des sources pour le dialogue et l’inculturation en Afrique',
+    description: 'Documents magistériels sur le dialogue œcuménique et la théologie contextuelle africaine.',
     type: 'BIBLIOGRAPHIE',
     fileSize: '2.5 Mo',
     downloadUrl: '#',
-    meetUrl: 'https://meet.google.com/issr-gouv-401',
+    meetUrl: 'https://meet.google.com/issr-foi-401',
     updatedAt: '10 Septembre 2026'
   }
 ];
@@ -489,7 +489,7 @@ export const SAMPLE_AUDIT_LOGS: AuditLogEntry[] = [
   {
     id: 'log-02',
     timestamp: '19 Septembre 2026 à 15:10',
-    actorName: 'Mme Christine NKOLO',
+    actorName: 'Mlle Manuella NYAMBONE',
     actorRole: 'secretaire_admin',
     action: 'Instruction de Dossier de Candidature',
     target: 'Candidat Jean-Marc Kouamé (ISSR-2026-4692)',

@@ -207,7 +207,7 @@ export default function ContactPage() {
 
                   <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="font-bold text-slate-900 text-sm">Secrétariat Général &amp; Admissions</div>
-                    <div className="text-issr-primary font-semibold">Mlles Lydie TSELLE &amp; Manuella NYAMBONE</div>
+                    <div className="text-issr-primary font-semibold">Mlles Lydie TSELI (Cours du jour) &amp; Manuella NYAMBONE (Cours du soir)</div>
                     <div className="text-slate-500 mt-1">Dépôt des dossiers, attestations et scolarité</div>
                   </div>
                 </div>
@@ -360,30 +360,27 @@ export default function ContactPage() {
                             <option value="Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux">
                               2. Master Sciences Religieuses : Foi, Culture &amp; Dialogue Interreligieux
                             </option>
-                            <option value="Master Sciences Religieuses : Option Pastorale & Gouvernance Ecclésiale">
-                              3. Master Sciences Religieuses : Pastorale &amp; Gouvernance Ecclésiale
-                            </option>
                           </optgroup>
                           <optgroup label="Pôle II : Licences & Diplômes Universitaires Professionnels (UCAC / ISSR)">
-                            <option value="Licence en Sciences Religieuses : Option Ingénierie Pastorale">
-                              4. Licence en Sciences Religieuses : Option Ingénierie Pastorale
+                            <option value="Licence Professionnelle en Ingénierie Pastorale">
+                              3. Licence Professionnelle en Ingénierie Pastorale
                             </option>
-                            <option value="Licence en Sciences Religieuses : Option Pédagogie Religieuse">
-                              5. Licence en Sciences Religieuses : Option Pédagogie Religieuse
+                            <option value="Licence Professionnelle en Pédagogie Religieuse">
+                              4. Licence Professionnelle en Pédagogie Religieuse
                             </option>
                             <option value="Diplôme Universitaire (DU) en Ingénierie Pastorale">
-                              6. Diplôme Universitaire (DU) en Ingénierie Pastorale
+                              5. Diplôme Universitaire (DU) en Ingénierie Pastorale
                             </option>
                             <option value="Diplôme Universitaire (DU) en Pédagogie Religieuse">
-                              7. Diplôme Universitaire (DU) en Pédagogie Religieuse
+                              6. Diplôme Universitaire (DU) en Pédagogie Religieuse
                             </option>
                           </optgroup>
                           <optgroup label="Pôle III : Certificats Universitaires & Formation Continue (100% En Ligne)">
                             <option value="Certificat Universitaire en Leadership & Gestion des Œuvres">
-                              8. Certificat Universitaire en Leadership &amp; Gestion des Œuvres
+                              7. Certificat Universitaire en Leadership &amp; Gestion des Œuvres
                             </option>
                             <option value="Certificat Universitaire en Sciences Religieuses">
-                              9. Certificat Universitaire en Sciences Religieuses
+                              8. Certificat Universitaire en Sciences Religieuses
                             </option>
                           </optgroup>
                           <optgroup label="Autre">

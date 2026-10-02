@@ -46,19 +46,19 @@ const INSTITUTIONAL_ROLES: InstitutionalRoleOption[] = [
     category: 'GOUVERNANCE'
   },
   {
-    id: 'secretaire_admin',
-    title: "Secrétariat Administratif",
-    department: "Accueil, Candidatures & Convocations",
-    badge: "Administration",
-    icon: FileCheck,
+    id: 'secretaire_acad',
+    title: "Secrétariat de Direction (Cours du jour)",
+    department: "Mlle Lydie TSELI • Accueil, Candidatures & Inscriptions",
+    badge: "Cours du Jour",
+    icon: GraduationCap,
     category: 'GOUVERNANCE'
   },
   {
-    id: 'secretaire_acad',
-    title: "Secrétariat Académique",
-    department: "Scolarité, Équivalences & Examens",
-    badge: "Scolarité",
-    icon: GraduationCap,
+    id: 'secretaire_admin',
+    title: "Secrétariat de Direction (Cours du soir)",
+    department: "Mlle Manuella NYAMBONE • Accueil, Candidatures & Inscriptions",
+    badge: "Cours du Soir",
+    icon: FileCheck,
     category: 'GOUVERNANCE'
   },
   {
@@ -304,7 +304,7 @@ export default function LoginPage() {
 
               <div>
                 <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest block mb-1">
-                  UCAC - ICY &bull; Érection Canonique Rome 2022
+                  UCAC - ICY &bull; Érection Canonique Rome 2012
                 </span>
                 <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">
                   Espace d&apos;Authentification Collaboratif

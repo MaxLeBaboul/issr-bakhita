@@ -62,7 +62,7 @@ export const Footer: React.FC = () => {
               ))}
               <li className="pt-2">
                 <Link href="/formations" className="text-amber-300 font-bold hover:underline inline-flex items-center gap-1">
-                  Voir toutes les 9 filières &rarr;
+                  Voir toutes les 8 filières &rarr;
                 </Link>
               </li>
             </ul>
@@ -98,6 +98,11 @@ export const Footer: React.FC = () => {
               <li>
                 <Link href="/actualites" className="hover:text-amber-300 transition flex items-center gap-1.5">
                   <span className="text-amber-400/70">›</span> Actualités &amp; Événements
+                </Link>
+              </li>
+              <li>
+                <Link href="/nous-soutenir" className="hover:text-emerald-300 transition font-bold text-emerald-400 flex items-center gap-1.5">
+                  <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> Nous Soutenir (Dons &amp; Mécénat)
                 </Link>
               </li>
               <li>

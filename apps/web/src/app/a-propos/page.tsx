@@ -23,28 +23,28 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 export default function AboutPage() {
   const milestones = [
     {
-      year: "Fondation",
+      year: "1991",
       title: "Création de l'ITPR",
-      desc: "L'Institut de Théologie Pastorale pour les Religieux (ITPR) est créé à Yaoundé pour offrir une solide formation théologique et spirituelle aux religieux et religieuses d'Afrique centrale.",
+      desc: "L'Institut de Théologie Pastorale pour les Religieux (ITPR) fut crée  à Yaoundé en Octobre 1991 pour offrir une solide formation théologique et spirituelle aux religieux et religieuses d'Afrique centrale.",
       badge: "Origines"
     },
     {
       year: "Consolidation",
       title: "Rattachement à l'UCAC-ICY",
-      desc: "L'Institut s'associe à la Faculté de Théologie de l'Université Catholique d'Afrique Centrale (UCAC) – Institut Catholique de Yaoundé (ICY), garantissant une haute rigueur universitaire.",
+      desc: "L'Institut est rattachée à la Faculté de Théologie de l'Université Catholique d'Afrique Centrale (UCAC) – Institut Catholique de Yaoundé (ICY), garantissant une haute rigueur universitaire.",
       badge: "Affiliation académique"
     },
     {
-      year: "2022",
+      year: "2012",
       title: "Érection Canonique par le Saint-Siège (Rome)",
-      desc: "Par décret de la Congrégation pour l'Éducation Catholique au Vatican, l'ITPR est érigé canoniquement en Institut Supérieur des Sciences Religieuses (ISSR) Sainte Joséphine Bakhita, habilité à conférer le Baccalauréat canonique.",
+      desc: "Par Décret de la Congrégation du 28 janvier 2012, le Saint Siège érigé canoniquement en Institut Supérieur des Sciences Religieuses (ISSR) Sainte Joséphine Bakhita, habilité à conférer le Baccalauréat canonique.",
       badge: "Reconnaissance de Rome",
       highlight: true
     },
     {
       year: "Aujourd'hui",
       title: "Ouverture Panafricaine & Formations Hybrides",
-      desc: "L'ISSR ouvre grand ses portes aux laïcs chrétiens engagés, lance des Diplômes Universitaires d'État et déploie l'enseignement à distance en direct pour toute la sous-région.",
+      desc: "L'ISSR délivre des certificats, Diplômes Universitaires d'État et déploie l'enseignement à distance pour rejoindre un public plus vaste.",
       badge: "Innovation & Mission"
     }
   ];
@@ -129,7 +129,7 @@ export default function AboutPage() {
                   L&apos;Institut Supérieur des Sciences Religieuses Sainte Joséphine Bakhita est né de la volonté de consolider la formation théologique et pastorale des religieux, religieuses et laïcs en Afrique centrale.
                 </p>
                 <p>
-                  Anciennement connu sous le nom d&apos;<strong>Institut de Théologie Pastorale pour les Religieux (ITPR)</strong>, l&apos;établissement a franchi une étape historique décisive en étant érigé canoniquement en <strong>Institut Supérieur des Sciences Religieuses (ISSR) par la Congrégation pour l&apos;Éducation Catholique (Rome) en 2022</strong>.
+                  Anciennement connu sous le nom d&apos;<strong>Institut de Théologie Pastorale pour les Religieux (ITPR)</strong>, l&apos;établissement a franchi une étape historique décisive en étant érigé canoniquement en <strong>Institut Supérieur des Sciences Religieuses (ISSR) par Décret de la Congrégation du 28 janvier 2012</strong>.
                 </p>
                 <p>
                   Rattaché à la Faculté de Théologie de l&apos;<strong>Université Catholique d&apos;Afrique Centrale (UCAC) – Institut Catholique de Yaoundé (ICY)</strong>, l&apos;institut propose un cadre académique prestigieux, rigoureux et porteur de diplômes reconnus internationalement.
@@ -340,20 +340,22 @@ export default function AboutPage() {
                 <div 
                   className="interactive-card bg-white rounded-3xl overflow-hidden border border-amber-100 hover:border-amber-400 shadow-sm hover:shadow-xl flex flex-col h-full group"
                 >
-                  <div className="relative h-64 w-full bg-slate-900 overflow-hidden">
+                  <div className="relative aspect-square w-full bg-slate-900 overflow-hidden">
                     <img
                       src={member.imageUrl}
                       alt={member.name}
-                      style={{ objectPosition: member.objectPosition || 'center top' }}
+                      style={{ objectPosition: member.objectPosition || 'center center' }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold bg-blue-900/90 backdrop-blur-sm text-white shadow border border-blue-700">
-                      {member.title}
-                    </span>
                   </div>
 
                   <div className="p-6 flex-grow flex flex-col justify-between space-y-3">
                     <div>
+                      <div className="mb-2.5">
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-900/90 text-white shadow-sm border border-blue-700">
+                          {member.title}
+                        </span>
+                      </div>
                       <h3 className="font-serif font-bold text-lg text-slate-900 group-hover:text-blue-900 transition">
                         {member.name}
                       </h3>
@@ -380,7 +382,7 @@ export default function AboutPage() {
               Envie de rejoindre l&apos;ISSR Sainte Bakhita ?
             </h2>
             <p className="text-sm text-slate-200 max-w-xl mx-auto relative z-10 leading-relaxed font-light">
-              Consultez le catalogue détaillé de nos 9 filières ou déposez dès maintenant votre dossier de candidature pour la rentrée académique.
+              Consultez le catalogue détaillé de nos 8 filières ou déposez dès maintenant votre dossier de candidature pour la rentrée académique.
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10">
               <Link

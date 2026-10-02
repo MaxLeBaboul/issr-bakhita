@@ -82,7 +82,7 @@ export default function FormationsPage() {
             Catalogue des Formations
           </h1>
           <p className="text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-light leading-relaxed">
-            Découvrez nos 9 filières d&apos;excellence en théologie, pastorale, gestion ecclésiale et éducation, 
+            Découvrez nos 8 filières d&apos;excellence en théologie, pastorale, gestion ecclésiale et éducation, 
             dispensées en présentiel sur le campus de Mvolyé (Yaoundé) et en direct en ligne.
           </p>
         </div>
@@ -306,6 +306,44 @@ export default function FormationsPage() {
                       })}
                     </div>
                   </div>
+
+                  {/* Méthodes pédagogiques & Équipe pédagogique */}
+                  {(formation.pedagogicalMethods || formation.teachingTeam) && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {formation.pedagogicalMethods && (
+                        <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                            <span>Méthodes pédagogiques</span>
+                          </h4>
+                          <ul className="space-y-1.5 text-xs text-slate-700">
+                            {formation.pedagogicalMethods.map((m, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                                <span>{m}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {formation.teachingTeam && (
+                        <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/80 space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+                            <Users className="w-3.5 h-3.5 text-blue-700" />
+                            <span>Profil de l’Équipe pédagogique</span>
+                          </h4>
+                          <ul className="space-y-1.5 text-xs text-slate-700">
+                            {formation.teachingTeam.map((m, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                                <span>{m}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Career Prospects */}
                   <div>

@@ -11,7 +11,8 @@ import {
   CheckCircle2, 
   MapPin, 
   GraduationCap,
-  Calendar
+  Calendar,
+  Heart
 } from 'lucide-react';
 import { INSTITUTION_INFO } from '../data/mockData';
 
@@ -44,7 +45,7 @@ export const Hero: React.FC = () => {
             {/* Accreditation Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-200 text-xs font-semibold backdrop-blur-md shadow-sm animate-fade-in-down">
               <Award className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>Érigé par Rome (2022) • Rattaché à l&apos;UCAC-ICY</span>
+              <span>Érigé par Rome (2012) • Rattaché à l&apos;UCAC-ICY</span>
             </div>
 
             {/* Main Title - Clean & Prestigious */}
@@ -81,26 +82,34 @@ export const Hero: React.FC = () => {
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-sm border border-emerald-400/30 text-emerald-100">
                 <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
-                9 Filières Accréditées
+                8 Filières Accréditées
               </span>
             </div>
 
             {/* Primary & Secondary Call to Actions */}
-            <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <Link
                 href="/admissions"
-                className="btn-shimmer inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-slate-950 font-extrabold text-sm shadow-xl shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 active:scale-95 transition-all duration-200 border border-amber-300/60"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-slate-950 font-extrabold text-sm shadow-xl shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 active:scale-95 transition-all duration-200 border border-amber-300/60"
               >
-                <span>Candidater en ligne (2026-2027)</span>
+                <span>Candidater en ligne</span>
                 <ArrowRight className="w-4 h-4 text-slate-950" />
               </Link>
 
               <Link
                 href="/formations"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-400/40 text-white font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-sm"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-400/40 text-white font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-sm"
               >
                 <BookOpen className="w-4 h-4 text-amber-400" />
-                <span>Explorer les formations</span>
+                <span>Nos Formations</span>
+              </Link>
+
+              <Link
+                href="/nous-soutenir"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 border border-emerald-400/40 text-white font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-950/30"
+              >
+                <Heart className="w-4 h-4 text-rose-300 fill-rose-300" />
+                <span>Nous Soutenir</span>
               </Link>
             </div>
 

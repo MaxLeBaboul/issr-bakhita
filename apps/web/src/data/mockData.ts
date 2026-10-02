@@ -5,12 +5,12 @@ export const INSTITUTION_INFO = {
   acronym: "ISSR Sainte Bakhita",
   motto: "Se former pour mieux servir !",
   affiliation: "Rattaché à la Faculté de Théologie de l'Université Catholique d'Afrique Centrale (UCAC) – ICY",
-  erection: "Érigé canoniquement par la Congrégation pour l'Éducation Catholique (Rome) en 2022",
+  erection: "Érigé canoniquement par Décret de la Congrégation du 28 janvier 2012 (Rome)",
   formerName: "Anciennement Institut de Théologie Pastorale pour les Religieux (ITPR)",
   address: "Yaoundé – Mvolyé, derrière le Collège Saint Benoît (Cameroun)",
   phone: "+237 655 165 757",
   whatsapp: "+237655165757",
-  email: "issrbakhita2026@gmail.com",
+  email: "Institutsuperieursciencesrelig@gmail.com",
   coordinates: {
     lat: 3.84328,
     lng: 11.51087,
@@ -22,6 +22,74 @@ export const INSTITUTION_INFO = {
   }
 };
 
+export const DONATION_INFO = {
+  bank: {
+    bankName: "Afriland First Bank Cameroun",
+    accountName: "INSTITUT SUPERIEUR DES SCIENCES RELIGIEUSES SAINTE JOSEPHINE BAKHITA",
+    shortName: "ISSR Sainte Bakhita",
+    domiciliation: "Agence Principale de Yaoundé (Mvolyé / Hippodrome)",
+    bankCode: "10005",
+    branchCode: "00001",
+    accountNumber: "04326781001",
+    ribKey: "84",
+    fullRib: "10005 00001 04326781001 84",
+    iban: "CM21 1000 5000 0104 3267 8100 184",
+    swiftBic: "AFRICMCX",
+    referenceNote: "Indiquer obligatoirement en motif : DON - [Votre Nom] / SOUTIEN ISSR",
+  },
+  mobileMoney: {
+    orangeMoney: {
+      operator: "Orange Money (OM) Cameroun",
+      accountName: "ISSR SAINTE BAKHITA",
+      number: "+237655165757",
+      displayNumber: "+237 655 165 757",
+      ussdSyntax: "#150*1*1*655165757*MONTANT#",
+      shortCode: "#150#",
+      badgeColor: "from-orange-500 to-amber-600",
+      instructions: "Composer le #150#, sélectionner 'Paiement / Transfert', entrer le numéro 655 165 757 et confirmer avec votre code secret.",
+    },
+    mtnMoMo: {
+      operator: "MTN Mobile Money (MoMo) Cameroun",
+      accountName: "ISSR SAINTE BAKHITA",
+      number: "+237655165757",
+      displayNumber: "+237 655 165 757",
+      ussdSyntax: "*126*1*1*655165757*MONTANT#",
+      shortCode: "*126#",
+      badgeColor: "from-yellow-400 to-amber-500",
+      instructions: "Composer le *126#, sélectionner 'Transfert d'argent', saisir le numéro 655 165 757 et valider avec votre code PIN.",
+    },
+  },
+  impactProjects: [
+    {
+      title: "Bourses d'Études & Solidarité",
+      desc: "Financement des frais de scolarité pour les religieuses, religieux et laïcs des diocèses défavorisés désireux d'étudier la théologie.",
+      icon: "GraduationCap"
+    },
+    {
+      title: "Campus Numérique & E-learning",
+      desc: "Développement des serveurs multimédias et de la connexion internet haut débit pour la diffusion des cours en direct auprès de la diaspora et des provinces.",
+      icon: "Laptop"
+    },
+    {
+      title: "Bibliothèque & Fonds Théologique",
+      desc: "Acquisition de traités de patristique, exégèse, morale et sciences pastorales, enrichissant le patrimoine intellectuel de l'Église d'Afrique.",
+      icon: "BookOpen"
+    },
+    {
+      title: "Infrastructures & Équipements",
+      desc: "Modernisation des amphithéâtres et des salles de séminaires sur le site historique de Mvolyé à Yaoundé.",
+      icon: "Building"
+    }
+  ],
+  contactEconomat: {
+    service: "Économat & Intendance — ISSR Sainte Bakhita",
+    phone: "+237 655 165 757",
+    whatsapp: "+237655165757",
+    email: "Institutsuperieursciencesrelig@gmail.com",
+    notice: "Après tout virement bancaire ou paiement Mobile Money, veuillez transmettre votre reçu ou capture d'écran par WhatsApp ou Email afin d'obtenir votre attestation officielle de bienfaiteur délivrée par l'Économat."
+  }
+};
+
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "dir-1",
@@ -29,7 +97,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Directeur",
     role: "Prêtre Pallottin, Docteur en Théologie",
     bio: "Responsable de la gouvernance académique et pastorale de l'Institut Supérieur des Sciences Religieuses.",
-    imageUrl: "/images/team/dir-patrice-mekana.jpg"
+    imageUrl: "/images/team/dir-patrice-mekana.jpg",
+    objectPosition: "center 20%"
   },
   {
     id: "dir-2",
@@ -37,7 +106,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Préfet des Études",
     role: "Religieuse, Coordination pédagogique",
     bio: "Supervise l'organisation des cours, le suivi académique des apprenants et le corps enseignant.",
-    imageUrl: "/images/team/sr-patience-enganemben.jpg"
+    imageUrl: "/images/team/sr-patience-enganemben.jpg",
+    objectPosition: "center center"
   },
   {
     id: "dir-3",
@@ -45,7 +115,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Représentant des Enseignants",
     role: "Enseignant chercheur",
     bio: "Porte-parole du corps professoral et garant de l'excellence pédagogique.",
-    imageUrl: "/images/team/jean-claude-mekoulou.jpg"
+    imageUrl: "/images/team/jean-claude-mekoulou.jpg",
+    objectPosition: "center center"
   },
   {
     id: "dir-4",
@@ -53,24 +124,26 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Économe",
     role: "Gestion financière et intendance",
     bio: "En charge de l'administration financière, des scolarités et de la gestion matérielle.",
-    imageUrl: "/images/team/gael-marcel-abanda.jpg"
+    imageUrl: "/images/team/gael-marcel-abanda.jpg",
+    objectPosition: "center center"
   },
   {
     id: "dir-5",
-    name: "Mlle Lydie TSELLE",
-    title: "Secrétaire Académique",
-    role: "Accueil & Gestion des dossiers",
-    bio: "Assistance aux admissions, gestion des inscriptions et relation avec les étudiants.",
-    imageUrl: "/images/team/lydie-tselle.jpg"
+    name: "Mlle Lydie TSELI",
+    title: "Secrétariat de direction (Cours du jour)",
+    role: "Secrétariat de direction — Cours du jour",
+    bio: "Assistance aux admissions, gestion des inscriptions et relation avec les étudiants des cours du jour.",
+    imageUrl: "/images/team/lydie-tseli.jpg",
+    objectPosition: "center center"
   },
   {
     id: "dir-6",
     name: "Mlle Manuella NYAMBONE",
-    title: "Secrétaire Administrative",
-    role: "Secrétariat de direction",
-    bio: "Gestion des correspondances officielles, archives et suivi administratif.",
+    title: "Secrétariat de direction (Cours du soir)",
+    role: "Secrétariat de direction — Cours du soir",
+    bio: "Gestion des correspondances officielles, suivi administratif et coordination des cours du soir.",
     imageUrl: "/images/team/manuella-nyambone.jpg",
-    objectPosition: "center 20%"
+    objectPosition: "center center"
   }
 ];
 
@@ -196,112 +269,85 @@ export const FORMATIONS: Formation[] = [
     }
   },
   {
-    id: "sciences-religieuses-master-pastorale-gouvernance",
-    slug: "master-theologie-pastorale-gouvernance-ecclesiale",
-    title: "Master Sciences Religieuses : Pastorale & Gouvernance Ecclésiale",
-    subtitle: "Management institutionnel, audit pastoral et direction d'œuvres d'Église (UCAC)",
-    category: "canonique",
-    duration: "2 ans (4 semestres)",
-    diploma: "Master universitaire en Sciences Religieuses (UCAC)",
-    targetAudience: "Supérieurs majeurs, vicaires épiscopaux, économes diocésains, directeurs d'institutions confessionnelles",
-    modality: "Présentiel et Enseignement synchrone à distance",
-    description: "Cycle d'excellence dédié à la modernisation de l'administration ecclésiale, à la gouvernance financière transparente et à la planification pastorale stratégique sur le continent africain.",
-    objectives: [
-      "Maîtriser les outils de la planification pastorale stratégique et participative.",
-      "Auditer et optimiser les structures et finances des congrégations et diocèses.",
-      "Articuler droit canonique, gouvernance moderne et leadership serviteur."
-    ],
-    program: [
-      {
-        semester: "Master 1 : Droit, Finances & Management pastoral",
-        modules: [
-          "Droit canonique des biens temporels et gestion des œuvres",
-          "Comptabilité de gestion et contrôle interne ecclésial",
-          "Sociologie des organisations religieuses",
-          "Gestion des ressources humaines en pastorale"
-        ]
-      },
-      {
-        semester: "Master 2 : Stratégie & Conduite du changement",
-        modules: [
-          "Stratégie de viabilité financière des congrégations",
-          "Communication institutionnelle et gestion de crise en milieu d'Église",
-          "Stage de terrain en gouvernance institutionnelle",
-          "Mémoire de Master professionnel et soutenance"
-        ]
-      }
-    ],
-    careerProspects: [
-      "Secrétaire général de diocèse ou de conférence épiscopale",
-      "Économe général(e) ou provincial(e) de congrégation religieuse",
-      "Directeur d'hôpitaux, complexes scolaires ou universités catholiques",
-      "Auditeur et conseiller en gouvernance d'œuvres ecclésiales"
-    ],
-    requirements: [
-      "Licence ou Baccalauréat canonique avec responsabilité pastorale avérée",
-      "Projet professionnel ou lettre de mission de la congrégation/diocèse"
-    ],
-    tuition: {
-      registrationFee: "15 000 FCFA",
-      annualTuition: "450 000 FCFA (Laïcs) / 850 000 FCFA (Prêtres & Religieux)",
-      installments: "Échelonné en 3 tranches"
-    }
-  },
-  {
     id: "licence-ingenierie-pastorale",
     slug: "licence-sciences-religieuses-option-ingenierie-pastorale",
-    title: "Licence Sciences Religieuses — Option Ingénierie Pastorale",
-    subtitle: "Théologie pastorale approfondie, conduite de projets et évangélisation numérique",
+    title: "Licence Professionnelle en Ingénierie Pastorale",
+    subtitle: "Formation théologique, pastorale, managériale et psychologique pour la conduite d'œuvres d'Église et de projets socio-éducatifs",
     category: "professionnelle",
-    duration: "3 ans (Passerelle directe en 1 ou 2 ans pour diplômés)",
-    diploma: "Licence en Sciences Religieuses (Option Ingénierie Pastorale) - UCAC / ISSR",
-    targetAudience: "Laïcs engagés, agents pastoraux, aumôniers, animateurs de jeunesse, religieux(ses)",
-    modality: "En ligne & Présentiel (Cours du jour dès 8h ou Cours du soir à 17h00)",
-    description: "Programme de formation approfondie en théologie et gestion pastorale. Alliant sciences religieuses, méthodologie de gestion de projets, accompagnement de crise et communication numérique.",
+    duration: "3 ans (6 semestres, 180 crédits ECTS ou équivalent)",
+    diploma: "Licence Professionnelle en Ingénierie Pastorale (ISSR Sainte Bakhita / UCAC)",
+    targetAudience: "Agents pastoraux, animateurs de mouvements ecclésiaux, aumôniers, coordinateurs de projets humanitaires et sociaux, laïcs engagés, religieux et religieuses",
+    modality: "Présentiel (campus de Mvolyé) et En direct en ligne (Zoom / Google Meet)",
+    description: "La formation des animateurs pastoraux vise le renforcement des compétences théologiques, pastorales, spirituelles, bibliques, psychologiques et managériales ainsi que l’acquisition des outils de psychologie pour une meilleure intervention auprès des personnes vulnérables, en vue des missions dans les paroisses, les Instituts religieux et les structures sociales. Cette filière forme des agents pastoraux compétents, capables de concevoir, gérer et évaluer des projets pastoraux et socio-éducatifs, avec une solide base théologique, biblique, psychologique et managériale.",
     objectives: [
-      "Établir et maturer votre foi en approfondissant la connaissance des mystères sacrés.",
-      "Acquérir les compétences modernes en gestion de projets et recherche de fonds.",
-      "Maîtriser la pastorale des jeunes et l'évangélisation sur les réseaux sociaux.",
-      "Accompagner spirituellement et humainement les personnes en situation de vulnérabilité."
+      "Donner une solide formation biblique, théologique et spirituelle.",
+      "Initier aux sciences humaines (psychologie, sociologie, pédagogie) pour comprendre les dynamiques sociales et communautaires.",
+      "Développer des compétences en management, planification et évaluation de projets pastoraux.",
+      "Outiller pour la communication, la médiation et l’accompagnement spirituel des personnes vulnérables.",
+      "Former à l’utilisation des outils numériques pour la pastorale moderne et l'évangélisation."
+    ],
+    pedagogicalMethods: [
+      "Cours magistraux et séminaires interactifs",
+      "Ateliers pratiques (animation, catéchèse, gestion de projet)",
+      "Études de cas pastoraux et mises en situation",
+      "Stages encadrés et supervisions sur le terrain",
+      "Mémoire professionnel en lien avec une problématique pastorale"
+    ],
+    teachingTeam: [
+      "Théologiens et biblistes : PhD, masters en théologie et sciences religieuses",
+      "Sociologues, psychologues et pédagogues : Spécialisés en religion, famille et jeunesse",
+      "Professionnels de la communication et du management de projet",
+      "Praticiens pastoraux : Prêtres, religieux, laïcs expérimentés en animation pastorale",
+      "Experts en TIC et communication : Intégration des outils numériques dans la pastorale"
     ],
     program: [
       {
-        semester: "Année 1 : Fondements théologiques & pastoral des jeunes",
+        semester: "Année 1 (Semestres 1 & 2) : Fondements Théologiques, Bibliques & Sciences Humaines",
         modules: [
-          "Théologie fondamentale et mystère de l'Église",
-          "Psychosociologie des jeunes et dynamiques d'adolescence",
-          "Initiation à la gestion de projets ecclésiaux",
-          "Outils numériques et réseaux au service de l'Évangile"
+          "Fondements bibliques, théologiques et spirituels de la mission pastorale",
+          "Initiation à la psychologie générale et au développement psychoaffectif",
+          "Sociologie des dynamiques communautaires et familiales en Afrique",
+          "Principes fondamentaux du management et de l'administration pastorale",
+          "Outils numériques et technologies de l'information pour la pastorale moderne",
+          "Communication interpersonnelle, médiation et écoute bienveillante"
         ]
       },
       {
-        semester: "Année 2 : Ingénierie de terrain & Relation d'aide",
+        semester: "Année 2 (Semestres 3 & 4) : Ingénierie de Projet, Psychoéducation & Vulnérabilités",
         modules: [
-          "Écoute active, relation d'aide et accompagnement spirituel",
-          "Pastorale de la santé et aumôneries spécialisées",
-          "Budgétisation et recherche de partenaires financiers",
-          "Intervention pastorale en milieu de crise et réfugiés"
+          "Conception, planification, budgétisation et évaluation de projets pastoraux et socio-éducatifs",
+          "Outils de psychologie pour l’intervention auprès des personnes vulnérables",
+          "Aumôneries spécialisées : milieu scolaire/universitaire, santé/hôpitaux, prisons, maisons de retraite",
+          "Animation pastorale, liturgie, catéchèse et dynamiques de groupes ecclésiaux",
+          "Gestion des crises, résolution de conflits et médiation pastorale",
+          "Stage pratique encadré et supervisé en paroisse, aumônerie ou structure sociale"
         ]
       },
       {
-        semester: "Année 3 : Conduite de projets & Mémoire de Licence",
+        semester: "Année 3 (Semestres 5 & 6) : Leadership Pastoral, Gestion Avancée & Mémoire",
         modules: [
-          "Pilotage et évaluation de projets pastoraux diocésains",
-          "Éthique pastorale et protection des personnes vulnérables",
-          "Stage professionnel obligatoire de 3 mois",
-          "Rédaction et soutenance du mémoire professionnel"
+          "Management stratégique, leadership serviteur et gouvernance des œuvres d'Église",
+          "Montage de projets caritatifs, recherche de financements et partenariats ONG/diocésains",
+          "Évangélisation numérique, médias chrétiens et stratégie de communication ecclésiale",
+          "Ateliers pratiques d’études de cas pastoraux et simulations de gestion de projets",
+          "Stage professionnel de responsabilité sur le terrain (3 mois)",
+          "Rédaction et soutenance publique du mémoire professionnel de Licence"
         ]
       }
     ],
     careerProspects: [
-      "Coordinateur de projets caritatifs et diocésains",
-      "Responsable d'aumônerie (santé, milieu carcéral, universités)",
-      "Animateur et conseiller de jeunesse en paroisses et mouvements",
-      "Professionnel d'intervention auprès des réfugiés et de l'enfance en difficulté"
+      "Aumôniers psychoéducateurs des écoles, lycées et collèges, universités, hôpitaux et prisons",
+      "Responsables de pastorale paroissiale, diocésaine ou communautaire",
+      "Animateurs et coordinateurs en maisons de retraite et centres d’accueil",
+      "Animateurs de mouvements et services ecclésiaux",
+      "Formateurs en catéchèse, liturgie et animation pastorale",
+      "Chargés de projets sociaux, éducatifs ou humanitaires en lien avec l’Église ou les ONG chrétiennes",
+      "Conseillers en communication et médias religieux"
     ],
     requirements: [
-      "Baccalauréat secondaire (ou GCE A/L), lettre de motivation",
-      "Frais de dossier : 10 000 FCFA • Test d'entrée officiel"
+      "Tout Baccalauréat de l'enseignement secondaire ou GCE A/L",
+      "Être inscrit dans le programme des Sciences Religieuses",
+      "Lettre de motivation et dossier d'inscription complet (10 000 FCFA de frais de dossier)"
     ],
     tuition: {
       registrationFee: "10 000 FCFA (Dossier)",
@@ -312,64 +358,92 @@ export const FORMATIONS: Formation[] = [
   {
     id: "licence-pedagogie-religieuse",
     slug: "licence-sciences-religieuses-option-pedagogie-religieuse",
-    title: "Licence Sciences Religieuses — Option Pédagogie Religieuse",
-    subtitle: "Devenez un acteur clé de l'éducation religieuse et de la formation des consciences",
+    title: "Licence Professionnelle en Pédagogie Religieuse",
+    subtitle: "Formation théologique, didactique et pédagogique pour l'enseignement religieux, moral et civique",
     category: "professionnelle",
-    duration: "3 ans (ou passerelle 1 an)",
-    diploma: "Licence en Sciences Religieuses (Option Pédagogie Religieuse) - UCAC / ISSR",
-    targetAudience: "Enseignants de religion, catéchistes, candidats à l'enseignement catholique, religieux éducateurs",
-    modality: "En ligne & Présentiel (Cours du jour dès 8h ou Cours du soir à 17h00)",
-    description: "Dispensant une didactique spécifique, cette licence prépare des professeurs et formateurs capables de structurer l'enseignement religieux en milieu scolaire et de former des consciences droites.",
+    duration: "3 ans (6 semestres, 180 crédits ECTS ou équivalent)",
+    diploma: "Licence Professionnelle en Pédagogie Religieuse (ISSR Sainte Bakhita / UCAC)",
+    targetAudience: "Enseignants de religion, professeurs de morale/E.V.A.I., catéchistes, animateurs éducatifs, religieux éducateurs, laïcs engagés",
+    modality: "Présentiel (campus de Mvolyé) et En direct en ligne (Zoom / Google Meet)",
+    description: "La religion se présente comme un enjeu central pour le vivre-ensemble. Développer chez les jeunes une compréhension du phénomène religieux et une pratique du dialogue afin de favoriser la reconnaissance de l’autre et la poursuite du bien commun n’a plus besoin de justifications. Enseigner la religion est donc une tâche tout à fait particulière qui nécessite d’une part une formation théologique afin d’utiliser au mieux les moyens didactiques et pédagogiques à disposition de celui qui enseigne. Cette filière forme des enseignants, animateurs et formateurs capables de concevoir, organiser et dispenser des enseignements religieux et catéchétiques adaptés à différents publics, en intégrant des approches pédagogiques modernes, les sciences humaines et la spiritualité.",
     objectives: [
-      "Éclairer votre foi, la maturer et être capable de la défendre face à la crise du monde actuel.",
-      "Maîtriser la pédagogie en matière d'éducation aux valeurs citoyennes et morales.",
-      "Éduquer en matière de psycho-affectivité des adolescents et discernement éthique.",
-      "Concevoir et animer des curricula d'enseignement religieux interactifs et attrayants."
+      "Adapter les contenus pédagogiques à la connaissance des religions et de la foi.",
+      "Procurer les principes méthodologiques nécessaires à la structuration et à l’organisation des apprentissages relatifs aux cours de religion, de morale, d’éducation à la citoyenneté et de philosophie.",
+      "Acquérir une solide formation en théologie, Bible et spiritualité.",
+      "Maîtriser les méthodes et outils pédagogiques pour l’enseignement religieux.",
+      "Comprendre les dynamiques sociales et psychologiques influençant l’apprentissage religieux.",
+      "Développer des compétences en communication et médiation dans des contextes éducatifs et pastoraux.",
+      "Intégrer les technologies de l’information et de la communication (TIC) dans l’enseignement religieux."
+    ],
+    pedagogicalMethods: [
+      "Cours magistraux et séminaires interactifs",
+      "Ateliers pratiques et simulations pédagogiques",
+      "Études de cas et projets pédagogiques",
+      "Stages progressifs encadrés par des praticiens",
+      "Travail personnel et mémoires professionnels"
+    ],
+    teachingTeam: [
+      "Théologiens et biblistes : Licence, master ou doctorat en théologie, sciences religieuses ou études bibliques",
+      "Psychologues et pédagogues : Spécialisés en pédagogie religieuse, psychologie de l’éducation et de la religion",
+      "Sociologues et philosophes : Dynamiques familiales et communautaires, éthique et valeurs éducatives",
+      "Praticiens pastoraux : Prêtres, religieux, laïcs expérimentés en animation pastorale et catéchèse",
+      "Experts en TIC et communication : Intégration des outils numériques dans l’enseignement religieux"
     ],
     program: [
       {
-        semester: "Année 1 : Didactique générale & Sciences de l'éducation",
+        semester: "Année 1 (Semestres 1 & 2) : Fondements Théologiques, Éducation & Sciences Humaines",
         modules: [
-          "Fondements théologiques de l'éducation chrétienne",
-          "Psychologie du développement de l'enfant et de l'adolescent",
-          "Didactique de l'instruction religieuse en milieu pluriculturel",
-          "Expression orale et animation catéchétique"
+          "Fondements théologiques de l'éducation chrétienne et mystères de la foi",
+          "Psychologie du développement et de l'apprentissage chez l'enfant et l'adolescent",
+          "Didactique générale et principes méthodologiques de l'enseignement religieux",
+          "Éducation aux valeurs citoyennes, morale et philosophie de l'éducation",
+          "Intégration des TIC et outils numériques dans la transmission religieuse",
+          "Expression orale, techniques d'animation et dynamique de groupe"
         ]
       },
       {
-        semester: "Année 2 : Méthodes actives & Éthique de l'éducateur",
+        semester: "Année 2 (Semestres 3 & 4) : Didactique Spécialisée, Éthique & Médiation",
         modules: [
-          "Conception de fiches pédagogiques et supports multimédias",
-          "Éducation à la citoyenneté, justice et paix en milieu scolaire",
-          "Accompagnement des adolescents en questionnement existentiel",
-          "Stage d'immersion dans un collège d'enseignement catholique"
+          "Didactique des cours de religion, morale et éducation à la vie, à l’amour et à l’intégrité (E.V.A.I.)",
+          "Compréhension des dynamiques sociales et psychologiques influençant la foi des jeunes",
+          "Compétences en communication, médiation et discernement éthique en milieu scolaire",
+          "Création d'outils numériques d’animation pédagogique et d’évangélisation",
+          "Dialogue interreligieux, œcuménisme, justice et promotion de la paix",
+          "Stage progressif d'immersion pédagogique et d'observation en établissement catholique"
         ]
       },
       {
-        semester: "Année 3 : Professionnalisation & Mémoire",
+        semester: "Année 3 (Semestres 5 & 6) : Pratique Pédagogique Professionnelle & Mémoire",
         modules: [
-          "Supervision pédagogique et évaluation des apprentissages",
-          "Gestion de pastorale scolaire d'établissement",
-          "Stage en responsabilité pratique (1 trimestre)",
-          "Soutenance du mémoire professionnel devant jury"
+          "Supervision pédagogique, docimologie et évaluation des apprentissages religieux",
+          "Coordination de programmes éducatifs et pastoraux en milieu scolaire et paroissial",
+          "Ateliers pratiques, simulations pédagogiques et études de cas éducatifs",
+          "Stage professionnel pratique en pleine responsabilité de cours (1 trimestre)",
+          "Rédaction du mémoire professionnel sous la direction d'un enseignant-chercheur",
+          "Soutenance publique du mémoire de Licence Professionnelle devant jury"
         ]
       }
     ],
     careerProspects: [
-      "Professeur certifié d'instruction religieuse et morale en collège/lycée",
-      "Animateur et coordonnateur en pastorale scolaire d'établissement",
-      "Responsable diocésain de la catéchèse et formation des catéchistes",
-      "Gestionnaire de projets éducatifs confessionnels"
+      "Professeurs de Religions dans les lycées et collèges",
+      "Professeurs de morale",
+      "Professeurs d’éducation à la vie, à l’amour et à l’intégrité (E.V.A.I.)",
+      "Animateurs et responsables de mouvements ou services éducatifs de l’Église",
+      "Conseillers pédagogiques pour l’enseignement religieux",
+      "Formateurs et accompagnateurs dans des écoles chrétiennes ou associations religieuses",
+      "Responsables de programmes éducatifs et pastoraux dans les paroisses et diocèses",
+      "Monteur d’outils numériques d’animation pédagogiques et d’évangélisation à travers les réseaux sociaux",
+      "Agents de l’œcuménisme, de la justice et de la paix"
     ],
     requirements: [
       "Tout Baccalauréat secondaire ou GCE A/L",
-      "Lettre de motivation et dossier d'inscription (10 000 FCFA)",
-      "Test d'entrée académique"
+      "Être inscrit dans le programme des Sciences Religieuses",
+      "Lettre de motivation et dossier d'inscription complet (10 000 FCFA de frais de dossier)"
     ],
     tuition: {
-      registrationFee: "10 000 FCFA",
+      registrationFee: "10 000 FCFA (Frais de dossier)",
       annualTuition: "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-      installments: "Payable par tranches"
+      installments: "Payable en tranches trimestrielles"
     }
   },
   {

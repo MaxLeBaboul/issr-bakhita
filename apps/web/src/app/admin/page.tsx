@@ -727,8 +727,8 @@ export default function AdminPage() {
                 >
                   <option value="admin">1. Super-Admin (DSI)</option>
                   <option value="directeur">2. Directeur (P. Dr Patrice MEKANA)</option>
-                  <option value="secretaire_admin">3. Secrétaire Administrative (Mme Christine NKOLO)</option>
-                  <option value="secretaire_acad">4. Secrétaire Académique (M. Jean Claude MEKOULOU)</option>
+                  <option value="secretaire_acad">3. Secrétariat Direction Cours du Jour (Mlle Lydie TSELI)</option>
+                  <option value="secretaire_admin">4. Secrétariat Direction Cours du Soir (Mlle Manuella NYAMBONE)</option>
                   <option value="prefet_etudes">5. Préfet des Études (Sr. Patience ENGANEMBEN)</option>
                   <option value="econome">6. Économe (P. Jean-Paul BESSALA)</option>
                   <option value="rep_enseignants">7. Délégué Enseignants (Pr. Antoine ESSOMBA)</option>
@@ -2113,8 +2113,8 @@ export default function AdminPage() {
                 >
                   <option value="admin">1. Super-Admin (DSI)</option>
                   <option value="directeur">2. Directeur (Direction Générale)</option>
-                  <option value="secretaire_admin">3. Secrétaire Administrative</option>
-                  <option value="secretaire_acad">4. Secrétaire Académique</option>
+                  <option value="secretaire_acad">3. Secrétariat de Direction (Cours du jour)</option>
+                  <option value="secretaire_admin">4. Secrétariat de Direction (Cours du soir)</option>
                   <option value="prefet_etudes">5. Préfet des Études</option>
                   <option value="econome">6. Économe (Gestion Financière)</option>
                   <option value="rep_enseignants">7. Délégué des Enseignants</option>

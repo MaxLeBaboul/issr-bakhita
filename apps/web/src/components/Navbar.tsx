@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck, LogOut, LayoutDashboard, Globe, ExternalLink } from 'lucide-react';
+import { Menu, X, Phone, Mail, GraduationCap, ShieldCheck, UserCheck, LogOut, LayoutDashboard, Globe, ExternalLink, Heart } from 'lucide-react';
 import { INSTITUTION_INFO } from '../data/mockData';
 
 export const Navbar: React.FC = () => {
@@ -63,13 +63,14 @@ export const Navbar: React.FC = () => {
       {/* Liturgical tri-color accent line (Vatican Sapphire, Sacred Gold, Cardinal Red) */}
       <div className="h-1 w-full bg-gradient-to-r from-blue-700 via-amber-500 to-rose-600"></div>
 
-      {/* Top bar with institutional affiliation and contacts */}
+      {/* Top bar with institutional affiliation, Nous Soutenir and contacts */}
       <div className="bg-issr-primary text-white text-xs py-2 px-4 border-b border-issr-primary-light/60">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-2 text-center md:text-left">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2.5">
+          {/* Left: Rome Affiliation & Motto */}
+          <div className="flex items-center gap-2 text-center md:text-left shrink-0">
             <span className="inline-flex items-center gap-1.5 font-bold text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/20">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              Érigé par Rome (2022) • Rattaché à l&apos;UCAC-ICY
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Érigé par Rome (2012) • Rattaché à l&apos;UCAC-ICY</span>
             </span>
             <span className="hidden md:inline text-slate-500">|</span>
             <span className="hidden md:inline italic text-amber-100 font-serif">
@@ -77,13 +78,26 @@ export const Navbar: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-200">
+          {/* Center: "Nous Soutenir" Button (Between slogan and phone number) */}
+          <div className="flex items-center justify-center my-0.5 md:my-0">
+            <Link
+              href="/nous-soutenir"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 border border-emerald-400/40 ring-1 ring-emerald-400/30"
+              title="Faire un don ou soutenir l'ISSR Sainte Bakhita"
+            >
+              <Heart className="w-3.5 h-3.5 text-rose-300 fill-rose-300 animate-pulse shrink-0" />
+              <span>Nous Soutenir</span>
+            </Link>
+          </div>
+
+          {/* Right: Phone, Email & Login */}
+          <div className="flex items-center gap-3.5 lg:gap-4 text-slate-200 shrink-0">
             <a href={`tel:${INSTITUTION_INFO.phone}`} className="flex items-center gap-1.5 hover:text-amber-300 transition">
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span className="font-medium">{INSTITUTION_INFO.phone}</span>
             </a>
-            <a href={`mailto:${INSTITUTION_INFO.email}`} className="hidden sm:flex items-center gap-1.5 hover:text-amber-300 transition">
-              <Mail className="w-3.5 h-3.5 text-amber-400" />
+            <a href={`mailto:${INSTITUTION_INFO.email}`} className="hidden xl:flex items-center gap-1.5 hover:text-amber-300 transition" title={INSTITUTION_INFO.email}>
+              <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span className="font-medium">{INSTITUTION_INFO.email}</span>
             </a>
             
@@ -152,13 +166,13 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="hidden lg:flex items-center gap-7">
+        <div className="hidden lg:flex items-center gap-5 xl:gap-7">
           <Link href="/" className="text-sm font-semibold text-slate-700 hover:text-blue-900 transition relative group py-1">
             <span>Accueil</span>
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 group-hover:w-full transition-all duration-300 rounded-full"></span>
           </Link>
           <Link href="/a-propos" className="text-sm font-semibold text-slate-700 hover:text-blue-900 transition relative group py-1">
-            <span>L&apos;Institut &amp; Direction</span>
+            <span>ISSR et Direction</span>
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 group-hover:w-full transition-all duration-300 rounded-full"></span>
           </Link>
           <Link href="/formations" className="text-sm font-semibold text-slate-700 hover:text-blue-900 transition relative group py-1">
@@ -175,21 +189,30 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* CTA Button with luminous amber glow */}
-        <div className="hidden lg:flex items-center gap-3">
+        {/* Desktop CTA Button */}
+        <div className="hidden lg:flex items-center shrink-0">
           <Link
             href="/admissions"
-            className="btn-shimmer inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/35 hover:scale-105 active:scale-95 transition-all duration-200 border border-amber-400/40"
+            className="btn-shimmer inline-flex items-center justify-center px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/35 hover:scale-105 active:scale-95 transition-all duration-200 border border-amber-400/40"
           >
             Postuler / S&apos;inscrire
           </Link>
         </div>
 
-        {/* Mobile menu trigger */}
-        <div className="lg:hidden flex items-center gap-2">
+        {/* Mobile & Tablet actions */}
+        <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+          <Link
+            href="/nous-soutenir"
+            className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-xs hover:scale-105 transition"
+            title="Faire un don ou soutenir l'ISSR Bakhita"
+          >
+            <Heart className="w-3.5 h-3.5 text-rose-300 fill-rose-300" />
+            <span className="hidden sm:inline">Nous Soutenir</span>
+            <span className="sm:hidden">Soutenir</span>
+          </Link>
           <Link
             href="/admissions"
-            className="btn-shimmer px-3.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-sm"
+            className="btn-shimmer px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-sm"
           >
             Postuler
           </Link>
@@ -219,7 +242,7 @@ export const Navbar: React.FC = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="block py-2 text-base font-medium text-slate-800 hover:text-issr-primary border-b border-slate-50"
           >
-            L&apos;Institut & Direction
+            ISSR et Direction
           </Link>
           <Link
             href="/formations"
@@ -241,6 +264,14 @@ export const Navbar: React.FC = () => {
             className="block py-2 text-base font-medium text-slate-800 hover:text-issr-primary border-b border-slate-50"
           >
             Contact
+          </Link>
+          <Link
+            href="/nous-soutenir"
+            onClick={() => setMobileMenuOpen(false)}
+            className="py-2 text-base font-bold text-emerald-700 hover:text-emerald-800 border-b border-slate-50 flex items-center gap-2"
+          >
+            <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+            <span>Nous Soutenir (Dons &amp; Mécénat)</span>
           </Link>
           {isLoggedIn ? (
             <div className="space-y-1 border-b border-slate-100 pb-2">
@@ -290,13 +321,21 @@ export const Navbar: React.FC = () => {
               <span>Se connecter (Portail)</span>
             </Link>
           )}
-          <div className="pt-2">
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <Link
+              href="/nous-soutenir"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full text-center py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold shadow hover:brightness-105 transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+            >
+              <Heart className="w-4 h-4 text-rose-300 fill-rose-300" />
+              <span>Nous Soutenir (Dons)</span>
+            </Link>
             <Link
               href="/admissions"
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-center py-2.5 px-4 rounded-lg bg-issr-gold text-white font-semibold shadow hover:bg-issr-gold-dark transition"
+              className="block w-full text-center py-2.5 px-4 rounded-xl bg-issr-gold text-white font-bold shadow hover:bg-issr-gold-dark transition text-xs uppercase tracking-wider"
             >
-              Candidater en ligne (Admissions 2026-2027)
+              Candidater en ligne
             </Link>
           </div>
         </div>
