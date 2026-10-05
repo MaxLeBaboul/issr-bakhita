@@ -357,30 +357,24 @@ export default function ContactPage() {
                             <option value="Baccalauréat Canonique en Sciences Religieuses (Équivalent Licence LMD)">
                               1. Baccalauréat Canonique en Sciences Religieuses (Équivalent Licence LMD)
                             </option>
-                            <option value="Master Sciences Religieuses : Option Foi, Culture & Dialogue Interreligieux">
-                              2. Master Sciences Religieuses : Foi, Culture &amp; Dialogue Interreligieux
+                            <option value="Master Sciences Religieuses : Foi, Culture, Œcuménique & Dialogue Interreligieux">
+                              2. Master Sciences Religieuses : Foi, Culture, Œcuménique &amp; Dialogue Interreligieux
                             </option>
                           </optgroup>
-                          <optgroup label="Pôle II : Licences & Diplômes Universitaires Professionnels (UCAC / ISSR)">
-                            <option value="Licence Professionnelle en Ingénierie Pastorale">
-                              3. Licence Professionnelle en Ingénierie Pastorale
-                            </option>
-                            <option value="Licence Professionnelle en Pédagogie Religieuse">
-                              4. Licence Professionnelle en Pédagogie Religieuse
-                            </option>
+                          <optgroup label="Pôle II : Diplômes Universitaires Professionnels (UCAC / ISSR)">
                             <option value="Diplôme Universitaire (DU) en Ingénierie Pastorale">
-                              5. Diplôme Universitaire (DU) en Ingénierie Pastorale
+                              3. Diplôme Universitaire (DU) en Ingénierie Pastorale
                             </option>
                             <option value="Diplôme Universitaire (DU) en Pédagogie Religieuse">
-                              6. Diplôme Universitaire (DU) en Pédagogie Religieuse
+                              4. Diplôme Universitaire (DU) en Pédagogie Religieuse
                             </option>
                           </optgroup>
                           <optgroup label="Pôle III : Certificats Universitaires & Formation Continue (100% En Ligne)">
                             <option value="Certificat Universitaire en Leadership & Gestion des Œuvres">
-                              7. Certificat Universitaire en Leadership &amp; Gestion des Œuvres
+                              5. Certificat Universitaire en Leadership &amp; Gestion des Œuvres
                             </option>
                             <option value="Certificat Universitaire en Sciences Religieuses">
-                              8. Certificat Universitaire en Sciences Religieuses
+                              6. Certificat Universitaire en Sciences Religieuses
                             </option>
                           </optgroup>
                           <optgroup label="Autre">

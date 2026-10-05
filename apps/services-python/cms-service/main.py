@@ -109,7 +109,7 @@ FORMATIONS_DB: List[dict] = [
     {
         "id": "sciences-religieuses-master-foi-culture",
         "slug": "master-sciences-religieuses-foi-culture-dialogue",
-        "title": "Master Sciences Religieuses : Foi, Culture & Dialogue Interreligieux",
+        "title": "Master Sciences Religieuses : Foi, Culture, Œcuménique & Dialogue Interreligieux",
         "subtitle": "Cycle supérieur de recherche, inculturation et dialogue œcuménique (UCAC)",
         "category": "canonique",
         "duration": "2 ans (4 semestres)",
@@ -119,36 +119,6 @@ FORMATIONS_DB: List[dict] = [
             "registrationFee": "15 000 FCFA",
             "annualTuition": "450 000 FCFA (Laïcs) / 850 000 FCFA (Religieux)",
             "installments": "Payable en tranches"
-        }
-    },
-    {
-        "id": "licence-ingenierie-pastorale",
-        "slug": "licence-sciences-religieuses-option-ingenierie-pastorale",
-        "title": "Licence Professionnelle en Ingénierie Pastorale",
-        "subtitle": "Formation théologique, pastorale, managériale et psychologique pour la conduite d'œuvres d'Église et de projets socio-éducatifs",
-        "category": "professionnelle",
-        "duration": "3 ans (6 semestres, 180 crédits ECTS)",
-        "diploma": "Licence Professionnelle en Ingénierie Pastorale (UCAC / ISSR)",
-        "modality": "Présentiel (Mvolyé) et En direct en ligne",
-        "tuition": {
-            "registrationFee": "10 000 FCFA",
-            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-            "installments": "Payable par tranches trimestrielles"
-        }
-    },
-    {
-        "id": "licence-pedagogie-religieuse",
-        "slug": "licence-sciences-religieuses-option-pedagogie-religieuse",
-        "title": "Licence Professionnelle en Pédagogie Religieuse",
-        "subtitle": "Formation théologique, didactique et pédagogique pour l'enseignement religieux, moral et civique",
-        "category": "professionnelle",
-        "duration": "3 ans (6 semestres, 180 crédits ECTS)",
-        "diploma": "Licence Professionnelle en Pédagogie Religieuse (UCAC / ISSR)",
-        "modality": "Présentiel (Mvolyé) et En direct en ligne",
-        "tuition": {
-            "registrationFee": "10 000 FCFA",
-            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-            "installments": "Payable par tranches trimestrielles"
         }
     },
     {

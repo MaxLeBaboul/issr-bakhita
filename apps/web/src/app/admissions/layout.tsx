@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Candidature en Ligne 2026-2027 | ISSR Sainte Bakhita',
-    description: 'Postulez aux 8 filières canoniques et professionnelles de l\'ISSR. Dépôt de dossier 100% en ligne et quittance immédiate.',
+    description: 'Postulez aux 6 filières canoniques et professionnelles de l\'ISSR. Dépôt de dossier 100% en ligne et quittance immédiate.',
     url: '/admissions',
   },
 };

@@ -82,7 +82,7 @@ export default function FormationsPage() {
             Catalogue des Formations
           </h1>
           <p className="text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-light leading-relaxed">
-            Découvrez nos 8 filières d&apos;excellence en théologie, pastorale, gestion ecclésiale et éducation, 
+            Découvrez nos 6 filières d&apos;excellence en théologie, pastorale, gestion ecclésiale et éducation, 
             dispensées en présentiel sur le campus de Mvolyé (Yaoundé) et en direct en ligne.
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function FormationsPage() {
                   : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
               }`}
             >
-              Licences &amp; DU Professionnels ({FORMATIONS.filter(f => f.category === 'professionnelle').length})
+              Diplômes Universitaires (DU) ({FORMATIONS.filter(f => f.category === 'professionnelle').length})
             </button>
             <button
               onClick={() => setActiveCategory('certificat')}

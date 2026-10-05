@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "ISSR Sainte Joséphine Bakhita — Se former pour mieux servir !",
-    description: "Institut Supérieur des Sciences Religieuses érigé canoniquement par le Saint-Siège (Rome, 2012) et rattaché à l'UCAC-ICY. 8 filières d'excellence pour laïcs, religieux(ses) et prêtres.",
+    description: "Institut Supérieur des Sciences Religieuses érigé canoniquement par le Saint-Siège (Rome, 2012) et rattaché à l'UCAC-ICY. 6 filières d'excellence pour laïcs, religieux(ses) et prêtres.",
     url: siteUrl,
     siteName: "ISSR Sainte Joséphine Bakhita",
     locale: "fr_FR",
@@ -104,7 +104,7 @@ const jsonLd = {
   "url": siteUrl,
   "logo": `${siteUrl}/logo-seal.png`,
   "image": `${siteUrl}/images/hero-1608.jpg`,
-  "description": "Institut Supérieur des Sciences Religieuses rattaché à l'UCAC-ICY et érigé canoniquement par le Saint-Siège par Décret du 28 janvier 2012. 8 filières canoniques et professionnelles en sciences religieuses.",
+  "description": "Institut Supérieur des Sciences Religieuses rattaché à l'UCAC-ICY et érigé canoniquement par le Saint-Siège par Décret du 28 janvier 2012. 6 filières canoniques et professionnelles en sciences religieuses.",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Campus de Mvolyé, derrière le Collège Saint Benoît",

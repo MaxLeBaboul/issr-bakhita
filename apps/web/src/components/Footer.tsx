@@ -62,7 +62,7 @@ export const Footer: React.FC = () => {
               ))}
               <li className="pt-2">
                 <Link href="/formations" className="text-amber-300 font-bold hover:underline inline-flex items-center gap-1">
-                  Voir toutes les 8 filières &rarr;
+                  Voir toutes les 6 filières &rarr;
                 </Link>
               </li>
             </ul>

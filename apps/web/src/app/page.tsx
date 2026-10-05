@@ -312,7 +312,7 @@ export default function HomePage() {
                 href="/formations"
                 className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-900 hover:text-amber-700 transition-all duration-200 hover:translate-x-1 shrink-0"
               >
-                <span>Voir tout le catalogue (8 filières)</span>
+                <span>Voir tout le catalogue (6 filières)</span>
                 <ChevronRight className="w-4 h-4 text-amber-600" />
               </Link>
             </div>

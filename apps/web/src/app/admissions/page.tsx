@@ -378,7 +378,7 @@ export default function AdmissionsPage() {
             Dossier de Candidature en Ligne
           </h1>
           <p className="text-sm sm:text-base text-slate-200 max-w-xl mx-auto font-light leading-relaxed">
-            Rejoignez l&apos;Institut Supérieur des Sciences Religieuses Sainte Bakhita. Candidatures ouvertes pour les 8 filières canoniques et professionnelles.
+            Rejoignez l&apos;Institut Supérieur des Sciences Religieuses Sainte Bakhita. Candidatures ouvertes pour les 6 filières canoniques et professionnelles.
           </p>
         </div>
       </section>

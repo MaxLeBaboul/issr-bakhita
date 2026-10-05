@@ -382,7 +382,7 @@ export default function AboutPage() {
               Envie de rejoindre l&apos;ISSR Sainte Bakhita ?
             </h2>
             <p className="text-sm text-slate-200 max-w-xl mx-auto relative z-10 leading-relaxed font-light">
-              Consultez le catalogue détaillé de nos 8 filières ou déposez dès maintenant votre dossier de candidature pour la rentrée académique.
+              Consultez le catalogue détaillé de nos 6 filières ou déposez dès maintenant votre dossier de candidature pour la rentrée académique.
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10">
               <Link
