@@ -31,7 +31,7 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   prefet_etudes: {
     id: 'usr-prefet',
     role: 'prefet_etudes',
-    name: 'Sr. Patience ENGANEMBEN',
+    name: 'P. Chrétien TADJIKAM,cm',
     title: 'Préfet des Études',
     email: 'prefet.etudes@issr-bakhita.cm',
     department: 'Direction Académique & Pédagogique',
@@ -304,7 +304,7 @@ export const SAMPLE_GRADES: StudentGradeItem[] = [
     average: 11.8,
     credits: 4,
     status: 'VALIDE',
-    teacherName: 'Sr. Patience ENGANEMBEN'
+    teacherName: 'P. Chrétien TADJIKAM,cm'
   },
   {
     id: 'grd-05',

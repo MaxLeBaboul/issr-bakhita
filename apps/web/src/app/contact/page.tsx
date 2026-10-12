@@ -200,7 +200,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="font-bold text-slate-900 text-sm">Sr. Patience ENGANEMBEN, ejnb</div>
+                    <div className="font-bold text-slate-900 text-sm">P. Chrétien TADJIKAM,cm</div>
                     <div className="text-issr-primary font-semibold">Préfet des Études</div>
                     <div className="text-slate-500 mt-1">Orientation, validation des équivalences &amp; cursus</div>
                   </div>

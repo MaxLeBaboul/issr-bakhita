@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     'Érection canonique Rome 2012',
     'ITPR Yaoundé',
     'P. Patrice MEKANA',
-    'Sr. Patience ENGANEMBEN',
+    'P. Chrétien TADJIKAM,cm',
     'Direction ISSR Bakhita',
     'Institut Supérieur Sciences Religieuses Cameroun'
   ],

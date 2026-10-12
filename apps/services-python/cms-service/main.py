@@ -82,7 +82,7 @@ ARTICLES_DB: List[dict] = [
         "category": "Formations",
         "excerpt": "Découvrez notre Diplôme Universitaire en Ingénierie Pastorale spécialement conçu pour les aumôniers hospitaliers, pénitentiaires et responsables d'œuvres caritatives.",
         "content": "Comment structurer une aumônerie d'hôpital ? Quels outils pour accompagner la réinsertion sociale en milieu carcéral ? Comment gérer une équipe bénévole et financer un projet paroissial ? Le DU en Ingénierie Pastorale de l'ISSR Bakhita offre 2 années de formation pratique et théorique pour professionnaliser l'action d'Église.",
-        "author": "Sr. Patience ENGANEMBEN, ejnb",
+        "author": "P. Chrétien TADJIKAM,cm",
         "publishedAt": "28 Juillet 2026",
         "imageUrl": "/images/img-1139.jpg",
         "readTime": "4 min",

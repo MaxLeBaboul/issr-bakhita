@@ -729,7 +729,7 @@ export default function AdminPage() {
                   <option value="directeur">2. Directeur (P. Dr Patrice MEKANA)</option>
                   <option value="secretaire_acad">3. Secrétariat Direction Cours du Jour (Mlle Lydie TSELI)</option>
                   <option value="secretaire_admin">4. Secrétariat Direction Cours du Soir (Mlle Manuella NYAMBONE)</option>
-                  <option value="prefet_etudes">5. Préfet des Études (Sr. Patience ENGANEMBEN)</option>
+                  <option value="prefet_etudes">5. Préfet des Études (P. Chrétien TADJIKAM,cm)</option>
                   <option value="econome">6. Économe (P. Jean-Paul BESSALA)</option>
                   <option value="rep_enseignants">7. Délégué Enseignants (Pr. Antoine ESSOMBA)</option>
                   <option value="enseignants">8. Enseignants (Dr. Théophile NDONG)</option>

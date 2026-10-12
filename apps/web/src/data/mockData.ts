@@ -102,12 +102,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "dir-2",
-    name: "Sr. Patience ENGANEMBEN LIMALEBA, ejnb",
+    name: "P. Chrétien TADJIKAM,cm",
     title: "Préfet des Études",
-    role: "Religieuse, Coordination pédagogique",
+    role: "Prêtre Lazariste (cm), Coordination pédagogique",
     bio: "Supervise l'organisation des cours, le suivi académique des apprenants et le corps enseignant.",
-    imageUrl: "/images/team/sr-patience-enganemben.jpg",
-    objectPosition: "center center"
+    imageUrl: "/images/team/chretien-tadjikam.jpg",
+    objectPosition: "center 20%"
   },
   {
     id: "dir-3",
@@ -125,7 +125,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Gestion financière et intendance",
     bio: "En charge de l'administration financière, des scolarités et de la gestion matérielle.",
     imageUrl: "/images/team/gael-marcel-abanda.jpg",
-    objectPosition: "center center"
+    objectPosition: "center 20%"
   },
   {
     id: "dir-5",
@@ -520,7 +520,7 @@ Les débats ont souligné l'urgence d'une foi adulte, capable de rendre compte d
     content: `Comment structurer une aumônerie d'hôpital ? Quels outils pour accompagner la réinsertion sociale en milieu carcéral ? Comment gérer une équipe bénévole et financer un projet paroissial ?
 
 Le DU en Ingénierie Pastorale de l'ISSR Bakhita offre 2 années de formation pratique et théorique pour professionnaliser l'action d'Église. Les inscriptions sont en cours.`,
-    author: "Sr. Patience ENGANEMBEN, ejnb",
+    author: "P. Chrétien TADJIKAM,cm",
     publishedAt: "28 Juillet 2026",
     imageUrl: "/images/img-1139.jpg",
     readTime: "4 min",

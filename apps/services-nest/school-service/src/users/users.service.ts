@@ -121,8 +121,8 @@ export class UsersService {
       email: 'prefet.etudes@issr-bakhita.cm',
       role: 'prefet_etudes',
       roleTitle: 'Préfecture des Études',
-      firstName: 'Patience',
-      lastName: 'ENGANEMBEN',
+      firstName: 'Chrétien',
+      lastName: 'TADJIKAM',
       department: 'Direction Académique & Pédagogique',
       isActive: true,
       passwordHash: '2cac7cafef4bf1d0ae596ad566e2b3bd:960934e8666817753a5bf3b311424170e5859bf100a3fab410ec7db6968b3c203828aef219d43d73b6b523bf7ccafa847df2f3c59d7ab792e2112467dc867223', // Prefet@2026!
