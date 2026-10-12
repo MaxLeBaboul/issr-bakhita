@@ -61,7 +61,7 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   econome: {
     id: 'usr-econome',
     role: 'econome',
-    name: 'P. Économe Jean-Paul BESSALA',
+    name: 'M. Gaël Marcel ABANDA',
     title: 'Économe & Gestionnaire Financier',
     email: 'economat@issr-bakhita.cm',
     department: 'Économat & Intendance',
@@ -339,7 +339,7 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     totalPaid: 765000,
     remainingDue: 0,
     examQuitusGranted: true,
-    quitusGrantedBy: 'P. Économe Jean-Paul BESSALA',
+    quitusGrantedBy: 'M. Gaël Marcel ABANDA',
     quitusGrantedAt: '12 Septembre 2026',
     installments: [
       { id: 'inst-1', label: 'Inscription administrative', amount: 50000, paid: true, paidAt: '01/08/2026', receiptNumber: 'REC-2026-012' },
@@ -360,7 +360,7 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     totalPaid: 150000,
     remainingDue: 0,
     examQuitusGranted: true,
-    quitusGrantedBy: 'P. Économe Jean-Paul BESSALA',
+    quitusGrantedBy: 'M. Gaël Marcel ABANDA',
     quitusGrantedAt: '15 Septembre 2026',
     installments: [
       { id: 'inst-4', label: 'Inscription administrative', amount: 50000, paid: true, paidAt: '05/08/2026', receiptNumber: 'REC-2026-024' },
@@ -401,7 +401,7 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     totalPaid: 850000,
     remainingDue: 0,
     examQuitusGranted: true,
-    quitusGrantedBy: 'P. Économe Jean-Paul BESSALA',
+    quitusGrantedBy: 'M. Gaël Marcel ABANDA',
     quitusGrantedAt: '18 Septembre 2026',
     installments: [
       { id: 'inst-10', label: 'Inscription administrative', amount: 50000, paid: true, paidAt: '02/08/2026', receiptNumber: 'REC-2026-015' },
@@ -479,7 +479,7 @@ export const SAMPLE_AUDIT_LOGS: AuditLogEntry[] = [
   {
     id: 'log-01',
     timestamp: '19 Septembre 2026 à 15:42',
-    actorName: 'P. Économe Jean-Paul BESSALA',
+    actorName: 'M. Gaël Marcel ABANDA',
     actorRole: 'econome',
     action: 'Délivrance de Quitus Financier',
     target: 'Fr. Emmanuel NGOUMOU (ISSR-2026-084)',

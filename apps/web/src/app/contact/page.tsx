@@ -206,6 +206,12 @@ export default function ContactPage() {
                   </div>
 
                   <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div className="font-bold text-slate-900 text-sm">M. Gaël Marcel ABANDA</div>
+                    <div className="text-issr-primary font-semibold">Économe</div>
+                    <div className="text-slate-500 mt-1">Gestion financière, scolarités &amp; intendance</div>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="font-bold text-slate-900 text-sm">Secrétariat Général &amp; Admissions</div>
                     <div className="text-issr-primary font-semibold">Mlles Lydie TSELI (Cours du jour) &amp; Manuella NYAMBONE (Cours du soir)</div>
                     <div className="text-slate-500 mt-1">Dépôt des dossiers, attestations et scolarité</div>

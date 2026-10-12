@@ -134,8 +134,8 @@ export class UsersService {
       email: 'economat@issr-bakhita.cm',
       role: 'econome',
       roleTitle: 'Économat & Intendance',
-      firstName: 'Jean-Paul',
-      lastName: 'BESSALA',
+      firstName: 'Gaël Marcel',
+      lastName: 'ABANDA',
       department: 'Économat & Intendance',
       isActive: true,
       passwordHash: '2f1058d7e3ac59ec9969808b987c7bff:a98a064dd26dd496bc9991c9ec5027f507a732eb4b665b3b179b908f39913b84ea4eb8d5b9209c0159f9733e72967e0ffac411af12e314a90d0066aa2b100130', // Economat@2026!

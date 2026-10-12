@@ -106,7 +106,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Préfet des Études",
     role: "Prêtre Lazariste (cm), Coordination pédagogique",
     bio: "Supervise l'organisation des cours, le suivi académique des apprenants et le corps enseignant.",
-    imageUrl: "/images/team/chretien-tadjikam.jpg",
+    imageUrl: "/images/team/chretien-tadjikam-2026.jpg",
     objectPosition: "center 20%"
   },
   {
@@ -124,7 +124,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     title: "Économe",
     role: "Gestion financière et intendance",
     bio: "En charge de l'administration financière, des scolarités et de la gestion matérielle.",
-    imageUrl: "/images/team/gael-marcel-abanda.jpg",
+    imageUrl: "/images/team/gael-marcel-abanda-2026.jpg",
     objectPosition: "center 20%"
   },
   {
