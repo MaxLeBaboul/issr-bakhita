@@ -49,7 +49,7 @@ export interface FinancialTuitionRecord {
   category: 'LAIC' | 'RELIGIEUX' | 'RELIGIEUSE' | 'PRETRE';
   sponsor?: string;
   registrationFeePaid: boolean; // 50 000 FCFA
-  totalTuition: number; // e.g. 150 000 or 765 000 FCFA
+  totalTuition: number; // e.g. 150 000 or 592 000 FCFA
   totalPaid: number;
   remainingDue: number;
   examQuitusGranted: boolean;

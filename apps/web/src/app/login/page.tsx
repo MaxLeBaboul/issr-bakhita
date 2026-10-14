@@ -304,7 +304,7 @@ export default function LoginPage() {
 
               <div>
                 <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest block mb-1">
-                  UCAC - ICY &bull; Érection Canonique Rome 2012
+                  UCAC - ICY &bull; Érection Canonique Rome 2022
                 </span>
                 <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">
                   Espace d&apos;Authentification Collaboratif

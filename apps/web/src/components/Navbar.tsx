@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 text-center md:text-left shrink-0">
             <span className="inline-flex items-center gap-1.5 font-bold text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/20">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Érigé par Rome (2012) • Rattaché à l&apos;UCAC-ICY</span>
+              <span>Érigé par Rome (2022) • Rattaché à l&apos;UCAC-ICY</span>
             </span>
             <span className="hidden md:inline text-slate-500">|</span>
             <span className="hidden md:inline italic text-amber-100 font-serif">

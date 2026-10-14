@@ -35,9 +35,9 @@ export default function AboutPage() {
       badge: "Affiliation académique"
     },
     {
-      year: "2012",
+      year: "2022",
       title: "Érection Canonique par le Saint-Siège (Rome)",
-      desc: "Par Décret de la Congrégation du 28 janvier 2012, le Saint Siège érigé canoniquement en Institut Supérieur des Sciences Religieuses (ISSR) Sainte Joséphine Bakhita, habilité à conférer le Baccalauréat canonique.",
+      desc: "Par Décret de la Congrégation du 28 janvier 2022, le Saint Siège érigé canoniquement en Institut Supérieur des Sciences Religieuses (ISSR) Sainte Joséphine Bakhita, habilité à conférer le Baccalauréat canonique.",
       badge: "Reconnaissance de Rome",
       highlight: true
     },
@@ -129,7 +129,7 @@ export default function AboutPage() {
                   L&apos;Institut Supérieur des Sciences Religieuses Sainte Joséphine Bakhita est né de la volonté de consolider la formation théologique et pastorale des religieux, religieuses et laïcs en Afrique centrale.
                 </p>
                 <p>
-                  Anciennement connu sous le nom d&apos;<strong>Institut de Théologie Pastorale pour les Religieux (ITPR)</strong>, l&apos;établissement a franchi une étape historique décisive en étant érigé canoniquement en <strong>Institut Supérieur des Sciences Religieuses (ISSR) par Décret de la Congrégation du 28 janvier 2012</strong>.
+                  Anciennement connu sous le nom d&apos;<strong>Institut de Théologie Pastorale pour les Religieux (ITPR)</strong>, l&apos;établissement a franchi une étape historique décisive en étant érigé canoniquement en <strong>Institut Supérieur des Sciences Religieuses (ISSR) par Décret de la Congrégation du 28 janvier 2022</strong>.
                 </p>
                 <p>
                   Rattaché à la Faculté de Théologie de l&apos;<strong>Université Catholique d&apos;Afrique Centrale (UCAC) – Institut Catholique de Yaoundé (ICY)</strong>, l&apos;institut propose un cadre académique prestigieux, rigoureux et porteur de diplômes reconnus internationalement.

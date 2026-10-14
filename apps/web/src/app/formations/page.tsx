@@ -256,7 +256,9 @@ export default function FormationsPage() {
                         <span>Programme académique (cliquer pour déployer)</span>
                       </h3>
                       <span className="text-[11px] text-amber-800 font-bold">
-                        {formation.program.length} semestres
+                        {formation.id === 'sciences-religieuses-licence' 
+                          ? '6 semestres (Jour) / 8 semestres (Soir)' 
+                          : `${formation.program.length} semestres`}
                       </span>
                     </div>
 

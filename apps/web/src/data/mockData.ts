@@ -5,7 +5,7 @@ export const INSTITUTION_INFO = {
   acronym: "ISSR Sainte Bakhita",
   motto: "Se former pour mieux servir !",
   affiliation: "Rattaché à la Faculté de Théologie de l'Université Catholique d'Afrique Centrale (UCAC) – ICY",
-  erection: "Érigé canoniquement par Décret de la Congrégation du 28 janvier 2012 (Rome)",
+  erection: "Érigé canoniquement par Décret de la Congrégation du 28 janvier 2022 (Rome)",
   formerName: "Anciennement Institut de Théologie Pastorale pour les Religieux (ITPR)",
   address: "Yaoundé – Mvolyé, derrière le Collège Saint Benoît (Cameroun)",
   phone: "+237 655 165 757",
@@ -154,7 +154,7 @@ export const FORMATIONS: Formation[] = [
     title: "Sciences Religieuses (Baccalauréat Canonique / Licence)",
     subtitle: "Formation théologique et philosophique fondamentale reconnue par le Saint-Siège (Rome) et l'UCAC",
     category: "canonique",
-    duration: "3 ans (6 semestres)",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Baccalauréat Canonique en Sciences Religieuses (Équivalent Licence LMD)",
     targetAudience: "Laïcs engagés, religieux, religieuses, séminaristes et prêtres",
     modality: "Présentiel (campus de Mvolyé) et En direct en ligne (Zoom / Google Meet)",
@@ -167,7 +167,7 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Semestre 1 & 2 : Fondements scripturaires & philosophiques",
+        semester: "Semestres 1 & 2 (Jour & Soir) : Fondements scripturaires & philosophiques",
         modules: [
           "Introduction à l'Ancien et au Nouveau Testament",
           "Histoire de l'Église antique et médiévale",
@@ -177,7 +177,7 @@ export const FORMATIONS: Formation[] = [
         ]
       },
       {
-        semester: "Semestre 3 & 4 : Approfondissements dogmatiques & moraux",
+        semester: "Semestres 3 & 4 (Jour & Soir) : Approfondissements dogmatiques & moraux",
         modules: [
           "Christologie et Trinité",
           "Théologie sacramentaire et Liturgie sacrée",
@@ -187,13 +187,22 @@ export const FORMATIONS: Formation[] = [
         ]
       },
       {
-        semester: "Semestre 5 & 6 : Synthèse & Pastorale africaine",
+        semester: "Semestres 5 & 6 (Jour & Soir) : Synthèse & Pastorale africaine (Fin cycle Jour)",
         modules: [
           "Ecclésiologie et Théologie pastorale",
           "Doctrine Sociale de l'Église (DSE)",
           "Théologie des religions et Dialogue œcuménique",
           "Défis de l'inculturation de l'Évangile en Afrique",
-          "Rédaction et soutenance du mémoire de Baccalauréat canonique"
+          "Rédaction et soutenance du mémoire de Baccalauréat canonique (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir) : Approfondissement pastoral & Soutenance",
+        modules: [
+          "Séminaire avancé de théologie pastorale contextualisée",
+          "Stage pastoral et ecclésial encadré en communauté ou paroisse",
+          "Méthodologie de la recherche et ateliers d'écriture théologique",
+          "Rédaction finale et soutenance solennelle du mémoire de Baccalauréat canonique"
         ]
       }
     ],
@@ -210,7 +219,7 @@ export const FORMATIONS: Formation[] = [
     ],
     tuition: {
       registrationFee: "10 000 FCFA (Frais de dossier)",
-      annualTuition: "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
+      annualTuition: "150 000 FCFA (Laïcs) / 592 000 FCFA (Religieux)",
       installments: "Payable en 3 tranches (Rentrée, Janvier, Avril)"
     }
   },

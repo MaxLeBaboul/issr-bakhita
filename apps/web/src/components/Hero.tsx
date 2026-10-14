@@ -45,7 +45,7 @@ export const Hero: React.FC = () => {
             {/* Accreditation Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-200 text-xs font-semibold backdrop-blur-md shadow-sm animate-fade-in-down">
               <Award className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>Érigé par Rome (2012) • Rattaché à l&apos;UCAC-ICY</span>
+              <span>Érigé par Rome (2022) • Rattaché à l&apos;UCAC-ICY</span>
             </div>
 
             {/* Main Title - Clean & Prestigious */}
