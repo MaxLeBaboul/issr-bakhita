@@ -219,9 +219,15 @@ export const FORMATIONS: Formation[] = [
     ],
     tuition: {
       registrationFee: "10 000 FCFA (Frais de dossier)",
-      annualTuition: "150 000 FCFA (Laïcs) / 592 000 FCFA (Religieux)",
-      installments: "Payable en 3 tranches (Rentrée, Janvier, Avril)"
-    }
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6 - Jour)", laics: "225 000 FCFA", religieux: "640 000 FCFA" },
+      { year: "4ème Année (Semestres 7 & 8 - Soir)", laics: "225 000 FCFA", religieux: "—" }
+    ]
   },
   {
     id: "sciences-religieuses-master-foi-culture",
@@ -229,10 +235,10 @@ export const FORMATIONS: Formation[] = [
     title: "Master Sciences Religieuses : Foi, Culture, Œcuménique & Dialogue Interreligieux",
     subtitle: "Cycle supérieur de spécialisation, d'inculturation et de diplomatie pastorale (UCAC)",
     category: "canonique",
-    duration: "2 ans (4 semestres)",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Master universitaire en Sciences Religieuses (UCAC)",
     targetAudience: "Titulaires d'un Baccalauréat canonique, Licence théologique ou sciences humaines, prêtres, religieux, laïcs",
-    modality: "Présentiel (Lundi à Jeudi, cours du soir de 17h00 à 20h30)",
+    modality: "Présentiel (Lundi à Jeudi, cours du soir de 17h00 à 20h30) et En direct en ligne",
     description: "Former des spécialistes capables de décrypter les traditions religieuses africaines, de maîtriser le dialogue œcuménique et interreligieux, et d'exercer des responsabilités dans les instances de pacification et de médiation culturelle.",
     objectives: [
       "Connaître les traditions religieuses en Afrique et analyser leurs enjeux dans le contexte contemporain.",
@@ -242,7 +248,7 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Master 1 : Herméneutique & Anthropologie religieuse africaine",
+        semester: "Semestres 1 & 2 (Jour & Soir - 1ère Année) : Herméneutique & Anthropologie religieuse",
         modules: [
           "Herméneutique biblique et théologie contextuelle",
           "Religions traditionnelles africaines et islam en Afrique",
@@ -251,12 +257,30 @@ export const FORMATIONS: Formation[] = [
         ]
       },
       {
-        semester: "Master 2 : Médiation, Dialogue & Recherche de thèse",
+        semester: "Semestres 3 & 4 (Jour & Soir - 2ème Année) : Médiation, Dialogue & Diplomatie pastorale",
         modules: [
           "Théologie du dialogue et diplomatie ecclésiale",
           "Gestion des conflits à base religieuse et médiation",
-          "Atelier de rédaction de thèse de Master",
-          "Soutenance publique devant le jury d'État et canonique"
+          "Droit international et liberté religieuse en Afrique",
+          "Séminaire de recherche interdisciplinaire et méthodologie"
+        ]
+      },
+      {
+        semester: "Semestres 5 & 6 (Jour & Soir - 3ème Année) : Synthèse & Mémoire de Master (Fin cycle Jour)",
+        modules: [
+          "Œcuménisme appliqué et commissions bilatérales",
+          "Inculturation théologique et culture de la paix",
+          "Ateliers avancés d'écriture et de recherche scientifique",
+          "Rédaction finale et soutenance publique du mémoire de Master (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir - 4ème Année) : Immersion pratique & Thèse",
+        modules: [
+          "Stage professionnel de terrain en institution ecclésiale ou ONG",
+          "Séminaires doctoraux préparatoires et publications d'articles",
+          "Finalisation du mémoire de recherche approfondie",
+          "Soutenance solennelle devant le jury académique mixte (Cours du soir)"
         ]
       }
     ],
@@ -272,10 +296,16 @@ export const FORMATIONS: Formation[] = [
       "Projet de recherche initial et entretien d'admission"
     ],
     tuition: {
-      registrationFee: "15 000 FCFA",
-      annualTuition: "450 000 FCFA (Laïcs) / 850 000 FCFA (Prêtres & Religieux)",
-      installments: "Payable en tranches trimestrielles"
-    }
+      registrationFee: "15 000 FCFA (Frais de dossier)",
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6 - Jour)", laics: "225 000 FCFA", religieux: "640 000 FCFA" },
+      { year: "4ème Année (Semestres 7 & 8 - Soir)", laics: "225 000 FCFA", religieux: "—" }
+    ]
   },
   {
     id: "du-ingenierie-pastorale",
@@ -283,7 +313,7 @@ export const FORMATIONS: Formation[] = [
     title: "Diplôme Universitaire (DU) en Ingénierie Pastorale",
     subtitle: "Conception, gestion et accompagnement de projets pastoraux, caritatifs et d'aumônerie",
     category: "professionnelle",
-    duration: "2 ans",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Diplôme Universitaire (DU) d'Ingénierie Pastorale - UCAC / ISSR",
     targetAudience: "Aumôniers, coordinateurs de mouvements, agents pastoraux, diacres et laïcs engagés",
     modality: "Présentiel à Yaoundé (Mvolyé) ou En direct en ligne",
@@ -295,7 +325,7 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Année 1 : Diagnostic & Outils méthodologiques",
+        semester: "Semestres 1 & 2 (Jour & Soir - 1ère Année) : Diagnostic & Outils méthodologiques",
         modules: [
           "Sociologie des religions et dynamique des communautés chrétiennes",
           "Gestion de projets pastoraux (Cycle de projet et cadre logique)",
@@ -304,12 +334,30 @@ export const FORMATIONS: Formation[] = [
         ]
       },
       {
-        semester: "Année 2 : Ingénierie de terrain & Aumôneries",
+        semester: "Semestres 3 & 4 (Jour & Soir - 2ème Année) : Ingénierie de terrain & Aumôneries",
         modules: [
           "Pastorale de la santé et aumônerie hospitalière",
           "Pastorale pénitentiaire et réinsertion sociale des détenus",
           "Recherche de financements et gestion de projets caritatifs (Caritas)",
-          "Stage pratique obligatoire (3 mois) et rapport d'intervention de terrain"
+          "Management et animation d'équipes pastorales"
+        ]
+      },
+      {
+        semester: "Semestres 5 & 6 (Jour & Soir - 3ème Année) : Pilotage stratégique & Stage (Fin cycle Jour)",
+        modules: [
+          "Évaluation d'impact des programmes pastoraux et d'entraide",
+          "Éthique et déontologie de l'action pastorale",
+          "Stage pratique obligatoire en institution ou paroisse (3 mois)",
+          "Rédaction et soutenance du rapport d'intervention de terrain (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir - 4ème Année) : Immersion avancée & Mémoire",
+        modules: [
+          "Coordination de réseaux pastoraux régionaux et diocésains",
+          "Gestion des situations de crise et médiation communautaire",
+          "Stage tutoré en milieu professionnel pour cadres en cours du soir",
+          "Soutenance solennelle du mémoire professionnel de DU d'Ingénierie Pastorale (Cours du soir)"
         ]
       }
     ],
@@ -323,10 +371,15 @@ export const FORMATIONS: Formation[] = [
       "Lettre de recommandation d'une paroisse ou communauté"
     ],
     tuition: {
-      registrationFee: "25 000 FCFA",
-      annualTuition: "280 000 FCFA",
-      installments: "Échelonné en 3 paiements"
-    }
+      registrationFee: "10 000 FCFA (Frais de dossier)",
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "250 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "215 000 FCFA", religieux: "315 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6)", laics: "175 000 FCFA", religieux: "275 000 FCFA" }
+    ]
   },
   {
     id: "du-pedagogie-religieuse",
@@ -334,7 +387,7 @@ export const FORMATIONS: Formation[] = [
     title: "Diplôme Universitaire (DU) en Pédagogie Religieuse",
     subtitle: "Qualification pédagogique rapide pour l'enseignement de l'éducation religieuse",
     category: "professionnelle",
-    duration: "2 ans",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Diplôme Universitaire (DU) d'Enseignant de Religion - UCAC / ISSR",
     targetAudience: "Enseignants en exercice, catéchistes certifiés, candidats à l'enseignement catholique",
     modality: "Présentiel et En direct en ligne",
@@ -346,21 +399,39 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Année 1 : Didactique & Psychologie de l'élève",
+        semester: "Semestres 1 & 2 (Jour & Soir - 1ère Année) : Didactique & Psychologie de l'élève",
         modules: [
           "Psychologie de l'enfant et de l'adolescent",
           "Théories de l'apprentissage appliquées à l'enseignement religieux",
           "Éthique professionnelle de l'éducateur chrétien",
-          "Culture biblique accessible pour les jeunes"
+          "Culture biblique et catéchétique accessible pour les jeunes"
         ]
       },
       {
-        semester: "Année 2 : Pratiques de classe & Stage scolaire",
+        semester: "Semestres 3 & 4 (Jour & Soir - 2ème Année) : Pratiques de classe & Ingénierie didactique",
         modules: [
           "Élaboration de fiches pédagogiques et techniques d'évaluation",
-          "Gestion de classe et dialogue interreligieux en milieu scolaire",
-          "Stage en établissement d'enseignement secondaire (Collège / Lycée)",
-          "Soutenance du mémoire professionnel"
+          "Gestion de classe et animation de groupes scolaires",
+          "Dialogue interreligieux et éducation aux valeurs en milieu scolaire",
+          "Supports multimédias et nouvelles approches pédagogiques"
+        ]
+      },
+      {
+        semester: "Semestres 5 & 6 (Jour & Soir - 3ème Année) : Pratique enseignante & Stage (Fin cycle Jour)",
+        modules: [
+          "Pédagogie différenciée et inclusion scolaire",
+          "Pastorale scolaire et animation spirituelle en établissement",
+          "Stage pratique en établissement secondaire (Collège / Lycée)",
+          "Rédaction et soutenance du mémoire professionnel (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir - 4ème Année) : Stage approfondi & Mémoire",
+        modules: [
+          "Analyse réflexive des pratiques pédagogiques et formation des maîtres",
+          "Conception de curriculums diocésains d'instruction religieuse",
+          "Stage tutoré en responsabilité pédagogique continue (Cours du soir)",
+          "Soutenance solennelle du mémoire professionnel de DU en Pédagogie Religieuse (Cours du soir)"
         ]
       }
     ],
@@ -374,10 +445,15 @@ export const FORMATIONS: Formation[] = [
       "Intérêt avéré pour l'enseignement et l'éducation de la jeunesse"
     ],
     tuition: {
-      registrationFee: "25 000 FCFA",
-      annualTuition: "280 000 FCFA",
-      installments: "Payable par tranches"
-    }
+      registrationFee: "10 000 FCFA (Frais de dossier)",
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "250 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "215 000 FCFA", religieux: "315 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6)", laics: "175 000 FCFA", religieux: "275 000 FCFA" }
+    ]
   },
   {
     id: "certificat-leadership-gestion-oeuvres",
@@ -385,7 +461,7 @@ export const FORMATIONS: Formation[] = [
     title: "Certificat Universitaire en Leadership & Gestion des Œuvres",
     subtitle: "Gouvernance évangélique, comptabilité, gestion financière et droit ecclésial (100% en ligne)",
     category: "certificat",
-    duration: "6 mois (1ère session : 5 oct 2026 - 15 fév 2027 | 2e session : 1 fév - 30 juin 2027) + stage 2 mois",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Certificat Universitaire en Leadership et Gestion des Œuvres (UCAC / ISSR)",
     targetAudience: "Supérieurs majeurs, économes, gestionnaires de congrégations, prêtres administrateurs, laïcs gestionnaires",
     modality: "100% En Ligne (Cours du soir à 17h00)",
@@ -399,7 +475,7 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Session Fondamentale : Leadership & Gestion financière",
+        semester: "Semestres 1 & 2 (Jour & Soir - 1ère Année) : Leadership & Gestion financière",
         modules: [
           "Leadership évangélique et discernement managérial",
           "Comptabilité générale et gestion budgétaire des œuvres",
@@ -408,12 +484,30 @@ export const FORMATIONS: Formation[] = [
         ]
       },
       {
-        semester: "Session Stratégique : Projets, Financement & Stage",
+        semester: "Semestres 3 & 4 (Jour & Soir - 2ème Année) : Projets, Financement & Stratégie",
         modules: [
           "Montage, exécution et évaluation de projets de développement",
           "Recherche de financements (fundraising) et pérennisation des œuvres",
-          "Stage professionnel de 2 mois dans une œuvre ecclésiale",
-          "Rapport d'expertise managériale et validation du Certificat"
+          "Gestion des risques et contrôle interne en milieu ecclésial",
+          "Communication institutionnelle et relations partenaires"
+        ]
+      },
+      {
+        semester: "Semestres 5 & 6 (Jour & Soir - 3ème Année) : Immersion managériale & Rapport (Fin cycle Jour)",
+        modules: [
+          "Stage professionnel de direction dans une œuvre ecclésiale",
+          "Audit organisationnel et financier appliqué",
+          "Atelier d'évaluation et de gouvernance éthique",
+          "Rédaction et soutenance du rapport d'expertise managériale (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir - 4ème Année) : Pilotage exécutif & Mémoire professionnel",
+        modules: [
+          "Stratégie de transformation et pérennité des congrégations",
+          "Séminaire exécutif pour cadres et administrateurs en cours du soir",
+          "Projet tutoré d'optimisation d'une structure ecclésiale ou sociale",
+          "Soutenance solennelle du mémoire professionnel de certification"
         ]
       }
     ],
@@ -428,10 +522,15 @@ export const FORMATIONS: Formation[] = [
       "Niveau Baccalauréat minimum ou expérience équivalente"
     ],
     tuition: {
-      registrationFee: "Inclus dans la formule",
-      annualTuition: "415 000 FCFA (Frais globaux de certification)",
-      installments: "Payable en 2 versements (Début des cours : 5 Octobre 2026)"
-    }
+      registrationFee: "10 000 FCFA (Frais de dossier)",
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "250 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "215 000 FCFA", religieux: "315 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6)", laics: "175 000 FCFA", religieux: "275 000 FCFA" }
+    ]
   },
   {
     id: "certificat-sciences-religieuses",
@@ -439,7 +538,7 @@ export const FORMATIONS: Formation[] = [
     title: "Certificat Universitaire en Sciences Religieuses",
     subtitle: "Formation théologique, doctrinale, spirituelle et humaine fondamentale pour laïcs et religieux",
     category: "certificat",
-    duration: "1 an (Formule modulaire flexible en présentiel ou en ligne)",
+    duration: "6 semestres (cours du jour) / 8 semestres (cours du soir)",
     diploma: "Certificat Universitaire en Sciences Religieuses (UCAC / ISSR)",
     targetAudience: "Laïcs engagés dans les paroisses, mouvements d'action catholique, religieux(ses) en formation permanente",
     modality: "Cours du soir, cours du samedi ou 100% En Ligne synchrone",
@@ -452,20 +551,39 @@ export const FORMATIONS: Formation[] = [
     ],
     program: [
       {
-        semester: "Module 1 : Écriture Sainte & Dogme",
+        semester: "Semestres 1 & 2 (Jour & Soir - 1ère Année) : Écriture Sainte & Dogme",
         modules: [
           "Initiation à la lecture priante et critique de la Bible",
           "Le Credo et les grands mystères de la foi chrétienne",
-          "Histoire du salut et théologie de la grâce"
+          "Histoire du salut et théologie de la grâce",
+          "Introduction générale à la théologie catholique"
         ]
       },
       {
-        semester: "Module 2 : Morale, Liturgie & Mission",
+        semester: "Semestres 3 & 4 (Jour & Soir - 2ème Année) : Morale, Liturgie & Mission",
         modules: [
           "Théologie morale et éthique de la vie quotidienne",
           "Sacrements et liturgie vivante",
           "Initiation à la prière et spiritualité chrétienne",
           "Témoignage chrétien et apostolat des laïcs en Afrique"
+        ]
+      },
+      {
+        semester: "Semestres 5 & 6 (Jour & Soir - 3ème Année) : Synthèse doctrinale & Pastorale (Fin cycle Jour)",
+        modules: [
+          "Doctrine sociale de l'Église et engagement citoyen",
+          "Évangélisation et catéchèse en milieu paroissial",
+          "Stage pratique en communauté ecclésiale vivante",
+          "Validation et certificat académique (Cours du jour)"
+        ]
+      },
+      {
+        semester: "Semestres 7 & 8 (Spécifique Cours du Soir - 4ème Année) : Approfondissement & Mémoire théologique",
+        modules: [
+          "Séminaire d'approfondissement théologique pour professionnels",
+          "Dialogue foi et culture africaine contemporaine",
+          "Projet tutoré d'animation pastorale et engagement laïc",
+          "Validation finale et soutenance du mémoire en cours du soir"
         ]
       }
     ],
@@ -480,10 +598,16 @@ export const FORMATIONS: Formation[] = [
       "Lettre de recommandation de son curé de paroisse ou supérieur(e)"
     ],
     tuition: {
-      registrationFee: "10 000 FCFA",
-      annualTuition: "150 000 FCFA (Formule modulaire annuelle)",
-      installments: "Payable en 2 ou 3 tranches"
-    }
+      registrationFee: "10 000 FCFA (Frais de dossier)",
+      annualTuition: "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+      installments: "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
+    },
+    feeSchedule: [
+      { year: "1ère Année (Semestres 1 & 2)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "2ème Année (Semestres 3 & 4)", laics: "150 000 FCFA", religieux: "565 000 FCFA" },
+      { year: "3ème Année (Semestres 5 & 6 - Jour)", laics: "225 000 FCFA", religieux: "640 000 FCFA" },
+      { year: "4ème Année (Semestres 7 & 8 - Soir)", laics: "225 000 FCFA", religieux: "—" }
+    ]
   }
 ];
 

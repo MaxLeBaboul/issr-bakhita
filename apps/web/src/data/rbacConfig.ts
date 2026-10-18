@@ -335,8 +335,8 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     category: 'RELIGIEUX',
     sponsor: 'Congrégation des Frères Pallottins',
     registrationFeePaid: true,
-    totalTuition: 592000,
-    totalPaid: 592000,
+    totalTuition: 565000,
+    totalPaid: 565000,
     remainingDue: 0,
     examQuitusGranted: true,
     quitusGrantedBy: 'M. Gaël Marcel ABANDA',
@@ -344,7 +344,7 @@ export const SAMPLE_FINANCES: FinancialTuitionRecord[] = [
     installments: [
       { id: 'inst-1', label: 'Inscription administrative', amount: 50000, paid: true, paidAt: '01/08/2026', receiptNumber: 'REC-2026-012' },
       { id: 'inst-2', label: '1ère Tranche (Rentrée)', amount: 300000, paid: true, paidAt: '15/08/2026', receiptNumber: 'REC-2026-045' },
-      { id: 'inst-3', label: '2ème Tranche (Mi-parcours)', amount: 242000, paid: true, paidAt: '10/09/2026', receiptNumber: 'REC-2026-089' }
+      { id: 'inst-3', label: '2ème Tranche (Mi-parcours)', amount: 215000, paid: true, paidAt: '10/09/2026', receiptNumber: 'REC-2026-089' }
     ]
   },
   {
@@ -483,7 +483,7 @@ export const SAMPLE_AUDIT_LOGS: AuditLogEntry[] = [
     actorRole: 'econome',
     action: 'Délivrance de Quitus Financier',
     target: 'Fr. Emmanuel NGOUMOU (ISSR-2026-084)',
-    details: 'Solde intégralement réglé (592 000 FCFA). Quitus d’examen accordé avec succès.',
+    details: 'Solde intégralement réglé (565 000 FCFA). Quitus d’examen accordé avec succès.',
     severity: 'INFO'
   },
   {

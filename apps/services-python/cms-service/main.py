@@ -97,13 +97,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Sciences Religieuses (Baccalauréat Canonique / Licence)",
         "subtitle": "Formation théologique et philosophique fondamentale reconnue par Rome et l'UCAC",
         "category": "canonique",
-        "duration": "3 ans (6 semestres)",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Baccalauréat Canonique (Saint-Siège / UCAC)",
         "modality": "Présentiel (campus de Mvolyé) et En direct en ligne",
         "tuition": {
-            "registrationFee": "10 000 FCFA",
-            "annualTuition": "150 000 FCFA (Laïcs) / 765 000 FCFA (Religieux)",
-            "installments": "Payable en 3 tranches"
+            "registrationFee": "10 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
         }
     },
     {
@@ -112,13 +112,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Master Sciences Religieuses : Foi, Culture, Œcuménique & Dialogue Interreligieux",
         "subtitle": "Cycle supérieur de recherche, inculturation et dialogue œcuménique (UCAC)",
         "category": "canonique",
-        "duration": "2 ans (4 semestres)",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Master universitaire en Sciences Religieuses (UCAC)",
-        "modality": "Présentiel (cours du soir 17h00 - 20h30)",
+        "modality": "Présentiel (cours du soir 17h00 - 20h30) et En ligne",
         "tuition": {
-            "registrationFee": "15 000 FCFA",
-            "annualTuition": "450 000 FCFA (Laïcs) / 850 000 FCFA (Religieux)",
-            "installments": "Payable en tranches"
+            "registrationFee": "15 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
         }
     },
     {
@@ -127,13 +127,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Diplôme Universitaire (DU) en Ingénierie Pastorale",
         "subtitle": "Conception, gestion et accompagnement de projets pastoraux et caritatifs",
         "category": "professionnelle",
-        "duration": "2 ans",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Diplôme Universitaire (DU - UCAC / ISSR)",
         "modality": "Présentiel à Yaoundé (Mvolyé) ou En ligne",
         "tuition": {
-            "registrationFee": "25 000 FCFA",
-            "annualTuition": "280 000 FCFA",
-            "installments": "Échelonné en 3 paiements"
+            "registrationFee": "10 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
         }
     },
     {
@@ -142,13 +142,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Diplôme Universitaire (DU) en Pédagogie Religieuse",
         "subtitle": "Formation pour enseignants du secondaire et coordinateurs de catéchèse",
         "category": "professionnelle",
-        "duration": "2 ans",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Diplôme Universitaire (DU - UCAC / ISSR)",
         "modality": "Présentiel et En ligne",
         "tuition": {
-            "registrationFee": "25 000 FCFA",
-            "annualTuition": "280 000 FCFA",
-            "installments": "Payable par tranches"
+            "registrationFee": "10 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
         }
     },
     {
@@ -157,13 +157,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Certificat Universitaire en Leadership & Gestion des Œuvres",
         "subtitle": "Gouvernance évangélique, comptabilité, gestion financière et droit ecclésial",
         "category": "certificat",
-        "duration": "6 mois (oct-fév ou fév-juin) + stage 2 mois",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Certificat Universitaire (UCAC / ISSR)",
         "modality": "100% En Ligne (Cours du soir à 17h00)",
         "tuition": {
-            "registrationFee": "Inclus",
-            "annualTuition": "415 000 FCFA",
-            "installments": "Payable en 2 versements"
+            "registrationFee": "10 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 250 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 250 000 F (Religieux) • 2ème année : 215 000 F (Laïcs) / 315 000 F (Religieux) • 3ème année : 175 000 F (Laïcs) / 275 000 F (Religieux)"
         }
     },
     {
@@ -172,13 +172,13 @@ FORMATIONS_DB: List[dict] = [
         "title": "Certificat Universitaire en Sciences Religieuses",
         "subtitle": "Formation théologique, doctrinale, spirituelle et humaine fondamentale",
         "category": "certificat",
-        "duration": "1 an",
+        "duration": "6 semestres (cours du jour) / 8 semestres (cours du soir)",
         "diploma": "Certificat Universitaire (UCAC / ISSR)",
         "modality": "Cours du soir ou 100% En Ligne",
         "tuition": {
-            "registrationFee": "10 000 FCFA",
-            "annualTuition": "150 000 FCFA",
-            "installments": "Payable en tranches"
+            "registrationFee": "10 000 FCFA (Frais de dossier)",
+            "annualTuition": "Dès 150 000 FCFA/an (Laïcs) • Dès 565 000 FCFA/an (Religieux)",
+            "installments": "1ère année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 2ème année : 150 000 F (Laïcs) / 565 000 F (Religieux) • 3ème année : 225 000 F (Laïcs) / 640 000 F (Religieux) • 4ème année (cours du soir) : 225 000 F (Laïcs)"
         }
     }
 ]

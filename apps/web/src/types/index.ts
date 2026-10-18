@@ -23,6 +23,11 @@ export interface Formation {
     annualTuition: string;
     installments: string;
   };
+  feeSchedule?: {
+    year: string;
+    laics: string;
+    religieux: string;
+  }[];
   pedagogicalMethods?: string[];
   teachingTeam?: string[];
 }

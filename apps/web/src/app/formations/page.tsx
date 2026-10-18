@@ -255,10 +255,8 @@ export default function FormationsPage() {
                         <BookOpen className="w-4 h-4 text-amber-600" />
                         <span>Programme académique (cliquer pour déployer)</span>
                       </h3>
-                      <span className="text-[11px] text-amber-800 font-bold">
-                        {formation.id === 'sciences-religieuses-licence' 
-                          ? '6 semestres (Jour) / 8 semestres (Soir)' 
-                          : `${formation.program.length} semestres`}
+                      <span className="text-[11px] text-amber-800 font-bold bg-amber-100/80 px-2.5 py-0.5 rounded-full border border-amber-300">
+                        6 semestres (Jour) / 8 semestres (Soir)
                       </span>
                     </div>
 
@@ -398,12 +396,34 @@ export default function FormationsPage() {
                     <div className="border-t border-amber-200/70 pt-3">
                       <span className="font-bold text-amber-900 uppercase tracking-wider block mb-1 flex items-center gap-1">
                         <DollarSign className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Frais de Scolarité</span>
+                        <span>Frais de Scolarité Officiels (2026-2027)</span>
                       </span>
-                      <div className="space-y-1 text-slate-800">
-                        <p>Inscription : <strong className="text-blue-900 font-bold">{formation.tuition.registrationFee}</strong></p>
-                        <p>Scolarité annuelle : <strong className="text-amber-800 font-extrabold text-sm">{formation.tuition.annualTuition}</strong></p>
-                        <p className="text-[11px] text-amber-900 bg-amber-100/60 p-2.5 rounded-xl border border-amber-300/60 mt-1 font-medium">
+                      <div className="space-y-2 text-slate-800">
+                        <p className="flex justify-between items-center text-xs">
+                          <span className="text-slate-600">Inscription / Dossier :</span>
+                          <strong className="text-blue-900 font-bold">{formation.tuition.registrationFee}</strong>
+                        </p>
+                        
+                        {formation.feeSchedule && (
+                          <div className="mt-2 overflow-hidden rounded-xl border border-amber-200 bg-white shadow-xs">
+                            <div className="grid grid-cols-3 bg-amber-100/70 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-950 border-b border-amber-200">
+                              <span>Année</span>
+                              <span className="text-center text-emerald-800">Laïcs</span>
+                              <span className="text-right text-indigo-900">Religieux</span>
+                            </div>
+                            <div className="divide-y divide-amber-100 text-[11px]">
+                              {formation.feeSchedule.map((row, rIdx) => (
+                                <div key={rIdx} className="grid grid-cols-3 px-2.5 py-1.5 items-center hover:bg-amber-50/40">
+                                  <span className="font-medium text-slate-700 leading-tight text-[10px]">{row.year}</span>
+                                  <span className="text-center font-bold text-emerald-700">{row.laics}</span>
+                                  <span className="text-right font-bold text-indigo-700">{row.religieux}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <p className="text-[11px] text-amber-900 bg-amber-100/60 p-2.5 rounded-xl border border-amber-300/60 mt-1 font-medium leading-snug">
                           {formation.tuition.installments}
                         </p>
                       </div>
