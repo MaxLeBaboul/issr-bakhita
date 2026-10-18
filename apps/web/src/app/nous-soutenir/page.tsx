@@ -458,15 +458,26 @@ export default function NousSoutenirPage() {
                 <div className="flex items-center gap-3">
                   <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
                   <p>
-                    <strong>Besoin d&apos;un document RIB officiel avec cachet de l&apos;Économat ?</strong> Nous vous le transmettons sous 24h par email ou WhatsApp.
+                    <strong>Relevé bancaire officiel signé par la Direction :</strong> Vous pouvez consulter le document officiel SCB Cameroun original ou contacter l&apos;Économat.
                   </p>
                 </div>
-                <a
-                  href={`mailto:${INSTITUTION_INFO.email}?subject=Demande%20de%20RIB%20officiel%20ISSR%20Bakhita`}
-                  className="shrink-0 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition shadow-xs"
-                >
-                  Demander le RIB en PDF
-                </a>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <a
+                    href="/images/rib-officiel-scb.jpg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-lg bg-blue-900 hover:bg-blue-800 text-white font-bold transition shadow-xs flex items-center gap-1.5"
+                  >
+                    <span>Voir le document officiel</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <a
+                    href={`mailto:${INSTITUTION_INFO.email}?subject=Demande%20de%20RIB%20officiel%20ISSR%20Bakhita`}
+                    className="px-3.5 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition shadow-xs"
+                  >
+                    Demander par Email
+                  </a>
+                </div>
               </div>
             </div>
           </ScrollReveal>
@@ -623,7 +634,7 @@ export default function NousSoutenirPage() {
                     >
                       <option value="Orange Money">Orange Money (OM Cameroun)</option>
                       <option value="MTN Mobile Money">MTN Mobile Money (MoMo Cameroun)</option>
-                      <option value="Virement Bancaire">Virement Bancaire (Afriland / RIB)</option>
+                      <option value="Virement Bancaire">Virement Bancaire (SCB Cameroun / RIB)</option>
                       <option value="Espèces / Chèque Économat">Espèces / Chèque à l&apos;Économat (Mvolyé)</option>
                     </select>
                   </div>

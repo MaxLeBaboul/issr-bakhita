@@ -24,18 +24,18 @@ export const INSTITUTION_INFO = {
 
 export const DONATION_INFO = {
   bank: {
-    bankName: "Afriland First Bank Cameroun",
-    accountName: "INSTITUT SUPERIEUR DES SCIENCES RELIGIEUSES SAINTE JOSEPHINE BAKHITA",
+    bankName: "SCB Cameroun (Société Commerciale de Banque)",
+    accountName: "INSTITUT SUPERIEUR DES SCIENCES RELIGIEUSES",
     shortName: "ISSR Sainte Bakhita",
-    domiciliation: "Agence Principale de Yaoundé (Mvolyé / Hippodrome)",
-    bankCode: "10005",
-    branchCode: "00001",
-    accountNumber: "04326781001",
-    ribKey: "84",
-    fullRib: "10005 00001 04326781001 84",
-    iban: "CM21 1000 5000 0104 3267 8100 184",
-    swiftBic: "AFRICMCX",
-    referenceNote: "Indiquer obligatoirement en motif : DON - [Votre Nom] / SOUTIEN ISSR",
+    domiciliation: "SCB Cameroun (Agence de Yaoundé)",
+    bankCode: "10002",
+    branchCode: "00031",
+    accountNumber: "12528253050",
+    ribKey: "29",
+    fullRib: "10002 00031 12528253050 29",
+    iban: "CM21 1000 2000 3112 5282 5305 029",
+    swiftBic: "BCMACMCX",
+    referenceNote: "Indiquer obligatoirement en motif : DON - [Votre Nom] / SOUTIEN ISSR (ou SCOLARITE - [Nom Étudiant])",
   },
   mobileMoney: {
     orangeMoney: {
